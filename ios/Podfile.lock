@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_keyboard_visibility (0.0.1):
+    - Flutter
   - ocarina (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -7,12 +9,15 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - ocarina (from `.symlinks/plugins/ocarina/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_keyboard_visibility:
+    :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   ocarina:
     :path: ".symlinks/plugins/ocarina/ios"
   path_provider:
@@ -20,6 +25,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   ocarina: 632a3387b2cf3f130af7ce53a6014e3bf0c145d2
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
 

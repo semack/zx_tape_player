@@ -4,23 +4,17 @@ import 'package:splashscreen/splashscreen.dart';
 
 import 'home.dart';
 
-void main(){
-  runApp(new MaterialApp(
-    home: new MyApp(),
-  ));
-}
-
-class MyApp extends StatefulWidget {
+class Splash extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _SplashState createState() => new _SplashState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return new SplashScreen(
-        seconds: 3,
-        navigateAfterSeconds: new MyHomePage(title: 'Flutter Demo Home Page'),
+        seconds: 0,
+        navigateAfterSeconds: new MyHomePage(),
         //new AfterSplash(),
         title: new Text('Welcome In SplashScreen',
           style: new TextStyle(
