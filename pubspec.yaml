@@ -1,5 +1,5 @@
 name: zx_tape_player
-description: A new Flutter project.
+description: ZX Tape Player makes able uploading of TAP/TZX files to ZX Spectrum compatible computers.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  zx_tape_to_wav: ^0.1.0
+  zx_tape_to_wav: ^1.0.8
   path_provider: ^1.6.27
   ocarina: ^0.0.5
   splashscreen: ^1.3.5
@@ -44,9 +44,9 @@ flutter_launcher_name:
 
 # Run command to update icons: flutter pub pub run flutter_launcher_icons:main
 flutter_icons:
-  android: true
+  image_path: "assets/launcher_icon/icon-ios.png"
+  android: false
   ios: true
-  image_path: "assets/launcher_icon/icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
