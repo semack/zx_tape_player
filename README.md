@@ -1,6 +1,6 @@
 # zx_tape_player
 
-A new Flutter project.
+Another ZX Tape Player.
 
 ## Getting Started
 

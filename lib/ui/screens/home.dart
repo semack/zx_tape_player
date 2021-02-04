@@ -4,7 +4,7 @@ import 'package:zx_tape_player/ui/widgets/navigation.dart';
 import 'package:zx_tape_player/ui/widgets/scroll.dart';
 import 'package:zx_tape_player/ui/widgets/search.dart';
 
-class MyHomePage extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
