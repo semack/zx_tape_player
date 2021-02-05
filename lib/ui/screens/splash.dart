@@ -26,7 +26,10 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(
         Duration(seconds: 3),
             () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen())));
+            builder: (BuildContext context)  {
+              _rotationController.stop();
+              return HomeScreen();
+            })));
   }
 
   @override
@@ -57,7 +60,6 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       shape: BoxShape.rectangle),
                   child: Row(
-                    mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
