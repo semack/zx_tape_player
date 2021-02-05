@@ -1,20 +1,38 @@
 
+import 'dart:async';
+
 import 'package:colour/colour.dart';
 import 'package:flutter/material.dart';
+
+import 'home.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _rotationController;
+
   @override
   void initState() {
+    _rotationController = AnimationController(
+      duration: const Duration(milliseconds: 5000),
+      vsync: this,
+    );
     super.initState();
-    // Timer(
-    //     Duration(seconds: 3),
-    //         () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //         builder: (BuildContext context) => HomeScreen())));
+    _rotationController.forward();
+    Timer(
+        Duration(seconds: 3),
+            () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => HomeScreen())));
+  }
+
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -29,7 +47,51 @@ class _SplashScreenState extends State<SplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Image.asset('assets/images/splash/logo.png', width: 260),
+                Container(
+                  //color: Colors.red,
+                  width: 260,
+                  height: 189,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/splash/logo.png'),
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.rectangle),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 55, left: 60),
+                          child: RotationTransition(
+                            turns: Tween(begin: 1.0, end: 0.0)
+                                .animate(_rotationController),
+                            child:
+                                Image.asset('assets/images/splash/spool.png'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 55, left: 30),
+                          child: RotationTransition(
+                            turns: Tween(begin: 1.0, end: 0.0)
+                                .animate(_rotationController),
+                            child:
+                            Image.asset('assets/images/splash/spool.png'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]),
+                ),
                 Container(
                     padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: Text("ZX TAPE PLAYER",

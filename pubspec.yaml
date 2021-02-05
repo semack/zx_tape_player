@@ -68,6 +68,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/splash/logo.png
+    - assets/images/splash/spool.png
     - assets/test.tap
 
   fonts:
