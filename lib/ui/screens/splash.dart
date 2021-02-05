@@ -1,9 +1,6 @@
-import 'dart:async';
 
 import 'package:colour/colour.dart';
 import 'package:flutter/material.dart';
-
-import 'home.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -32,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Image.asset('assets/splash-logo.png', width: 260),
+                Image.asset('assets/images/splash/logo.png', width: 260),
                 Container(
                     padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: Text("ZX TAPE PLAYER",
@@ -45,36 +42,17 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           )),
           Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 35),
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
               child: Column(children: <Widget>[
                 Text(
                     "© 2021 Andriy S'omak\r\nAll rights reserved\r\nVersion 1.0",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'ZxSpectrum',
-                        fontSize: 9,
+                        fontSize: 12,
+                        height: 1.8,
                         color: Colour('#AFB6BB'))),
               ]))
         ]));
   }
 }
-
-// class AfterSplash extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Scaffold(
-//       appBar: new AppBar(
-//           title: new Text("Welcome In SplashScreen Package"),
-//           automaticallyImplyLeading: false
-//       ),
-//       body: new Center(
-//         child: new Text("Done!",
-//           style: new TextStyle(
-//               fontWeight: FontWeight.bold,
-//               fontSize: 30.0
-//           ),),
-//
-//       ),
-//     );
-//   }
-// }
