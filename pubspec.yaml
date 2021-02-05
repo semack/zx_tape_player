@@ -44,9 +44,13 @@ flutter_launcher_name:
 
 # Run command to update icons: flutter pub pub run flutter_launcher_icons:main
 flutter_icons:
-  image_path: "assets/launcher_icon/icon-ios.png"
-  android: false
+  #image_path: "assets/launcher_icon/icon-android.png"
+  android: true
   ios: true
+  image_path_ios: "assets/launcher_icon/icon-ios.png"
+  image_path_android: "assets/launcher_icon/icon-android.png"
+  adaptive_icon_foreground: "assets/launcher_icon/icon-android-foreground.png"
+  adaptive_icon_background: "assets/launcher_icon/icon-android-background.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -64,7 +68,13 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
+    - assets/splash-logo.png
     - assets/test.tap
+
+  fonts:
+    - family: ZxSpectrum
+      fonts:
+        - asset: assets/fonts/zx-spectrum.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

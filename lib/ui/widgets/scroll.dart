@@ -3,10 +3,9 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ScrollExample extends StatelessWidget {
   final List<String> items = List.generate(5, (index) => "Item $index");
-
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
+    return   ListView(children: [
       Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
