@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 5000),
+      duration: const Duration(milliseconds: 3000),
       vsync: this,
     );
     super.initState();
@@ -48,7 +48,6 @@ class _SplashScreenState extends State<SplashScreen>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  //color: Colors.red,
                   width: 260,
                   height: 189,
                   decoration: BoxDecoration(
@@ -67,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
                         Padding(
                           padding: EdgeInsets.only(top: 55, left: 60),
                           child: RotationTransition(
-                            turns: Tween(begin: 1.0, end: 0.0)
+                            turns: Tween(begin: 1.4, end: 0.0)
                                 .animate(_rotationController),
                             child:
                                 Image.asset('assets/images/splash/spool.png'),
@@ -82,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
                         Padding(
                           padding: EdgeInsets.only(top: 55, left: 30),
                           child: RotationTransition(
-                            turns: Tween(begin: 1.0, end: 0.0)
+                            turns: Tween(begin: 1.4, end: 0.0)
                                 .animate(_rotationController),
                             child:
                             Image.asset('assets/images/splash/spool.png'),
