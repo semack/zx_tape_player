@@ -27,13 +27,13 @@ class _SplashScreenState extends State<SplashScreen>
         Duration(seconds: 3),
             () => Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context)  {
-              _rotationController.stop();
               return HomeScreen();
             })));
   }
 
   @override
   void dispose() {
+    _rotationController.stop();
     _rotationController.dispose();
     super.dispose();
   }
@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen>
                         Padding(
                           padding: EdgeInsets.only(top: 55, left: 60),
                           child: RotationTransition(
-                            turns: Tween(begin: 1.4, end: 0.0)
+                            turns: Tween(begin: 1.9, end: 0.0)
                                 .animate(_rotationController),
                             child:
                                 Image.asset('assets/images/splash/spool.png'),
@@ -83,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen>
                         Padding(
                           padding: EdgeInsets.only(top: 55, left: 30),
                           child: RotationTransition(
-                            turns: Tween(begin: 1.4, end: 0.0)
+                            turns: Tween(begin: 1.9, end: 0.0)
                                 .animate(_rotationController),
                             child:
                             Image.asset('assets/images/splash/spool.png'),
