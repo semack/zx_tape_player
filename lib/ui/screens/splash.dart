@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _rotationController.forward();
     var duration = 3; // sec
-    if (const String.fromEnvironment('DEBUG') == null) duration = 0;
+    if (const String.fromEnvironment('DEBUG') != null) duration = 0;
     Timer(
         Duration(seconds: duration),
         () => Navigator.of(context).pushReplacement(
