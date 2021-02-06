@@ -19,13 +19,15 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 3000),
+      duration: const Duration(seconds: 3),
       vsync: this,
     );
     super.initState();
     _rotationController.forward();
-    var duration = 3; // sec
-    if (const String.fromEnvironment('DEBUG') != null) duration = 0;
+
+    // skip annoying splash for debug mode
+    var duration = 3;
+    if (const String.fromEnvironment('DEBUG') != null) duration = 3;
     Timer(
         Duration(seconds: duration),
         () => Navigator.of(context).pushReplacement(
