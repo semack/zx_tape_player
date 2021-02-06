@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:colour/colour.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 import 'home.dart';
 
@@ -23,10 +24,12 @@ class _SplashScreenState extends State<SplashScreen>
     );
     super.initState();
     _rotationController.forward();
+    var duration = 3; // sec
+    if (const String.fromEnvironment('DEBUG') == null) duration = 0;
     Timer(
-        Duration(seconds: 3),
-            () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context)  {
+        Duration(seconds: duration),
+        () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (BuildContext context) {
               return HomeScreen();
             })));
   }
@@ -41,7 +44,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colour('#546B7F'),
         body: Column(children: <Widget>[
           Expanded(
               child: Container(
@@ -83,39 +85,51 @@ class _SplashScreenState extends State<SplashScreen>
                         Padding(
                           padding: EdgeInsets.only(top: 55, left: 30),
                           child: RotationTransition(
-                            turns: Tween(begin: 1.9, end: 0.0)
-                                .animate(_rotationController),
-                            child:
-                            Image.asset('assets/images/splash/spool.png'),
-                          ),
-                        ),
-                      ],
+                        turns: Tween(begin: 1.9, end: 0.0)
+                            .animate(_rotationController),
+                        child: Image.asset('assets/images/splash/spool.png'),
+                      ),
                     ),
-                  ]),
+                  ],
                 ),
-                Container(
-                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: Text("ZX TAPE PLAYER",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'ZxSpectrum',
-                            fontSize: 18,
-                            color: Colour('##E7ECED')))),
-              ],
+              ]),
             ),
-          )),
-          Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
-              child: Column(children: <Widget>[
-                Text(
-                    "© 2021 Andriy S'omak\r\nAll rights reserved\r\nVersion 1.0",
+            Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: Text("ZX TAPE PLAYER",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'ZxSpectrum',
+                        fontSize: 18,
+                        color: Colour('##E7ECED')))),
+          ],
+        ),
+      )),
+      Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
+          child: Column(children: <Widget>[
+            FutureBuilder<PackageInfo>(
+              builder:
+                  (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+                var copyrightText =
+                    "© 2021 Andriy S'omak\r\nAll rights reserved\r\n";
+                if (snapshot.hasData) {
+                  var version = snapshot.data.version;
+                  copyrightText += "Version $version";
+                }
+                return Text(copyrightText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'ZxSpectrum',
                         fontSize: 12,
                         height: 1.8,
-                        color: Colour('#AFB6BB'))),
-              ]))
-        ]));
+                        color: Colour('#AFB6BB')));
+              },
+              future: PackageInfo.fromPlatform(),
+            ),
+          ]))
+    ]));
   }
 }

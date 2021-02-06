@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PlayerScreen extends StatelessWidget {
-  static const routeName = '/player';
+class SearchScreen extends StatelessWidget {
+  static const routeName = '/search';
 
   @override
   Widget build(BuildContext context) {
-    String fileName = ModalRoute.of(context).settings.arguments;
+    String searchText = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(fileName),
+        title: Text(searchText),
       ),
       body: Center(
-        child: Text(fileName),
+        child: Text(searchText),
       ),
     );
   }
