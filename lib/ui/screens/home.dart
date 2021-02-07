@@ -22,7 +22,6 @@ class HomeScreen extends StatelessWidget {
           child: Text('Find the desired tape',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontFamily: 'ZxSpectrum',
                   fontSize: 12.0,
                   color: Theme.of(context).primaryColor))),
       Padding(
@@ -51,7 +50,7 @@ class HomeScreen extends StatelessWidget {
             prefixIcon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: Image.asset('assets/images/home/search-icon.png')),
-            hintStyle: TextStyle(fontSize: 16.0, color: Colour('546B7F')),
+            hintStyle: TextStyle(fontSize: 12.0, color: Colour('546B7F')),
             contentPadding: EdgeInsets.symmetric(vertical: 16.0),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent, width: 0.0),
@@ -108,7 +107,7 @@ class HomeScreen extends StatelessWidget {
           },
                   child: Text(
                     "SELECT FROM FILES",
-                    style: TextStyle(fontFamily: 'ZxSpectrum', fontSize: 10.0),
+                    style: TextStyle(fontSize: 10.0),
                   ),
                 ),
               )

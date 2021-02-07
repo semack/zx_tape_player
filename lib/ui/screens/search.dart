@@ -35,7 +35,7 @@ class SearchScreen extends StatelessWidget {
                 filled: true,
                 fillColor: Colour('#28384C'),
                 prefixIcon: Image.asset('assets/images/home/search-icon.png'),
-                hintStyle: TextStyle(fontSize: 16.0, color: Colour('546B7F')),
+                hintStyle: TextStyle(fontSize: 12.0, color: Colour('546B7F')),
                 contentPadding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.transparent, width: 0.0),
@@ -54,8 +54,10 @@ class SearchScreen extends StatelessWidget {
               return ListTile(
                 // key: Key(item.entryId),
                 trailing: Icon(Icons.chevron_right),
-                title: Text(suggestion.text),
-              );
+                title: Text(suggestion.text, style: TextStyle(fontSize: 10.0,
+              height: 1.8,
+              letterSpacing:0.4,
+              )));
             },
             onSuggestionSelected: (suggestion) => Navigator.pushNamed(
                 context, PlayerScreen.routeName,
