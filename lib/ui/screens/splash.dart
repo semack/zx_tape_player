@@ -2,8 +2,10 @@
 import 'dart:async';
 
 import 'package:colour/colour.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
 
 import 'home.dart';
 
@@ -25,9 +27,8 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _rotationController.forward();
     var duration = 3;
-
     // skip annoying splash for debug mode
-    if (const String.fromEnvironment('DEBUG') != null) duration = 0;
+    // if (const String.fromEnvironment('DEBUG') != null) duration = 0;
     Timer(
         Duration(seconds: duration),
         () => Navigator.of(context).pushReplacement(
@@ -99,12 +100,13 @@ class _SplashScreenState extends State<SplashScreen>
             Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: Text("ZX TAPE PLAYER",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'ZxSpectrum',
-                        fontSize: 18.5,
-                        color: Colour('##E7ECED')))),
+                child: Text('zx_tape_player',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'ZxSpectrum',
+                            fontSize: 18.5,
+                            color: Colour('##E7ECED')))
+                    .tr()),
           ],
         ),
       )),
@@ -115,11 +117,9 @@ class _SplashScreenState extends State<SplashScreen>
             FutureBuilder<PackageInfo>(
               builder:
                   (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-                var copyrightText =
-                    "© 2021 Andriy S'omak\r\nAll rights reserved\r\n";
+                    var copyrightText = tr('copy_right');
                 if (snapshot.hasData) {
-                  var version = snapshot.data.version;
-                  copyrightText += "version $version";
+                  copyrightText += tr('version').format([snapshot.data.version]);
                 }
                 return Text(copyrightText,
                     textAlign: TextAlign.center,

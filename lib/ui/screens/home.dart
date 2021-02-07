@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:colour/colour.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:zx_tape_player/ui/screens/player.dart';
 import 'package:zx_tape_player/ui/screens/search.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';
@@ -75,15 +79,33 @@ class HomeScreen extends StatelessWidget {
           textColor: Theme.of(context).primaryColor,
           padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
           onPressed: () async {
-            FilePickerResult result = await FilePicker.platform.pickFiles(
-                allowMultiple: false,
-                        type: FileType.custom,
-                        allowedExtensions: ['tap', 'tzx']
-                    );
-                    if (result != null && result.files.isNotEmpty)
-                      Navigator.pushNamed(context, PlayerScreen.routeName,
-                          arguments: result.files[0]);
-                  },
+            var rootPath = await getTemporaryDirectory();
+
+            var filePath = await FilesystemPicker.open(
+              rootDirectory: rootPath,
+              title: 'Open file',
+              context: context,
+              fsType: FilesystemType.folder,
+              allowedExtensions: ['tap', 'tzx'],
+              folderIconColor: Colors.teal,
+              requestPermission: () async =>
+              await Permission.storage.request().isGranted,
+            );
+            
+            // var filePath = await FilesystemPicker.open(
+            //   title: 'Open file',
+            //   context: context,
+            //   rootDirectory: Directory(dir),
+            //   fsType: FilesystemType.file,
+            //   folderIconColor: Colors.teal,
+            //     allowedExtensions: ['tap', 'tzx'],
+            //   fileTileSelectMode: FileTileSelectMode.wholeTile,
+            // );
+
+            if (filePath.isNotEmpty)
+              Navigator.pushNamed(context, PlayerScreen.routeName,
+                  arguments: filePath);
+          },
                   child: Text(
                     "SELECT FROM FILES",
                     style: TextStyle(fontFamily: 'ZxSpectrum', fontSize: 10.0),

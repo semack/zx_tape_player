@@ -17,7 +17,7 @@ void main() async {
         supportedLocales: [Locale('en', 'US')],
         path: 'assets/translations', // <-- change patch to your
         fallbackLocale: Locale('en', 'US'),
-        child: MaterialApp(home: new ZxTapePlayer())),
+        child: new ZxTapePlayer()),
   );
 }
 
@@ -26,12 +26,16 @@ class ZxTapePlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
         title: 'Zx Tape Player',
         theme: ThemeData(
           primaryColor: Colors.white,
           scaffoldBackgroundColor: Colour('#546B7F'),
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          fontFamily: 'Roboto',
+          //fontFamily: 'Roboto',
+          fontFamily: 'ZxSpectrum',
         ),
         home: SplashScreen(),
         routes: {

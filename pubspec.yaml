@@ -28,11 +28,12 @@ dependencies:
   flutter_typeahead: ^2.0.0
   zx_tape_to_wav: ^1.0.8
   ocarina: ^0.0.5
-  file_picker: ^2.1.6
+  filesystem_picker: ^1.0.4
   package_info: ^0.4.0+16
   sprintf: ^5.0.0
   http: ^0.12.2
   easy_localization: ^2.3.3
+  permission_handler: ^5.1.0+2
 
 
   # The following adds the Cupertino Icons font to your application.
