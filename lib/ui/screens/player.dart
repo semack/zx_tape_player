@@ -6,14 +6,14 @@ class PlayerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String fileName = ModalRoute.of(context).settings.arguments;
+    String suggestion = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(fileName),
+        title: Text(suggestion),
       ),
       body: Center(
-        child: Text(fileName),
+        child: Text(suggestion),
       ),
     );
   }
