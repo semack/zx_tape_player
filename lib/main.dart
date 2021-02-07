@@ -1,8 +1,10 @@
 import 'package:colour/colour.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zx_tape_player/ui/screens/home.dart';
 import 'package:zx_tape_player/ui/screens/player.dart';
+
 import 'ui/screens/search.dart';
 import 'ui/screens/splash.dart';
 
@@ -10,7 +12,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(MaterialApp(home: new ZxTapePlayer()));
+  runApp(
+    EasyLocalization(
+        supportedLocales: [Locale('en', 'US')],
+        path: 'assets/translations', // <-- change patch to your
+        fallbackLocale: Locale('en', 'US'),
+        child: MaterialApp(home: new ZxTapePlayer())),
+  );
 }
 
 class ZxTapePlayer extends StatelessWidget {

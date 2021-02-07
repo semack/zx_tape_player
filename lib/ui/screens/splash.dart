@@ -24,9 +24,9 @@ class _SplashScreenState extends State<SplashScreen>
     );
     super.initState();
     _rotationController.forward();
+    var duration = 3;
 
     // skip annoying splash for debug mode
-    var duration = 3;
     if (const String.fromEnvironment('DEBUG') != null) duration = 0;
     Timer(
         Duration(seconds: duration),
@@ -103,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'ZxSpectrum',
-                        fontSize: 18,
+                        fontSize: 18.5,
                         color: Colour('##E7ECED')))),
           ],
         ),
@@ -119,13 +119,13 @@ class _SplashScreenState extends State<SplashScreen>
                     "© 2021 Andriy S'omak\r\nAll rights reserved\r\n";
                 if (snapshot.hasData) {
                   var version = snapshot.data.version;
-                  copyrightText += "Version $version";
+                  copyrightText += "version $version";
                 }
                 return Text(copyrightText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'ZxSpectrum',
-                        fontSize: 12,
+                        fontSize: 10,
                         height: 1.8,
                         color: Colour('#AFB6BB')));
               },

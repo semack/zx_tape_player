@@ -1,40 +1,32 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:zx_tape_player/models/term_dto.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
 
 class BackendService {
-  static Future<List> getSuggestions(String query) async {
-    await Future.delayed(Duration(seconds: 1));
+  static const _baseUrl = 'https://api.zxinfo.dk/v3';
+  static const _termsUrl = '/suggest/%s';
+  static const _itemsUrl = '/search?query=%s%20runner&mode=compact' +
+      '&sort=rel_desc&contenttype=SOFTWARE&size=1&offset=0';
+  static const _itemUrl = '/games/%s?mode=compact';
 
-    return List.generate(3, (index) {
-      return {'name': query + index.toString(), 'price': Random().nextInt(100)};
-    });
-  }
-}
+  static const _contentType = 'SOFTWARE';
 
-class CitiesService {
-  static final List<String> cities = [
-    'Beirut',
-    'Damascus',
-    'San Fransisco',
-    'Rome',
-    'Los Angeles',
-    'Madrid',
-    'Bali',
-    'Barcelona',
-    'Paris',
-    'Bucharest',
-    'New York City',
-    'Philadelphia',
-    'Sydney',
-    'Lode Runner'
-  ];
+  static Future<List<TermDto>> getSuggestions(String query) async {
+    var result = new List<TermDto>();
 
-  static List<String> getSuggestions(String query) {
-    List<String> matches = <String>[];
-    if (query.length > 2)
-       matches.addAll(cities);
+    if (query.isEmpty) return result;
 
-    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
-    return matches;
+    var url = (_baseUrl + _termsUrl).format([query]);
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      result = (json.decode(response.body) as List)
+          .map((e) => TermDto.fromMap(e))
+          .where((element) => element.type == _contentType)
+          .toList();
+    }
+    return result;
   }
 }
