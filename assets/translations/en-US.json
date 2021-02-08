@@ -1,5 +1,11 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "copy_right" : "© 2021 Andriy S'omak\r\nAll rights reserved\r\n",
-  "version": "version %s"
+  "version": "version %s",
+  "find_tape": "Find the desired tape",
+  "search_hint": "Type a search text here",
+  "select_file": "or select from file",
+  "select_from_files": "SELECT FROM FILES",
+  "loading": "Loading...",
+  "no_items_found": "No items found :("
 }

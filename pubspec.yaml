@@ -28,12 +28,11 @@ dependencies:
   flutter_typeahead: ^2.0.0
   zx_tape_to_wav: ^1.0.8
   ocarina: ^0.0.5
-  filesystem_picker: ^1.0.4
   package_info: ^0.4.0+16
   sprintf: ^5.0.0
   http: ^0.12.2
   easy_localization: ^2.3.3
-  permission_handler: ^5.1.0+2
+  file_picker: ^2.1.6
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -82,7 +81,7 @@ flutter:
   fonts:
     - family: ZxSpectrum
       fonts:
-        - asset: assets/fonts/zx-spectrum.ttf
+        - asset: assets/fonts/zx_spectrum-7.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

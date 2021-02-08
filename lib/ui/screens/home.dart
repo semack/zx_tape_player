@@ -1,12 +1,10 @@
-import 'dart:io';
 
 import 'package:colour/colour.dart';
-import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:zx_tape_player/ui/screens/player.dart';
 import 'package:zx_tape_player/ui/screens/search.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';
@@ -19,16 +17,16 @@ class HomeScreen extends StatelessWidget {
             child: Column(children: <Widget>[
       Padding(
           padding: EdgeInsets.fromLTRB(0, 100.0, 0, 0),
-          child: Text('Find the desired tape',
+          child: Text(tr('find_tape'),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 12.0,
+                  fontSize: 16.0,
                   color: Theme.of(context).primaryColor))),
       Padding(
         padding: EdgeInsets.fromLTRB(16, 24.0, 16, 0),
         child: TextField(
           controller: _controller,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: -0.5,),
           autofocus: true,
           onChanged: (text) {
             if (text.isNotEmpty) {
@@ -40,17 +38,20 @@ class HomeScreen extends StatelessWidget {
           cursorColor: Colors.white,
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Type a search text here',
+
+            hintText: tr('search_hint'),
             filled: true,
             fillColor: Colour('#28384C'),
             isDense: true,
-            prefixIconConstraints: BoxConstraints(
-              minWidth: 24,
-              minHeight: 24),
+            prefixIconConstraints: BoxConstraints(minWidth: 24, minHeight: 24),
             prefixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Image.asset('assets/images/home/search-icon.png')),
-            hintStyle: TextStyle(fontSize: 12.0, color: Colour('546B7F')),
+            hintStyle: TextStyle(
+              fontSize: 16.0,
+              color: Colour('546B7F'),
+              letterSpacing: -0.5,
+            ),
             contentPadding: EdgeInsets.symmetric(vertical: 16.0),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent, width: 0.0),
@@ -65,11 +66,10 @@ class HomeScreen extends StatelessWidget {
       ),
       Padding(
           padding: EdgeInsets.fromLTRB(0, 65.0, 0, 0),
-          child: Text('or select from file',
+          child: Text(tr('select_file'),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontFamily: 'ZxSpectrum',
-                  fontSize: 12.0,
+                  fontSize: 16.0,
                   color: Theme.of(context).primaryColor))),
       Padding(
         padding: EdgeInsets.fromLTRB(0, 24.0, 0, 0),
@@ -78,36 +78,21 @@ class HomeScreen extends StatelessWidget {
           textColor: Theme.of(context).primaryColor,
           padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
           onPressed: () async {
-            var rootPath = await getTemporaryDirectory();
-
-            var filePath = await FilesystemPicker.open(
-              rootDirectory: rootPath,
-              title: 'Open file',
-              context: context,
-              fsType: FilesystemType.folder,
-              allowedExtensions: ['tap', 'tzx'],
-              folderIconColor: Colors.teal,
-              requestPermission: () async =>
-              await Permission.storage.request().isGranted,
+            FilePickerResult result = await FilePicker.platform.pickFiles(
+              allowMultiple: false,
+              type: FileType.custom,
+              allowedExtensions: [
+                'tap',
+                'tzx',
+              ],
             );
-            
-            // var filePath = await FilesystemPicker.open(
-            //   title: 'Open file',
-            //   context: context,
-            //   rootDirectory: Directory(dir),
-            //   fsType: FilesystemType.file,
-            //   folderIconColor: Colors.teal,
-            //     allowedExtensions: ['tap', 'tzx'],
-            //   fileTileSelectMode: FileTileSelectMode.wholeTile,
-            // );
 
-            if (filePath.isNotEmpty)
+            if (result.files != null && result.files.length > 0)
               Navigator.pushNamed(context, PlayerScreen.routeName,
-                  arguments: filePath);
+                  arguments: result.files.first);
           },
-                  child: Text(
-                    "SELECT FROM FILES",
-                    style: TextStyle(fontSize: 10.0),
+                  child: Text(tr('select_from_files'),
+                    style: TextStyle(fontSize: 14.0),
                   ),
                 ),
               )
