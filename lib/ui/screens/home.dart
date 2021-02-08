@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
             filled: true,
             fillColor: Colour('#28384C'),
             isDense: true,
-            prefixIconConstraints: BoxConstraints(minWidth: 24, minHeight: 24),
+            prefixIconConstraints: BoxConstraints(minWidth: 16, minHeight: 16),
             prefixIcon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Image.asset('assets/images/home/search-icon.png')),

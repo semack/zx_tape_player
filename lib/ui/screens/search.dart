@@ -32,21 +32,17 @@ class SearchScreen extends StatelessWidget {
               },
               decoration: InputDecoration(
                 border: InputBorder.none,
-                // suffix: Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   mainAxisSize: MainAxisSize.min,
-                //   children: [
-                //     Icon(Icons.keyboard_arrow_right),
-                //     SizedBox(width: 8),
-                //     Icon(Icons.keyboard_arrow_right),
-                //   ],
-                // ),
+                suffixIcon: IconButton(
+                    icon: Icon(Icons.close, color: Colour("#546B7F")),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
                 hintText: tr('search_hint'),
                 filled: true,
                 fillColor: Colour('#28384C'),
                 isDense: true,
                 prefixIconConstraints:
-                    BoxConstraints(minWidth: 24, minHeight: 24),
+                    BoxConstraints(minWidth: 16, minHeight: 16),
                 prefixIcon: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Image.asset('assets/images/home/search-icon.png')),
@@ -104,7 +100,7 @@ class SearchScreen extends StatelessWidget {
               return ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 0.00),
                   // key: Key(item.entryId),
-                  trailing: Text('>', style: TextStyle(color: Colors.white)),
+                  trailing: Text('>', style: TextStyle(color: Colour('#AFB6BB'))),
                   title: Text(suggestion.text,
                       style: TextStyle(
                         color: Colors.white,
@@ -121,6 +117,7 @@ class SearchScreen extends StatelessWidget {
         Expanded(
             child: Container(
           width: MediaQuery.of(context).size.width,
+
         ))
       ],
     ));
