@@ -103,8 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Text('zx_tape_player',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 18.5,
-                            color: Colour('##E7ECED')))
+                            fontSize: 22, color: Colour('##E7ECED')))
                     .tr()),
           ],
         ),
@@ -123,9 +122,7 @@ class _SplashScreenState extends State<SplashScreen>
                 return Text(copyrightText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 10,
-                        height: 1.8,
-                        color: Colour('#AFB6BB')));
+                        fontSize: 12, height: 1.8, color: Colour('#AFB6BB')));
               },
               future: PackageInfo.fromPlatform(),
             ),
