@@ -7,6 +7,6 @@
   "select_file": "or select from file",
   "select_from_files": "SELECT FROM FILES",
   "loading": "Loading...",
-  "no_items_found": "No tapes found :(",
+  "no_items_found": "No suggestions found :(",
   "all_tapes_by_letter": "All tapes by letter \"%s\""
 }

@@ -33,6 +33,7 @@ dependencies:
   http: ^0.12.2
   easy_localization: ^2.3.3
   file_picker: ^2.1.6
+  json_annotation: ^3.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -44,6 +45,8 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.8.0
   flutter_launcher_name: ^0.0.1
+  build_runner: ^1.0.0
+  json_serializable: ^3.2.0
 
 flutter_launcher_name:
     name: "ZX Tape Player"

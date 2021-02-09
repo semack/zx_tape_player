@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:zx_tape_player/services/backend.dart';
+import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/screens/player.dart';
 import 'package:zx_tape_player/ui/widgets/search_field.dart';
 

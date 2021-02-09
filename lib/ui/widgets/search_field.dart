@@ -2,25 +2,46 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:zx_tape_player/services/backend.dart';
-import 'package:zx_tape_player/ui/screens/player.dart';
+import 'package:zx_tape_player/definitions/definitions.dart';
+import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
 
-class SearchField extends StatelessWidget {
+class SearchField extends StatefulWidget {
   SearchField({Key key}) : super(key: key);
-  final TextEditingController _textController = TextEditingController();
+
+  @override
+  _SearchFieldState createState() {
+    return _SearchFieldState();
+  }
+}
+
+class _SearchFieldState extends State<SearchField> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _textController.text = ModalRoute.of(context).settings.arguments;
+    _textController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _textController.text.length));
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    _textController.text = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
-    _textController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _textController.text.length));
-    return
-      Padding(
-        padding: EdgeInsets.fromLTRB(16.0, 36.0, 16.0, 4.0),
-        child: TypeAheadField(
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.0, 36.0, 16.0, 4.0),
+      child: TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(
             controller: _textController,
             style: TextStyle(
@@ -35,6 +56,9 @@ class SearchField extends StatelessWidget {
               suffixIcon: IconButton(
                   icon: Icon(Icons.close, color: Colour("#546B7F")),
                   onPressed: () {
+                    setState(() {
+                      _textController.clear();
+                    });
                     Navigator.pop(context);
                   }),
               hintText: tr('search_hint'),
@@ -42,12 +66,12 @@ class SearchField extends StatelessWidget {
               fillColor: Colour('#28384C'),
               isDense: true,
               prefixIconConstraints:
-              BoxConstraints(minWidth: 16, minHeight: 16),
+                  BoxConstraints(minWidth: 16, minHeight: 16),
               prefixIcon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Image.asset('assets/images/home/search-icon.png')),
               hintStyle: TextStyle(
-                fontSize: 16.0,
+                fontSize: 14.0,
                 color: Colour('546B7F'),
                 letterSpacing: -0.5,
               ),
@@ -68,7 +92,8 @@ class SearchField extends StatelessWidget {
           suggestionsBoxDecoration: SuggestionsBoxDecoration(
             hasScrollbar: false,
             elevation: 0,
-            constraints: BoxConstraints(minWidth: 0, minHeight: 0),
+            //constraints: BoxConstraints(minWidth: 0, minHeight: 0),
+            constraints: BoxConstraints(minWidth: 200, minHeight: 0),
             shadowColor: Colors.transparent,
             color: Colour('#546B7F'),
           ),
@@ -97,11 +122,14 @@ class SearchField extends StatelessWidget {
             );
           },
           itemBuilder: (context, suggestion) {
+            var text = suggestion.text;
+            if (suggestion.type == Definitions.letterType)
+              text = tr('all_tapes_by_letter').format([text]);
             return ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 0.00),
                 // key: Key(item.entryId),
                 trailing: Text('>', style: TextStyle(color: Colour('#AFB6BB'))),
-                title: Text(suggestion.text,
+                title: Text(text,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14.0,
@@ -109,11 +137,14 @@ class SearchField extends StatelessWidget {
                       letterSpacing: -0.5,
                     )));
           },
-          onSuggestionSelected: (suggestion) =>
-              Navigator.pushNamed(
-                  context, PlayerScreen.routeName,
-                  arguments: suggestion.entryId),
-        ),
-      );
+          onSuggestionSelected: (suggestion) async {
+            var items = await BackendService.getItems(
+                suggestion.text, Definitions.pageSize);
+            var a = items.hits;
+            // Navigator.pushNamed(
+            //     context, PlayerScreen.routeName,
+            //     arguments: suggestion.entryId);
+          }),
+    );
   }
 }
