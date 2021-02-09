@@ -117,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen>
                   (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
                     var copyrightText = tr('copyright');
                 if (snapshot.hasData) {
-                  copyrightText += tr('version').format([snapshot.data.version]);
+                  copyrightText += tr('version').format([snapshot.data.version, snapshot.data.buildNumber]);
                 }
                 return Text(copyrightText,
                     textAlign: TextAlign.center,

@@ -1,7 +1,7 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "copyright" : "© 2021 Andriy S'omak & ZXINFO.DK\r\nAll rights reserved\r\n",
-  "version": "version %s",
+  "version": "version %s.%s",
   "find_tape": "Find the desired tape",
   "search_hint": "Type a search text here",
   "select_file": "or select from file",
