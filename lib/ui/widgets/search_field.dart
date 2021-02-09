@@ -36,40 +36,46 @@ class _SearchFieldState extends State<SearchField> {
   }
 
   TextEditingController _textController = TextEditingController();
+  SuggestionsBoxController _suggestionsBoxController =
+      SuggestionsBoxController();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.0, 36.0, 16.0, 4.0),
       child: TypeAheadField(
+          suggestionsBoxController: _suggestionsBoxController,
           textFieldConfiguration: TextFieldConfiguration(
             controller: _textController,
             style: TextStyle(
                 color: Colors.white, fontSize: 18.0, letterSpacing: -0.5),
             autofocus: true,
             cursorColor: Colors.white,
-            onChanged: (text) {
+            onChanged: (text) async {
               if (text.isEmpty) Navigator.pop(context);
             },
             decoration: InputDecoration(
               border: InputBorder.none,
+              prefixIcon: _textController.text.isEmpty
+                  ? null
+                  : IconButton(
+                      icon: Icon(Icons.close, color: Colour("#546B7F")),
+                      onPressed: () {
+                        setState(() {
+                          _textController.clear();
+                        });
+                        Navigator.pop(context);
+                      }),
               suffixIcon: IconButton(
-                  icon: Icon(Icons.close, color: Colour("#546B7F")),
-                  onPressed: () {
-                    setState(() {
-                      _textController.clear();
-                    });
-                    Navigator.pop(context);
+                  icon: Icon(Icons.search, color: Colour("#68AD56")),
+                  onPressed: () async {
+                    _suggestionsBoxController.close();
+                    await doSearch(_textController.text);
                   }),
               hintText: tr('search_hint'),
               filled: true,
               fillColor: Colour('#28384C'),
               isDense: true,
-              prefixIconConstraints:
-                  BoxConstraints(minWidth: 16, minHeight: 16),
-              prefixIcon: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Image.asset('assets/images/home/search-icon.png')),
               hintStyle: TextStyle(
                 fontSize: 14.0,
                 color: Colour('546B7F'),
@@ -92,8 +98,7 @@ class _SearchFieldState extends State<SearchField> {
           suggestionsBoxDecoration: SuggestionsBoxDecoration(
             hasScrollbar: false,
             elevation: 0,
-            //constraints: BoxConstraints(minWidth: 0, minHeight: 0),
-            constraints: BoxConstraints(minWidth: 200, minHeight: 0),
+            constraints: BoxConstraints(minWidth: 0, minHeight: 0),
             shadowColor: Colors.transparent,
             color: Colour('#546B7F'),
           ),
@@ -137,14 +142,13 @@ class _SearchFieldState extends State<SearchField> {
                       letterSpacing: -0.5,
                     )));
           },
-          onSuggestionSelected: (suggestion) async {
-            var items = await BackendService.getItems(
-                suggestion.text, Definitions.pageSize);
-            var a = items.hits;
-            // Navigator.pushNamed(
-            //     context, PlayerScreen.routeName,
-            //     arguments: suggestion.entryId);
-          }),
+          onSuggestionSelected: (suggestion) async =>
+              await doSearch(suggestion.text)),
     );
+  }
+
+  Future doSearch(query) async {
+    var items = await BackendService.getItems(query, Definitions.pageSize);
+    var h = items.hits;
   }
 }
