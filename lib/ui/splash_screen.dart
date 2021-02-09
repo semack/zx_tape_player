@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
-import 'home.dart';
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

@@ -81,7 +81,7 @@ class Hits {
     _total = json["total"] != null ? Total.fromJson(json["total"]) : null;
     _source = json["_source"] != null ? Source.fromJson(json["_source"]) : null;
     _maxScore = json["max_score"];
-    _maxScore = json["_id"];
+    _id = json["_id"];
     if (json["hits"] != null) {
       _hits = [];
       json["hits"].forEach((v) {

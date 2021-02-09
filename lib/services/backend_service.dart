@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:zx_tape_player/definitions/definitions.dart';
+import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
 import 'package:zx_tape_player/models/term_dto.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
@@ -10,7 +10,7 @@ import 'package:zx_tape_player/utils/user_agent_client.dart';
 
 class BackendService {
   static const _termsUrl = '/suggest/%s';
-  static const _itemsUrl = '/search?query=%s%20runner&mode=compact' +
+  static const _itemsUrl = '/search?query=%s&mode=compact' +
       '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _letterUrl = '/games/byletter/%s?mode=compact'+
       '&availability=Available&size=%s&offset=%s';

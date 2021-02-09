@@ -2,11 +2,11 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:zx_tape_player/ui/screens/home.dart';
-import 'package:zx_tape_player/ui/screens/player.dart';
+import 'package:zx_tape_player/ui/home_screen.dart';
+import 'package:zx_tape_player/ui/player_screen.dart';
 
-import 'ui/screens/search.dart';
-import 'ui/screens/splash.dart';
+import 'ui/search_screen.dart';
+import 'ui/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

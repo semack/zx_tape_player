@@ -2,8 +2,8 @@
 import 'package:colour/colour.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:zx_tape_player/ui/screens/player.dart';
-import 'package:zx_tape_player/ui/screens/search.dart';
+import 'package:zx_tape_player/ui/player_screen.dart';
+import 'package:zx_tape_player/ui/search_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class HomeScreen extends StatelessWidget {
