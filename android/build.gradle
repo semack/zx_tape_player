@@ -29,3 +29,8 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+lintOptions {
+    disable 'InvalidPackage'
+    checkReleaseBuilds false 
+}
