@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Image.asset('assets/images/home/search-icon.png')),
             hintStyle: TextStyle(
-              fontSize: 16.0,
+              fontSize: 14.0,
               color: Colour('546B7F'),
               letterSpacing: -0.5,
             ),
