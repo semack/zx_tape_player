@@ -1,4 +1,4 @@
-package com.example.zx_tape_player
+package com.tekdeq.zxtapeplayer
 
 import io.flutter.embedding.android.FlutterActivity
 
