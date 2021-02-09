@@ -44,4 +44,5 @@ jobs:
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           command: appcenter distribute stores publish -s Alpha -f build/app/outputs/flutter-apk/app-release.apk -a semack/zxtapeplayer
-          token: ${{AC_ANDROID_TOKEN}}
+          token: ${{secrets.AC_ANDROID_TOKEN}}
+  
