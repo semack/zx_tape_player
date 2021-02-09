@@ -30,7 +30,9 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-lintOptions {
-    disable 'InvalidPackage'
-    checkReleaseBuilds false 
+android {
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
 }
