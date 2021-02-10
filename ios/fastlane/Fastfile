@@ -32,7 +32,7 @@ platform :ios do
       owner_name: "semack-owd8",
       owner_type: "user", # Default is user - set to organization for appcenter organizations
       app_name: "ZxTapePlayer.iOS",
-      file: "../uild/ios/iphoneos/app.ipa,
+      file: "../uild/ios/iphoneos/app.ipa",
       notify_testers: false # Set to false if you don't want to notify testers of your new release (default: `false`)
     )
   end
