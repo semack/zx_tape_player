@@ -21,6 +21,33 @@ jobs:
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.7.2'
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v3 
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1.4.0
+        with:
+          flutter-version: '1.22.6'    
+      - name: Prepare packages
+        run: | 
+          flutter pub get
+          flutter pub run flutter_launcher_icons:main
+      - name: Build iOS app
+        run: | 
+          flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+          cd ../../../
       - name: Fastlane Action
         uses: maierj/fastlane-action@v2.0.1
         with:
