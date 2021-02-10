@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
 import 'package:zx_tape_player/models/term_dto.dart';
+import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_player/utils/user_agent_client.dart';
 
@@ -20,20 +20,21 @@ class BackendService {
     if (query.isEmpty) return result;
     if (query.length == 1) {
       var letter = await _tryGetLetter(query);
-      if (letter.isNotEmpty) {
-        var item =
-        TermDto(text: letter, entryId: letter, type: Definitions.letterType);
+      if (letter != null && letter.isNotEmpty) {
+        var item = TermDto(
+            text: letter, entryId: letter, type: Definitions.letterType);
         result.add(item);
+        return result;
       }
-    } else {
-      var url = (Definitions.baseUrl + _termsUrl).format([query]);
-      var response = await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
-      if (response.statusCode == 200) {
-        result = (json.decode(response.body) as List)
-            .map((e) => TermDto.fromJson(e))
-            .where((element) => element.type == Definitions.contentType)
-            .toList();
-      }
+    }
+    var url = (Definitions.baseUrl + _termsUrl).format([query]);
+    var response =
+        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    if (response.statusCode == 200) {
+      result = (json.decode(response.body) as List)
+          .map((e) => TermDto.fromJson(e))
+          .where((element) => element.type == Definitions.contentType)
+          .toList();
     }
     return result;
   }
@@ -45,7 +46,7 @@ class BackendService {
     var url = Definitions.baseUrl;
     if (query.length == 1) {
       var letter = await _tryGetLetter(query);
-      if (letter.isNotEmpty) url += _letterUrl;
+      if (letter != null && letter.isNotEmpty) url += _letterUrl;
     }
     if (url == Definitions.baseUrl) url += _itemsUrl;
     url = url.format([query, size, offset]);

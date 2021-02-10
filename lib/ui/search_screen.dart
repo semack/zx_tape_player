@@ -24,6 +24,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final _scrollController = ScrollController();
   bool isLoading = false;
   static int page = 0;
+  var _initialized = false;
 
   @override
   void initState() {
@@ -33,9 +34,12 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _textController.text = ModalRoute.of(context).settings.arguments;
-    _textController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _textController.text.length));
+    if (!_initialized) {
+      _textController.text = ModalRoute.of(context).settings.arguments;
+      _textController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _textController.text.length));
+      _initialized = true;
+    }
   }
 
   @override
@@ -157,8 +161,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     letterSpacing: -0.5,
                   )));
         },
-        onSuggestionSelected: (suggestion) async =>
-            await doSearch(suggestion.text));
+        onSuggestionSelected: (suggestion) async {
+          _textController.text = suggestion.text;
+          await doSearch(suggestion.text);
+        });
   }
 
   Widget _buildSearchList(BuildContext context) {
