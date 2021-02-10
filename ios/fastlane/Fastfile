@@ -28,7 +28,7 @@ platform :ios do
 #     )
 
     appcenter_upload(
-      api_token: "34187ea29462e406f39a06dacffffca336a0afb1",
+      api_token: "ca718e714c8901599a658c4d0572ae809c9e97b3",
       owner_name: "semack-owd8",
       owner_type: "user", # Default is user - set to organization for appcenter organizations
       app_name: "ZxTapePlayer.iOS",
