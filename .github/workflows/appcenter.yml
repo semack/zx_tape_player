@@ -2,47 +2,42 @@
 
 name: appcenter.ms
 
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: macos-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - uses: shogo82148/actions-setup-perl@v1
-        with:
-          perl-version: '5.32'
       - name: Flutter action
         uses: subosito/flutter-action@v1.4.0
         with:
           flutter-version: '1.22.6'    
-      - run: flutter pub get && flutter pub run flutter_launcher_icons:main
-      #- run: flutter pub global activate pubspec_version && pubver bump build && 
-      - run: flutter build apk
-      # - run: flutter build ios --release --no-codesign
-      # install appcenter-cli and upload artifacts
-      - uses: actions/setup-node@v2
+      - name: Flutter pub get && run
+        run: | 
+          flutter pub get
+          flutter pub run flutter_launcher_icons:main
+      - name: Build Android .apk
+        run: flutter build apk
+#      - name: Build iOS .ipk
+#        run: flutter build ios --release --no-codesign
+      - name: Install Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - run: npm install -g appcenter-cli && appcenter --token ${{secrets.APPCENTER_TOKEN}}
-      - run: appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
-      # - run: appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app-release.ipk
+      - name: Install appcenter-cli and login to it
+        run: npm install -g appcenter-cli && appcenter login --token ${{secrets.APPCENTER_TOKEN}}
+      - name: Upload artifacts
+        run: appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
+  #     run: appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app-release.ipk
   
