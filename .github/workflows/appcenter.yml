@@ -28,7 +28,7 @@ jobs:
           flutter pub get
           flutter pub run flutter_launcher_icons:main
       - name: Build Android .apk
-        run: flutter build apk
+        run: flutter build apk --release --build-number=$CI_PIPELINE_IID --build-name=1.0
 #      - name: Build iOS .ipk
 #        run: flutter build ios --release --no-codesign
       - name: Install Node.js
