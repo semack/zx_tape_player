@@ -19,20 +19,20 @@ default_platform(:ios)
 platform :ios do
   desc "Building iOS alpha"
   lane :ios_appcenter do
-    appcenter_fetch_devices(
-      api_token: "34187ea29462e406f39a06dacffffca336a0afb1",
-      owner_name: "semack-owd8",
-      app_name: "ZxTapePlayer.iOS",
-      destinations: "Testers", # Default is 'Collaborators', use '*' for all distribution groups
-      devices_file: "devices.txt" # Default. If you customize, the extension must be .txt
-    )
+#     appcenter_fetch_devices(
+#       api_token: "34187ea29462e406f39a06dacffffca336a0afb1",
+#       owner_name: "semack-owd8",
+#       app_name: "ZxTapePlayer.iOS",
+#       destinations: "Testers", # Default is 'Collaborators', use '*' for all distribution groups
+#       devices_file: "devices.txt" # Default. If you customize, the extension must be .txt
+#     )
 
     appcenter_upload(
       api_token: "34187ea29462e406f39a06dacffffca336a0afb1",
       owner_name: "semack-owd8",
       owner_type: "user", # Default is user - set to organization for appcenter organizations
       app_name: "ZxTapePlayer.iOS",
-      file: "../build/ios/iphoneos/Runner.app",
+      file: "../uild/ios/iphoneos/app.ipa,
       notify_testers: false # Set to false if you don't want to notify testers of your new release (default: `false`)
     )
   end
