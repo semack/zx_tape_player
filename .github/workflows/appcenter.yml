@@ -27,10 +27,15 @@ jobs:
         run: | 
           flutter pub get
           flutter pub run flutter_launcher_icons:main
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v3 
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
       - name: Build Android .apk
-        run: flutter build apk --release --build-number=${{ github.run\_id }} --build-name=1.0
+        run: flutter build apk --release --build-number=$BUILD_NUMBER
 #      - name: Build iOS .ipk
-#        run: flutter build ios --release --no-codesign
+#        run: flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
