@@ -1,0 +1,30 @@
+# This is a basic workflow to help you get started with Actions
+
+name: fastline.ios.appcenter
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Fastlane Action
+        uses: maierj/fastlane-action@v2.0.1
+        with:
+        # The lane that should be executed.
+          lane: 'ios'
+          # The relative path from the project root directory to the subdirectory where the fastlane folder is located.
+          subdirectory: 'ios'
+      
+
