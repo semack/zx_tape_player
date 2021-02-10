@@ -25,7 +25,7 @@ jobs:
         uses: maierj/fastlane-action@v2.0.1
         with:
         # The lane that should be executed.
-          lane: 'ios'
+          lane: 'ios_appcenter'
           # The relative path from the project root directory to the subdirectory where the fastlane folder is located.
           subdirectory: 'ios'
       
