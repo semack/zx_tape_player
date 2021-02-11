@@ -57,11 +57,11 @@ jobs:
         run: | 
           flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
           cd build/ios/iphoneos/
-          mkdir Payload
-          cd Payload
+          mkdir payload
+          cd payload
           ln -s ../Runner.app
           cd ..
-          zip -r app-release Payload
+          zip -r app-release payload
           cd ../../../
       - uses: actions/cache@v2
         with:
@@ -80,5 +80,5 @@ jobs:
         run: | 
           appcenter login --token ${{secrets.APPCENTER_TOKEN}}
           appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f build/ios/iphoneos/app-release.ipa
+          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f build/ios/iphoneos/payload/app-release.ipa
   
