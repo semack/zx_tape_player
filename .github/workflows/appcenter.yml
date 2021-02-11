@@ -47,9 +47,16 @@ jobs:
           flutter pub run flutter_launcher_icons:main
       - name: Build Android app
         run: flutter build apk --release --build-number=$BUILD_NUMBER --no-shrink
+      - uses: actions/cache@v2
+        with:
+         path: Pods
+         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+         restore-keys: |
+           ${{ runner.os }}-pods-
       - name: Build iOS app
         run: | 
           flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
+          cd build/ios/iphoneos/
           mkdir Payload
           cd Payload
           ln -s ../Runner.app
