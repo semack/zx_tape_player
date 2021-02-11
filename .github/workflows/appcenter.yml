@@ -15,37 +15,31 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
-      - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v3 
+      - uses: actions/cache@v2
         with:
-          token: ${{secrets.GITHUB_TOKEN}}
+          path: |
+              /Users/runner/hostedtoolcache
+              ~/.npm
+              **/node_modules
+          key: ${{ runner.os }}-hostedtoolcache
       - name: Install Java
         uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - name: Install Flutter
-        uses: subosito/flutter-action@v1.4.0
-        with:
-          flutter-version: '1.22.6'    
-      - name: Prepare packages
-        run: | 
-          flutter pub get
-          flutter pub run flutter_launcher_icons:main
-      - name: Build Android app
-        run: flutter build apk --release --build-number=$BUILD_NUMBER --no-shrink
-      - name: Build iOS app
-        run: flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
-      - name: Install Node.js
+      - name: Install Node.JS
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - name: Install AppCenter CLI
+      - name: Install AppCenter-CLI
         run: |
           npm install -g appcenter-cli 
-      - name: Upload AppCenter artifacts
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1.4.0
+        with:
+          channel: 'stable'   
+      - name: Prepare packages
         run: | 
-          appcenter login --token ${{secrets.APPCENTER_TOKEN}}
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app-release.ipk
+          flutter pub get
+
+          
   
