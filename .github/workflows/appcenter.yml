@@ -40,6 +40,27 @@ jobs:
       - name: Prepare packages
         run: | 
           flutter pub get
-
+          flutter pub run flutter_launcher_icons:main
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v3 
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+      - name: Build Android app
+        run: |
+          echo "test"
+        #  flutter build apk --release --build-number=$BUILD_NUMBER --no-shrink
+      - name: Build iOS app
+        run: | 
+          flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
+          mkdir -p Payload
+          mv ./build/ios/iphoneos/Runner.app Payload
+          zip -r -y app.ipa Payload/Runner.app
+      - name: Upload AppCenter artifacts
+        run: | 
+          appcenter login --token ${{secrets.APPCENTER_TOKEN}}
+          appcenter apps list
+          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app.ipa
+        # appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
           
   
