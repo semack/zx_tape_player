@@ -82,7 +82,7 @@ jobs:
       - name: Upload AppCenter artifacts
         run: | 
           appcenter login --token ${{secrets.APPCENTER_TOKEN}}
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f build/ios/iphoneos/payload/app-release.ipa
+          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f build/ios/iphoneos/app-release.ipa
         # appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
           
   
