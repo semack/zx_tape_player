@@ -80,7 +80,7 @@ jobs:
           appcenter login --token ${{secrets.APPCENTER_TOKEN}}
           pwd
           ls
-        #  appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app.ipa
+          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app.ipa
         # appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
           
   
