@@ -33,7 +33,7 @@ jobs:
         with:
           java-version: '12.x'
       - name: Cache Flutter dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: /opt/hostedtoolcache/flutter
           key: ${{ runner.os }}-flutter
@@ -46,7 +46,9 @@ jobs:
           flutter pub get
           flutter pub run flutter_launcher_icons:main
       - name: Build Android app
-        run: flutter build apk --release --build-number=$BUILD_NUMBER --no-shrink
+        run: |
+          echo "test"
+        #  flutter build apk --release --build-number=$BUILD_NUMBER --no-shrink
       - uses: actions/cache@v2
         with:
          path: Pods
@@ -61,8 +63,9 @@ jobs:
           cd payload
           ln -s ../Runner.app
           cd ..
-          zip -r app-release payload
+          zip -r -v app-release payload
           cd ../../../
+          pwd
       - uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -80,5 +83,5 @@ jobs:
         run: | 
           appcenter login --token ${{secrets.APPCENTER_TOKEN}}
           appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f build/ios/iphoneos/payload/app-release.ipa
+        # appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f build/ios/iphoneos/payload/app-release.ipa
   
