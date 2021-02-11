@@ -60,9 +60,8 @@ jobs:
           flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
           mkdir -p Payload
           mv ./build/ios/iphoneos/Runner.app Payload
-          zip -r -y app-release.zip Payload/Runner.app
-          mv app-release.zip app-release.ipa
-          ls
+          zip -r -y app.zip Payload/Runner.app
+          mv app.zip app.ipa
       - uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -79,7 +78,9 @@ jobs:
       - name: Upload AppCenter artifacts
         run: | 
           appcenter login --token ${{secrets.APPCENTER_TOKEN}}
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f ./app-release.ipa
+          pwd
+          ls
+        #  appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app.ipa
         # appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
           
   
