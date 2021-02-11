@@ -73,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
                         Padding(
                           padding: EdgeInsets.only(top: 55, left: 60),
                           child: RotationTransition(
-                            turns: Tween(begin: 1.9, end: 0.0)
+                            turns: Tween(begin: 0.0, end: 1.9)
                                 .animate(_rotationController),
                             child:
                                 Image.asset('assets/images/splash/spool.png'),
@@ -88,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen>
                         Padding(
                           padding: EdgeInsets.only(top: 55, left: 30),
                           child: RotationTransition(
-                        turns: Tween(begin: 1.9, end: 0.0)
+                        turns: Tween(begin: 0.0, end: 1.9)
                             .animate(_rotationController),
                         child: Image.asset('assets/images/splash/spool.png'),
                       ),

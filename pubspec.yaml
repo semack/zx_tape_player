@@ -33,10 +33,7 @@ dependencies:
   http: ^0.12.2
   easy_localization: ^2.3.3
   file_picker: ^2.1.6
- # json_annotation: ^3.0.0
-  appcenter: ^0.2.1
-  appcenter_analytics: ^0.2.1
-  appcenter_crashes: ^0.2.1
+  flutter_appcenter_bundle: ^3.2.0+2
 
 
   # The following adds the Cupertino Icons font to your application.

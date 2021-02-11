@@ -1,11 +1,13 @@
 PODS:
-  - AppCenter (4.1.0):
-    - AppCenter/Analytics (= 4.1.0)
-    - AppCenter/Crashes (= 4.1.0)
-  - AppCenter/Analytics (4.1.0):
+  - AppCenter (3.2.0):
+    - AppCenter/Analytics (= 3.2.0)
+    - AppCenter/Crashes (= 3.2.0)
+  - AppCenter/Analytics (3.2.0):
     - AppCenter/Core
-  - AppCenter/Core (4.1.0)
-  - AppCenter/Crashes (4.1.0):
+  - AppCenter/Core (3.2.0)
+  - AppCenter/Crashes (3.2.0):
+    - AppCenter/Core
+  - AppCenter/Distribute (3.2.0):
     - AppCenter/Core
   - DKImagePickerController/Core (4.3.2):
     - DKImagePickerController/ImageDataManager
@@ -42,6 +44,10 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
+  - flutter_appcenter_bundle (0.0.1):
+    - AppCenter (~> 3.2.0)
+    - AppCenter/Distribute (~> 3.2.0)
+    - Flutter
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
   - ocarina (0.0.1):
@@ -58,9 +64,9 @@ PODS:
   - SwiftyGif (5.4.0)
 
 DEPENDENCIES:
-  - AppCenter
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - flutter_appcenter_bundle (from `.symlinks/plugins/flutter_appcenter_bundle/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - ocarina (from `.symlinks/plugins/ocarina/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
@@ -80,6 +86,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  flutter_appcenter_bundle:
+    :path: ".symlinks/plugins/flutter_appcenter_bundle/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   ocarina:
@@ -92,11 +100,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
 
 SPEC CHECKSUMS:
-  AppCenter: 8832b158d17e54845c3b88a91076218f0b07174d
+  AppCenter: ca66175050d538b157959382dd43f1ab96cdab84
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_appcenter_bundle: bbf1dd726a7a090027c88201a62b83269a56f075
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   ocarina: 632a3387b2cf3f130af7ce53a6014e3bf0c145d2
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
@@ -105,6 +114,6 @@ SPEC CHECKSUMS:
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   SwiftyGif: 5d4af95df24caf1c570dbbcb32a3b8a0763bc6d7
 
-PODFILE CHECKSUM: 29e904b42dc5ca59a8a07c16da2d5eb389244485
+PODFILE CHECKSUM: 4059fadcead82c5a00038275f05c378d1384131f
 
 COCOAPODS: 1.10.1

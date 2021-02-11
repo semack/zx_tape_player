@@ -1,14 +1,34 @@
 
 import 'package:colour/colour.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:zx_tape_player/utils/app_center_initializer.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key}) : super(key: key);
   static const routeName = '/home';
+
+  @override
+  _HomeScreenState createState() {
+    return _HomeScreenState();
+  }
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +40,16 @@ class HomeScreen extends StatelessWidget {
           child: Text(tr('find_tape'),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 16.0,
-                  color: Theme.of(context).primaryColor))),
+                  fontSize: 16.0, color: Theme.of(context).primaryColor))),
       Padding(
         padding: EdgeInsets.fromLTRB(16, 24.0, 16, 0),
         child: TextField(
           controller: _controller,
-          style: TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: -0.5,),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18.0,
+            letterSpacing: -0.5,
+          ),
           autofocus: true,
           onChanged: (text) {
             if (text.isNotEmpty) {
@@ -38,7 +61,6 @@ class HomeScreen extends StatelessWidget {
           cursorColor: Colors.white,
           decoration: InputDecoration(
             border: InputBorder.none,
-
             hintText: tr('search_hint'),
             filled: true,
             fillColor: Colour('#28384C'),
@@ -69,8 +91,7 @@ class HomeScreen extends StatelessWidget {
           child: Text(tr('select_file'),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 16.0,
-                  color: Theme.of(context).primaryColor))),
+                  fontSize: 16.0, color: Theme.of(context).primaryColor))),
       Padding(
         padding: EdgeInsets.fromLTRB(0, 24.0, 0, 0),
         child: FlatButton(
@@ -91,12 +112,13 @@ class HomeScreen extends StatelessWidget {
               Navigator.pushNamed(context, PlayerScreen.routeName,
                   arguments: result.files.first);
           },
-                  child: Text(tr('select_from_files'),
-                    style: TextStyle(fontSize: 14.0),
-                  ),
-                ),
-              )
-            ])
+          child: Text(
+            tr('select_from_files'),
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+      )
+    ])
         )
     );
   }

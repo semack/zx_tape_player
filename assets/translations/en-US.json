@@ -1,5 +1,6 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
+  "app_title": "ZX Tape Player",
   "copyright" : "© 2021 Andriy S'omak & ZXINFO.DK\r\nAll rights reserved\r\n",
   "version": "version %s.%s",
   "find_tape": "Find the desired tape",
