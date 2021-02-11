@@ -15,13 +15,6 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: |
-              /Users/runner/hostedtoolcache
-              ~/.npm
-              **/node_modules
-          key: ${{ runner.os }}-hostedtoolcache
       - name: Install Java
         uses: actions/setup-java@v1
         with:
@@ -55,12 +48,11 @@ jobs:
           flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
           mkdir -p Payload
           mv ./build/ios/iphoneos/Runner.app Payload
-          zip -r -y app.ipa Payload/Runner.app
+          zip -r -y zxtapeplayer.ipa Payload/Runner.app
       - name: Upload AppCenter artifacts
         run: | 
           appcenter login --token ${{secrets.APPCENTER_TOKEN}}
-          appcenter apps list
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app.ipa
+          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f zxtapeplayer.ipa --debug
         # appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
           
   
