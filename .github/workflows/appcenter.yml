@@ -15,11 +15,6 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
-      - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v3 
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
       - uses: actions/cache@v2
         with:
           path: |
@@ -46,6 +41,11 @@ jobs:
         run: | 
           flutter pub get
           flutter pub run flutter_launcher_icons:main
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v3 
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
       - name: Build Android app
         run: |
           echo "test"
