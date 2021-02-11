@@ -59,11 +59,11 @@ jobs:
         run: | 
           flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
           cd build/ios/iphoneos/
-          mkdir payload
-          cd payload
+          mkdir Payload
+          cd Payload
           ln -s ../Runner.app
           cd ..
-          zip -r -v app-release payload
+          zip -r app-release.ipa Payload
           cd ../../../
           pwd
       - uses: actions/cache@v2
