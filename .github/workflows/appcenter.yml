@@ -62,6 +62,7 @@ jobs:
           mv ./build/ios/iphoneos/Runner.app Payload
           zip -r -y app-release.zip Payload/Runner.app
           mv app-release.zip app-release.ipa
+          ls
       - uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -78,7 +79,7 @@ jobs:
       - name: Upload AppCenter artifacts
         run: | 
           appcenter login --token ${{secrets.APPCENTER_TOKEN}}
-          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f app-release.ipa
+          appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.iOS -f ./app-release.ipa
         # appcenter distribute release -g Testers  -a semack-owd8/ZxTapePlayer.Android -f build/app/outputs/flutter-apk/app-release.apk
           
   
