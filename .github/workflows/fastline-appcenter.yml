@@ -62,7 +62,7 @@ jobs:
           APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
           APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
           APPCENTER_IOS_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
-          APP_STORE_CONNECT_API_KEY: '${{ secrets.APP_STORE_CONNECT_API_KEY }}'
+          APP_STORE_CONNECT_API_KEY_VALUE: '${{ secrets.APP_STORE_CONNECT_API_KEY_VALUE }}'
       
       - name: Publish Android
         uses: maierj/fastlane-action@v2.0.1
