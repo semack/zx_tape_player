@@ -11,6 +11,8 @@ APPCENTER_IOS_APP_NAME = ENV["APPCENTER_IOS_APP_NAME"]
 DEVELOPER_PORTAL_TEAM_ID = ENV["DEVELOPER_PORTAL_TEAM_ID"]
 APP_STORE_CONNECT_API_KEY = ENV["APP_STORE_CONNECT_API_KEY"]
 
+# Source article
+# https://joshuamdeguzman.com/continuous-delivery-for-flutter-using-fastlane-and-github-actions-pt-3-ios/
 
 def delete_temp_keychain(name)
   delete_keychain(
@@ -70,20 +72,10 @@ platform :ios do
       owner_name: "#{APPCENTER_USER_NAME}",
       owner_type: "user", # Default is user - set to organization for appcenter organizations
       app_name: "#{APPCENTER_IOS_APP_NAME}",
-      destinations: "Testers"
+      destinations: "Testers",
       file: "./Runner.ipa",
       notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
     )
-
-#     pilot(
-#       apple_id: "#{DEVELOPER_APP_ID}",
-#       app_identifier: "#{DEVELOPER_APP_IDENTIFIER}",
-#       skip_waiting_for_build_processing: true,
-#       skip_submission: true,
-#       distribute_external: false,
-#       notify_external_testers: false,
-#       ipa: "./Runner.ipa"
-#     )
 
     delete_temp_keychain(keychain_name)
   end

@@ -8,7 +8,7 @@ platform :android do
       owner_name: "#{APPCENTER_USER_NAME}",
       owner_type: "user", # Default is user - set to organization for appcenter organizations
       app_name: "#{APPCENTER_ANDROID_APP_NAME}",
-      destinations: "Testers"
+      destinations: "Testers",
       file: "../build/app/outputs/flutter-apk/app-release.apk",
       notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
     )
