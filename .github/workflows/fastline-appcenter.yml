@@ -59,11 +59,18 @@ jobs:
           PROVISIONING_PROFILE_SPECIFIER: '${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}'
           TEMP_KEYCHAIN_PASSWORD: '${{ secrets.TEMP_KEYCHAIN_PASSWORD }}'
           TEMP_KEYCHAIN_USER: '${{ secrets.TEMP_KEYCHAIN_USER }}'
-        
+          APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
+          APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
+          APPCENTER_IOS_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
+
      # - name: Publish Android
      #   uses: maierj/fastlane-action@v2.0.1
      #   with:
      #     lane: 'beta'
      #     subdirectory: 'android'
-     #     bundle-install-path: 'vendor/bundle'    
+     #     bundle-install-path: 'vendor/bundle'  
+     #   env:
+     #    APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
+     #    APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
+     #    APPCENTER_ANDROID_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'  
 
