@@ -6,7 +6,7 @@ PROVISIONING_PROFILE_SPECIFIER = ENV["PROVISIONING_PROFILE_SPECIFIER"]
 TEMP_KEYCHAIN_USER = ENV["TEMP_KEYCHAIN_USER"]
 TEMP_KEYCHAIN_PASSWORD = ENV["TEMP_KEYCHAIN_PASSWORD"]
 APPCENTER_TOKEN = ENV["APPCENTER_TOKEN"]
-APPCENTER_USER_NAME = ENV("APPCENTER_USER_NAME")
+APPCENTER_USER_NAME = ENV["APPCENTER_USER_NAME"]
 APPCENTER_IOS_APP_NAME = ENV["APPCENTER_IOS_APP_NAME"]
 
 
@@ -36,7 +36,7 @@ platform :ios do
     keychain_password = TEMP_KEYCHAIN_PASSWORD
     ensure_temp_keychain(keychain_name, keychain_password)
 
-    register_devices(devices_file: "./fastlane/devices.txt")
+    register_devices(devices_file: "./devices.txt")
 
     match(
       type: "adhoc",
