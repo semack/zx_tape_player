@@ -54,7 +54,6 @@ jobs:
           DEVELOPER_PORTAL_TEAM_ID: '${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}'
           FASTLANE_APPLE_ID: '${{ secrets.FASTLANE_APPLE_ID }}'
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: '${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}'
-          FASTLANE_PASSWORD: '${{ secrets.FASTLANE_PASSWORD }}'
           MATCH_PASSWORD: '${{ secrets.MATCH_PASSWORD }}'
           GIT_AUTHORIZATION: '${{ secrets.GIT_AUTHORIZATION }}'
           PROVISIONING_PROFILE_SPECIFIER: '${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}'
@@ -63,7 +62,8 @@ jobs:
           APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
           APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
           APPCENTER_IOS_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
-
+          APP_STORE_CONNECT_API_KEY: '${{ secrets.APP_STORE_CONNECT_API_KEY }}'
+      
      # - name: Publish Android
      #   uses: maierj/fastlane-action@v2.0.1
      #   with:
