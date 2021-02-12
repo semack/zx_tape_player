@@ -37,11 +37,9 @@ platform :ios do
     keychain_password = TEMP_KEYCHAIN_PASSWORD
     ensure_temp_keychain(keychain_name, keychain_password)
 
-#     register_devices(
-#       devices_file: "./devices.txt",
-#       username: "#{DEVELOPER_APP_ID}",
-#       team_id: "#{DEVELOPER_PORTAL_TEAM_ID}"
-#     )
+     register_devices(
+       devices_file: "./devices.txt",
+     )
 
     match(
       type: "adhoc",
