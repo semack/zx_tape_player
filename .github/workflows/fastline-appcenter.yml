@@ -38,7 +38,7 @@ jobs:
           flutter pub get
           flutter pub run flutter_launcher_icons:main
       - name: Build iOS
-        run: build ios --release --no-codesign --build-number=$BUILD_NUMBER
+        run: flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
      # - name: Build Android
      #   run: flutter build apk --release --build-number=$BUILD_NUMBER --no-shrink
       - name: Publish iOS
