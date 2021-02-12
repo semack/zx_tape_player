@@ -73,5 +73,5 @@ jobs:
         env:
           APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
           APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
-          APPCENTER_ANDROID_APP_NAME: '${{ APPCENTER_ANDROID_APP_NAME }}'  
+          APPCENTER_ANDROID_APP_NAME: '${{ secrets.APPCENTER_ANDROID_APP_NAME }}'  
 
