@@ -9,6 +9,7 @@ APPCENTER_TOKEN = ENV["APPCENTER_TOKEN"]
 APPCENTER_USER_NAME = ENV["APPCENTER_USER_NAME"]
 APPCENTER_IOS_APP_NAME = ENV["APPCENTER_IOS_APP_NAME"]
 DEVELOPER_PORTAL_TEAM_ID = ENV["DEVELOPER_PORTAL_TEAM_ID"]
+APP_STORE_CONNECT_API_KEY = ENV["APP_STORE_CONNECT_API_KEY"]
 
 
 def delete_temp_keychain(name)
@@ -38,6 +39,7 @@ platform :ios do
     ensure_temp_keychain(keychain_name, keychain_password)
 
      register_devices(
+       api_key: "#{APP_STORE_CONNECT_API_KEY}"
        devices_file: "./devices.txt",
      )
 
@@ -68,6 +70,7 @@ platform :ios do
       owner_name: "#{APPCENTER_USER_NAME}",
       owner_type: "user", # Default is user - set to organization for appcenter organizations
       app_name: "#{APPCENTER_IOS_APP_NAME}",
+      destinations: "Testers"
       file: "./Runner.ipa",
       notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
     )
