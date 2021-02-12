@@ -39,8 +39,8 @@ platform :ios do
     ensure_temp_keychain(keychain_name, keychain_password)
 
      register_devices(
-       api_key: "#{APP_STORE_CONNECT_API_KEY}"
-       devices_file: "./devices.txt",
+       api_key: "#{APP_STORE_CONNECT_API_KEY}",
+       devices_file: "./devices.txt"
      )
 
     match(
