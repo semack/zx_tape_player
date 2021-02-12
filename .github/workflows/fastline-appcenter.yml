@@ -4,9 +4,9 @@ name: fastline-appcenter
 
 on:
   push:
-    branches: [ master ]
+    branches: [ beta ]
   pull_request:
-    branches: [ master ]
+    branches: [ beta ]
 
   workflow_dispatch:
 
