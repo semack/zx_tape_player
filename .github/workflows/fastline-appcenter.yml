@@ -39,8 +39,8 @@ jobs:
           flutter pub run flutter_launcher_icons:main
       - name: Build iOS
         run: flutter build ios --release --no-pub --no-codesign --build-number=$BUILD_NUMBER
-     # - name: Build Android
-     #   run: flutter build apk --release --no-pub --build-number=$BUILD_NUMBER --no-shrink
+      - name: Build Android
+        run: flutter build apk --release --no-pub --build-number=$BUILD_NUMBER --no-shrink
       - name: Publish iOS
         uses: maierj/fastlane-action@v2.0.1
         with:
@@ -64,14 +64,14 @@ jobs:
           APPCENTER_IOS_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
           APP_STORE_CONNECT_API_KEY: '${{ secrets.APP_STORE_CONNECT_API_KEY }}'
       
-     # - name: Publish Android
-     #   uses: maierj/fastlane-action@v2.0.1
-     #   with:
-     #     lane: 'beta'
-     #     subdirectory: 'android'
-     #     bundle-install-path: 'vendor/bundle'  
-     #   env:
-     #    APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
-     #    APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
-     #    APPCENTER_ANDROID_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'  
+      - name: Publish Android
+        uses: maierj/fastlane-action@v2.0.1
+        with:
+          lane: 'beta'
+          subdirectory: 'android'
+          bundle-install-path: 'vendor/bundle'  
+        env:
+          APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
+          APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
+          APPCENTER_ANDROID_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'  
 
