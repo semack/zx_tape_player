@@ -1,20 +1,12 @@
 default_platform(:android)
 
-APPCENTER_TOKEN = ENV["APPCENTER_TOKEN"]
-APPCENTER_USER_NAME = ENV["APPCENTER_USER_NAME"]
-APPCENTER_ANDROID_APP_NAME = ENV["APPCENTER_ANDROID_APP_NAME"]
 
 platform :android do
   desc "Submit a new Android Beta Build to AppCenter"
   lane :beta do
     appcenter_upload(
-      api_token: "#{APPCENTER_TOKEN}",
-      owner_name: "#{APPCENTER_USER_NAME}",
-      owner_type: "user", # Default is user - set to organization for appcenter organizations
-      app_name: "#{APPCENTER_ANDROID_APP_NAME}",
-      destinations: "Testers",
       file: "../build/app/outputs/flutter-apk/app-release.apk",
-      notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+      notify_testers: true
     )
   end
 end

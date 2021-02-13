@@ -54,7 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
         body: Column(
           children: <Widget>[
             Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 36.0, 16.0, 4.0),
+                padding: EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 4.0),
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
@@ -71,6 +71,9 @@ class _SearchScreenState extends State<SearchScreen> {
         suggestionsBoxController: _suggestionsBoxController,
         textFieldConfiguration: TextFieldConfiguration(
           controller: _textController,
+          onSubmitted: (text) async {
+            await doSearch(text);
+          },
           style: TextStyle(
               color: Colors.white, fontSize: 18.0, letterSpacing: -0.5),
           autofocus: true,
