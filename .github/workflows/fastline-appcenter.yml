@@ -55,14 +55,18 @@ jobs:
           FASTLANE_APPLE_ID: '${{ secrets.FASTLANE_APPLE_ID }}'
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: '${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}'
           MATCH_PASSWORD: '${{ secrets.MATCH_PASSWORD }}'
-          GIT_AUTHORIZATION: '${{ secrets.GIT_AUTHORIZATION }}'
-          PROVISIONING_PROFILE_SPECIFIER: '${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}'
-          TEMP_KEYCHAIN_PASSWORD: '${{ secrets.TEMP_KEYCHAIN_PASSWORD }}'
-          TEMP_KEYCHAIN_USER: '${{ secrets.TEMP_KEYCHAIN_USER }}'
-          APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
-          APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
-          APPCENTER_IOS_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
-          APP_STORE_CONNECT_API_KEY_VALUE: '${{ secrets.APP_STORE_CONNECT_API_KEY_VALUE }}'
+          MATCH_GIT_BASIC_AUTHORIZATION: '${{ secrets.MATCH_GIT_BASIC_AUTHORIZATIO }}'
+          MATCH_KEYCHAIN_NAME: '${{ secrets.MATCH_KEYCHAIN_NAME }}'
+          MATCH_KEYCHAIN_PASSWORD: '${{ secrets.MATCH_KEYCHAIN_PASSWORD }}'
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: '${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}'
+          APP_STORE_CONNECT_API_KEY_KEY: '${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}'
+          APP_STORE_CONNECT_API_KEY_KEY_ID: '${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}'
+          APPCENTER_API_TOKEN: '${{ secrets.APPCENTER_API_TOKEN }}' 
+          APPCENTER_OWNER_NAME: '${{ secrets.APPCENTER_OWNER_NAME }}'
+          APPCENTER_OWNER_TYPE: '${{ secrets.APPCENTER_OWNER_TYPE }}'
+          APPCENTER_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
+          APPCENTER_DISTRIBUTE_DESTINATIONS: '${{ secrets.APPCENTER_DISTRIBUTE_DESTINATIONS }}'
+          
       
       - name: Publish Android
         uses: maierj/fastlane-action@v2.0.1
@@ -71,7 +75,8 @@ jobs:
           subdirectory: 'android'
           bundle-install-path: 'vendor/bundle'  
         env:
-          APPCENTER_TOKEN: '${{ secrets.APPCENTER_TOKEN }}' 
-          APPCENTER_USER_NAME: '${{ secrets.APPCENTER_USER_NAME }}'
-          APPCENTER_ANDROID_APP_NAME: '${{ secrets.APPCENTER_ANDROID_APP_NAME }}'  
-
+          APPCENTER_API_TOKEN: '${{ secrets.APPCENTER_API_TOKEN }}' 
+          APPCENTER_OWNER_NAME: '${{ secrets.APPCENTER_OWNER_NAME }}'
+          APPCENTER_OWNER_TYPE: '${{ secrets.APPCENTER_OWNER_TYPE }}'
+          APPCENTER_APP_NAME: '${{ secrets.APPCENTER_ANDROID_APP_NAME }}'
+          APPCENTER_DISTRIBUTE_DESTINATIONS: '${{ secrets.APPCENTER_DISTRIBUTE_DESTINATIONS }}' 
