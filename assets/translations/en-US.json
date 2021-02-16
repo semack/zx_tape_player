@@ -9,5 +9,10 @@
   "select_from_files": "SELECT FROM FILES",
   "loading": "Loading...",
   "no_items_found": "No suggestions found :(",
-  "all_tapes_by_letter": "All tapes by letter \"%s\""
+  "all_tapes_by_letter": "All tapes by letter \"%s\"",
+  "pull_up_to_load": "Pull up to load",
+  "load_failed_retry": "Load failed, tap to retry...",
+  "release_load_more": "Please release to load more",
+  "no_more_data": "No more data available"
+
 }

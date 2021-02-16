@@ -2,9 +2,9 @@ import 'package:avatar_abc/AbcAvatar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
@@ -24,8 +24,8 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _textController = TextEditingController();
   SuggestionsBoxController _suggestionsBoxController =
       SuggestionsBoxController();
-  final _scrollController = ScrollController();
-  bool _isLoading = false;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   static int _page = 0;
   var _initialized = false;
   List<Hits> _hits = [];
@@ -33,12 +33,6 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        await _getData(_textController.text, page: _page, adding: true);
-      }
-    });
   }
 
   @override
@@ -54,7 +48,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _refreshController.dispose();
     _textController.dispose();
     super.dispose();
   }
@@ -182,114 +176,133 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildSearchList(BuildContext context) {
-    return ListView.builder(
-      itemCount: _hits.length + 1, // Add one more item for progress indicator
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      itemBuilder: (BuildContext context, int index) {
-        if (index == _hits.length) {
-          return _buildProgressIndicator();
-        } else {
-          var item = _hits[index];
-          var url = item.source.screens.length > 0
-              ? Definitions.contentBaseUrl + item.source.screens[0].url
-              : '';
-          var textAvatar = AbcAvatar(
-            item.source.title,
-            isRectangle: true,
-            // circleConfiguration: CircleConfiguration(radius: 50),
-            rectangeConfiguration: RectangeConfiguration(
-                borderRadius: 4,
-                blurRadius: 0,
-                shadowColor: Colors.transparent),
-            titleConfiguration:
-                TitleConfiguration(fontWeight: FontWeight.bold, size: 30),
-          );
-          return Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: Colour('#3B4E63'),
-                      borderRadius: new BorderRadius.only(
-                          topLeft: const Radius.circular(4.0),
-                          topRight: const Radius.circular(4.0))),
-                  child: ListTile(
-                    leading: new Container(
-                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                        width: 70.0,
-                        height: 70.0,
-                        child: CachedNetworkImage(
-                            useOldImageOnUrlChange: true,
-                            imageUrl: url,
-                            placeholder: (context, url) => textAvatar,
-                            errorWidget: (context, url, error) {
-                              return textAvatar;
-                            })),
-                    title: Text(
-                      item.source.title,
-                      style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 0.3,
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      maxLines: 1,
-                    ),
-                    subtitle: Text(
-                      item.source.genre,
-                      style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 0.3,
-                          fontSize: 10.0),
-                    ),
-                  )));
-        }
-      },
-      controller: _scrollController,
-    );
-  }
+    return SmartRefresher(
+        enablePullDown: false,
+        enablePullUp: true,
+        controller: _refreshController,
+        onLoading: () async =>
+            await _getData(_textController.text, page: _page, adding: true),
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus mode) {
+            var hint = '';
+            switch (mode) {
+              case LoadStatus.idle:
+                hint = tr('pull_up_to_load');
+                break;
+              case LoadStatus.loading:
+                hint = tr('loading');
+                break;
+              case LoadStatus.failed:
+                hint = tr('load_failed_retry');
+                break;
+              case LoadStatus.canLoading:
+                hint = tr('release_load_more');
+                break;
+              case LoadStatus.noMore:
+                hint = tr('no_more_data');
+                break;
+            }
 
-  Widget _buildProgressIndicator() {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Center(
-        child: Opacity(
-            opacity: _isLoading ? 1.0 : 00,
-            child: new DotsIndicator(
-              dotsCount: 3,
-              position: 0,
-              decorator: DotsDecorator(
-                color: Colour('#546B7F'), // Inactive color
-                activeColor: Colour('#D8DCE0'),
-              ),
-            )),
-      ),
-    );
+            return Container(
+              height: 55.0,
+              child: Center(
+                  child: Text(hint,
+                      style: TextStyle(fontSize: 11, color: Colour('#B1B8C1')))),
+            );
+          },
+        ),
+        child: ListView.builder(
+            itemExtent: 102.0,
+            //padding: EdgeInsets.symmetric(vertical: 8.0),
+            itemBuilder: (BuildContext context, int index) {
+              if (index >= _hits.length) return null;
+              var item = _hits[index];
+              var url = item.source.screens.length > 0
+                  ? Definitions.contentBaseUrl + item.source.screens[0].url
+                  : '';
+              var textAvatar = AbcAvatar(
+                item.source.title,
+                isRectangle: true,
+                // circleConfiguration: CircleConfiguration(radius: 50),
+                rectangeConfiguration: RectangeConfiguration(
+                    borderRadius: 4,
+                    blurRadius: 0,
+                    shadowColor: Colors.transparent),
+                titleConfiguration:
+                    TitleConfiguration(fontWeight: FontWeight.bold, size: 30),
+              );
+              return Padding(
+                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Colour('#3B4E63'),
+                          borderRadius: new BorderRadius.only(
+                              topLeft: const Radius.circular(4.0),
+                              topRight: const Radius.circular(4.0))),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                        leading: new Container(
+                            //height: double.infinity,
+                            //padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                            width: 70.0,
+                            height: 70.0,
+                            padding: EdgeInsets.zero,
+                            child: CachedNetworkImage(
+                                imageRenderMethodForWeb:
+                                    ImageRenderMethodForWeb.HttpGet,
+                                useOldImageOnUrlChange: true,
+                                imageUrl: url,
+                                imageBuilder: (context, provider) => Container(
+                                  padding: EdgeInsets.zero,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: provider,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                placeholder: (context, url) => textAvatar,
+                                errorWidget: (context, url, error) {
+                                  return textAvatar;
+                                })),
+                        title: Text(
+                          item.source.title,
+                          style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 0.3,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          maxLines: 1,
+                        ),
+                        subtitle: Text(
+                          item.source.originalYearOfRelease.toString() +' * '+ item.source.genreType,
+                          style: TextStyle(
+                              color: Colour('#B1B8C1'),
+                              letterSpacing: 0.3,
+                              fontSize: 10.0),
+                        ),
+                      )));
+            }));
   }
 
   Future _getData(String query, {int page = 0, bool adding = false}) async {
-    if (!_isLoading) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (!adding) _hits.clear();
 
-      if (!adding) _hits.clear();
+    var items = await BackendService.getItems(query, Definitions.pageSize,
+        offset: page * Definitions.pageSize);
 
-      var items = await BackendService.getItems(query, Definitions.pageSize,
-          offset: page * Definitions.pageSize);
-
+    if (items.hits.hits.length > 0) {
       _hits.addAll(items.hits.hits.where((element) =>
           element.source != null &&
           element.source.title != null &&
           element.source.title.isNotEmpty));
-
-      if (_isLoading) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      setState(() {});
+      _refreshController.loadComplete();
+    } else {
+      setState(() {});
+      _refreshController.loadNoData();
     }
   }
 }
-
-

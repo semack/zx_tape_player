@@ -36,7 +36,7 @@ dependencies:
   flutter_appcenter_bundle: ^3.2.0+2
   avatar_abc: ^1.0.4
   cached_network_image: ^2.5.0
-  flutter_colored_progress_indicators: ^1.2.0
+  pull_to_refresh: 1.6.3
 
 
   # The following adds the Cupertino Icons font to your application.
