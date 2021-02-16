@@ -3,7 +3,7 @@ class Definitions
   Definitions._();
   static const letterType = 'LETTER';
   static const contentType = 'SOFTWARE';
-  static const pageSize = 30;
+  static const pageSize = 10;
   static const baseUrl = 'https://api.zxinfo.dk/v3';
   static const contentBaseUrl = 'https://spectrumcomputing.co.uk';
   static const userAgent = 'ZX Tape Player/1.0';

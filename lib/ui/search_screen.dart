@@ -77,7 +77,7 @@ class _SearchScreenState extends State<SearchScreen> {
         textFieldConfiguration: TextFieldConfiguration(
           controller: _textController,
           onSubmitted: (text) async {
-            await _getData(text);
+            await _onLoading();
           },
           style: TextStyle(
               color: Colors.white, fontSize: 18.0, letterSpacing: -0.5),
@@ -102,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 icon: Icon(Icons.search, color: Colour("#68AD56")),
                 onPressed: () async {
                   _suggestionsBoxController.close();
-                  await _getData(_textController.text);
+                  await _onLoading();
                 }),
             hintText: tr('search_hint'),
             filled: true,
@@ -171,7 +171,7 @@ class _SearchScreenState extends State<SearchScreen> {
         },
         onSuggestionSelected: (suggestion) async {
           _textController.text = suggestion.text;
-          await _getData(suggestion.text);
+          await _onLoading();
         });
   }
 
@@ -180,8 +180,7 @@ class _SearchScreenState extends State<SearchScreen> {
         enablePullDown: false,
         enablePullUp: true,
         controller: _refreshController,
-        onLoading: () async =>
-            await _getData(_textController.text, page: _page, adding: true),
+        onLoading: () async =>  _onLoading(adding: true),
         footer: CustomFooter(
           builder: (BuildContext context, LoadStatus mode) {
             var hint = '';
@@ -342,17 +341,17 @@ class _SearchScreenState extends State<SearchScreen> {
     var items = await BackendService.getItems(query, Definitions.pageSize,
         offset: page * Definitions.pageSize);
 
-    if (items.hits.hits.length > 0) {
-      _hits.addAll(items.hits.hits.where((element) =>
-          element.source != null &&
-          element.source.title != null &&
-          element.source.title.isNotEmpty));
-      _refreshController.loadComplete();
-    } else {
-      _refreshController.loadNoData();
-    }
+    _hits.addAll(items.hits.hits.where((element) =>
+    element.source != null &&
+        element.source.title != null &&
+        element.source.title.isNotEmpty));
+  }
+
+  Future _onLoading({bool adding = false}) async {
+    await _getData(_textController.text, page: _page, adding: adding);
+    _refreshController.loadComplete();
     setState(() {
-      _page = page;
+      _page++;
     });
   }
 }
