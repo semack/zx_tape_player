@@ -81,6 +81,8 @@ flutter:
     - assets/images/splash/spool.png
     - assets/images/home/search-icon.png
     - assets/translations/
+    - assets/images/search/like.png
+    - assets/images/search/star.png
 
   fonts:
     - family: ZxSpectrum

@@ -207,84 +207,133 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 55.0,
               child: Center(
                   child: Text(hint,
-                      style: TextStyle(fontSize: 11, color: Colour('#B1B8C1')))),
+                      style:
+                          TextStyle(fontSize: 11, color: Colour('#B1B8C1')))),
             );
           },
         ),
         child: ListView.builder(
-            itemExtent: 102.0,
+            // itemExtent: 102.0,
             //padding: EdgeInsets.symmetric(vertical: 8.0),
             itemBuilder: (BuildContext context, int index) {
-              if (index >= _hits.length) return null;
-              var item = _hits[index];
-              var url = item.source.screens.length > 0
-                  ? Definitions.contentBaseUrl + item.source.screens[0].url
-                  : '';
-              var textAvatar = AbcAvatar(
-                item.source.title,
-                isRectangle: true,
-                // circleConfiguration: CircleConfiguration(radius: 50),
-                rectangeConfiguration: RectangeConfiguration(
-                    borderRadius: 4,
-                    blurRadius: 0,
-                    shadowColor: Colors.transparent),
-                titleConfiguration:
-                    TitleConfiguration(fontWeight: FontWeight.bold, size: 30),
-              );
-              return Padding(
-                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
-                  child: Container(
-                      decoration: BoxDecoration(
-                          color: Colour('#3B4E63'),
-                          borderRadius: new BorderRadius.only(
-                              topLeft: const Radius.circular(4.0),
-                              topRight: const Radius.circular(4.0))),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                        leading: new Container(
-                            //height: double.infinity,
-                            //padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                            width: 70.0,
-                            height: 70.0,
-                            padding: EdgeInsets.zero,
-                            child: CachedNetworkImage(
-                                imageRenderMethodForWeb:
-                                    ImageRenderMethodForWeb.HttpGet,
-                                useOldImageOnUrlChange: true,
-                                imageUrl: url,
-                                imageBuilder: (context, provider) => Container(
-                                  padding: EdgeInsets.zero,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: provider,
-                                          fit: BoxFit.fill,
-                                        ),
+          if (index >= _hits.length) return null;
+          var item = _hits[index];
+          var url = item.source.screens.length > 0
+              ? Definitions.contentBaseUrl + item.source.screens[0].url
+              : '';
+          var textAvatar = AbcAvatar(
+            item.source.title,
+            isRectangle: true,
+            // circleConfiguration: CircleConfiguration(radius: 50),
+            rectangeConfiguration: RectangeConfiguration(
+                borderRadius: 4,
+                blurRadius: 0,
+                shadowColor: Colors.transparent),
+            titleConfiguration:
+                TitleConfiguration(fontWeight: FontWeight.bold, size: 30),
+          );
+          return Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colour('#3B4E63'),
+                      borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                  child: ListTile(
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+                      leading: new Container(
+                          width: 60.0,
+                          height: 75.0,
+                          padding: EdgeInsets.zero,
+                          child: CachedNetworkImage(
+                              imageRenderMethodForWeb:
+                                  ImageRenderMethodForWeb.HttpGet,
+                              useOldImageOnUrlChange: true,
+                              imageUrl: url,
+                              imageBuilder: (context, provider) => Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(4.0)),
+                                      image: DecorationImage(
+                                        image: provider,
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
-                                placeholder: (context, url) => textAvatar,
-                                errorWidget: (context, url, error) {
-                                  return textAvatar;
-                                })),
-                        title: Text(
-                          item.source.title,
-                          style: TextStyle(
-                              color: Colors.white,
-                              letterSpacing: 0.3,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          maxLines: 1,
+                                  ),
+                              placeholder: (context, url) => textAvatar,
+                              errorWidget: (context, url, error) {
+                                return textAvatar;
+                              })),
+                      title: Text(
+                        item.source.title,
+                        style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 0.3,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        maxLines: 1,
+                      ),
+                      isThreeLine: true,
+                      subtitle: Column(children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              item.source.originalYearOfRelease != null
+                                  ? item.source.originalYearOfRelease
+                                          .toString() +
+                                      ' • '
+                                  : '',
+                              style: TextStyle(
+                                  color: Colour('#B1B8C1'),
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                              maxLines: 1,
+                            ),
+                            Text(
+                              item.source.genreType,
+                              style: TextStyle(
+                                  color: Colour('#B1B8C1'),
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                            ),
+                          ],
                         ),
-                        subtitle: Text(
-                          item.source.originalYearOfRelease.toString() +' * '+ item.source.genreType,
-                          style: TextStyle(
-                              color: Colour('#B1B8C1'),
-                              letterSpacing: 0.3,
-                              fontSize: 10.0),
-                        ),
-                      )));
-            }));
+                        SizedBox(height: 5.0),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/search/like.png'),
+                            SizedBox(width: 5),
+                            Text(
+                              item.source.score.votes != null
+                                  ? item.source.score.votes.toString()
+                                  : tr('na'),
+                              style: TextStyle(
+                                  color: Colour('#B1B8C1'),
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                            ),
+                            SizedBox(width: 20),
+                            Image.asset('assets/images/search/star.png'),
+                            SizedBox(width: 5),
+                            Text(
+                              item.source.score.score != null
+                                  ? item.source.score.score.toString()
+                                  : tr('na'),
+                              style: TextStyle(
+                                  color: Colour('#B1B8C1'),
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                            ),
+                          ],
+                        )
+                      ]))));
+        }));
   }
 
   Future _getData(String query, {int page = 0, bool adding = false}) async {
@@ -298,11 +347,12 @@ class _SearchScreenState extends State<SearchScreen> {
           element.source != null &&
           element.source.title != null &&
           element.source.title.isNotEmpty));
-      setState(() {});
       _refreshController.loadComplete();
     } else {
-      setState(() {});
       _refreshController.loadNoData();
     }
+    setState(() {
+      _page = page;
+    });
   }
 }

@@ -13,6 +13,6 @@
   "pull_up_to_load": "Pull up to load",
   "load_failed_retry": "Load failed, tap to retry...",
   "release_load_more": "Please release to load more",
-  "no_more_data": "No more data available"
-
+  "no_more_data": "No more data available",
+  "na": "-"
 }
