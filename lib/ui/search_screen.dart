@@ -295,7 +295,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               maxLines: 1,
                             ),
                             Text(
-                              item.source.genreType,
+                              item.source.genreType != null ? item.source.genreType : '',
                               style: TextStyle(
                                   color: Colour('#B1B8C1'),
                                   letterSpacing: 0.3,
@@ -322,7 +322,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             Image.asset('assets/images/search/star.png'),
                             SizedBox(width: 5),
                             Text(
-                              item.source.score.score != null
+                              item.source.score.score != null && item.source.score.score > 0
                                   ? item.source.score.score.toString()
                                   : tr('na'),
                               style: TextStyle(

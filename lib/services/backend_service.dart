@@ -13,7 +13,7 @@ class BackendService {
   static const _itemsUrl = '/search?query=%s&mode=compact' +
       '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _letterUrl = '/games/byletter/%s?mode=compact'+
-      '&availability=Available&size=%s&offset=%s';
+      '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
 
   static Future<List<TermDto>> getSuggestions(String query) async {
     var result = new List<TermDto>();
