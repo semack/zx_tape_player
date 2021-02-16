@@ -77,6 +77,7 @@ class _SearchScreenState extends State<SearchScreen> {
         textFieldConfiguration: TextFieldConfiguration(
           controller: _textController,
           onSubmitted: (text) async {
+            _textController.text = text;
             await _onLoading();
           },
           style: TextStyle(
@@ -334,24 +335,33 @@ class _SearchScreenState extends State<SearchScreen> {
                       ]))));
         }));
   }
-
-  Future _getData(String query, {int page = 0, bool adding = false}) async {
-    if (!adding) _hits.clear();
-
-    var items = await BackendService.getItems(query, Definitions.pageSize,
-        offset: page * Definitions.pageSize);
-
-    _hits.addAll(items.hits.hits.where((element) =>
-    element.source != null &&
-        element.source.title != null &&
-        element.source.title.isNotEmpty));
-  }
-
+  
   Future _onLoading({bool adding = false}) async {
-    await _getData(_textController.text, page: _page, adding: adding);
-    _refreshController.loadComplete();
+    var increment = 0;
+    if (!adding) {
+      _hits.clear();
+      _page = 0;
+    }
+    try {
+      var items = await BackendService.getItems(
+          _textController.text, Definitions.pageSize,
+          offset: _page * Definitions.pageSize);
+
+      _hits.addAll(items.hits.hits.where((element) =>
+          element.source != null &&
+          element.source.title != null &&
+          element.source.title.isNotEmpty));
+
+      if (items.hits.hits.length == Definitions.pageSize) {
+        increment = 1;
+        _refreshController.loadComplete();
+      } else
+        _refreshController.loadNoData();
+    } catch (e) {
+      _refreshController.loadFailed();
+    }
     setState(() {
-      _page++;
+      _page = _page + increment;
     });
   }
 }
