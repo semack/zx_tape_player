@@ -15,14 +15,17 @@ void main() async {
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(EasyLocalization(
-      supportedLocales: [Locale('en', 'US')],
-      path: 'assets/translations', // <-- change patch to your
+      supportedLocales: [
+        Locale('en', 'US'),
+        Locale('ru', 'RU'),
+        Locale('uk', 'UA')
+      ],
+      path: 'assets/translations',
       fallbackLocale: Locale('en', 'US'),
       child: new ZxTapePlayer()));
 }
 
 class ZxTapePlayer extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

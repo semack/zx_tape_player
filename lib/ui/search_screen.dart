@@ -1,10 +1,13 @@
+import 'package:avatar_abc/AbcAvatar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:zx_tape_player/utils/definitions.dart';
+import 'package:zx_tape_player/models/items_dto.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -22,13 +25,20 @@ class _SearchScreenState extends State<SearchScreen> {
   SuggestionsBoxController _suggestionsBoxController =
       SuggestionsBoxController();
   final _scrollController = ScrollController();
-  bool isLoading = false;
-  static int page = 0;
+  bool _isLoading = false;
+  static int _page = 0;
   var _initialized = false;
+  List<Hits> _hits = [];
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() async {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        await _getData(_textController.text, page: _page, adding: true);
+      }
+    });
   }
 
   @override
@@ -44,6 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _textController.dispose();
     super.dispose();
   }
@@ -58,9 +69,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: _buildSearchList(context),
-            ))
+                  width: MediaQuery.of(context).size.width,
+                  child: _buildSearchList(context),
+                ))
           ],
         ),
         resizeToAvoidBottomPadding: false);
@@ -72,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
         textFieldConfiguration: TextFieldConfiguration(
           controller: _textController,
           onSubmitted: (text) async {
-            await doSearch(text);
+            await _getData(text);
           },
           style: TextStyle(
               color: Colors.white, fontSize: 18.0, letterSpacing: -0.5),
@@ -86,18 +97,18 @@ class _SearchScreenState extends State<SearchScreen> {
             prefixIcon: _textController.text.isEmpty
                 ? null
                 : IconButton(
-                    icon: Icon(Icons.close, color: Colour("#546B7F")),
-                    onPressed: () {
-                      setState(() {
-                        _textController.clear();
-                      });
-                      Navigator.pop(context);
-                    }),
+                icon: Icon(Icons.close, color: Colour("#546B7F")),
+                onPressed: () {
+                  setState(() {
+                    _textController.clear();
+                  });
+                  Navigator.pop(context);
+                }),
             suffixIcon: IconButton(
                 icon: Icon(Icons.search, color: Colour("#68AD56")),
                 onPressed: () async {
                   _suggestionsBoxController.close();
-                  await doSearch(_textController.text);
+                  await _getData(_textController.text);
                 }),
             hintText: tr('search_hint'),
             filled: true,
@@ -166,17 +177,118 @@ class _SearchScreenState extends State<SearchScreen> {
         },
         onSuggestionSelected: (suggestion) async {
           _textController.text = suggestion.text;
-          await doSearch(suggestion.text);
+          await _getData(suggestion.text);
         });
   }
 
   Widget _buildSearchList(BuildContext context) {
-    return null;
+    return ListView.builder(
+      itemCount: _hits.length + 1, // Add one more item for progress indicator
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      itemBuilder: (BuildContext context, int index) {
+        if (index == _hits.length) {
+          return _buildProgressIndicator();
+        } else {
+          var item = _hits[index];
+          var url = item.source.screens.length > 0
+              ? Definitions.contentBaseUrl + item.source.screens[0].url
+              : '';
+          var textAvatar = AbcAvatar(
+            item.source.title,
+            isRectangle: true,
+            // circleConfiguration: CircleConfiguration(radius: 50),
+            rectangeConfiguration: RectangeConfiguration(
+                borderRadius: 4,
+                blurRadius: 0,
+                shadowColor: Colors.transparent),
+            titleConfiguration:
+                TitleConfiguration(fontWeight: FontWeight.bold, size: 30),
+          );
+          return Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colour('#3B4E63'),
+                      borderRadius: new BorderRadius.only(
+                          topLeft: const Radius.circular(4.0),
+                          topRight: const Radius.circular(4.0))),
+                  child: ListTile(
+                    leading: new Container(
+                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        width: 70.0,
+                        height: 70.0,
+                        child: CachedNetworkImage(
+                            useOldImageOnUrlChange: true,
+                            imageUrl: url,
+                            placeholder: (context, url) => textAvatar,
+                            errorWidget: (context, url, error) {
+                              return textAvatar;
+                            })),
+                    title: Text(
+                      item.source.title,
+                      style: TextStyle(
+                          color: Colors.white,
+                          letterSpacing: 0.3,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      maxLines: 1,
+                    ),
+                    subtitle: Text(
+                      item.source.genre,
+                      style: TextStyle(
+                          color: Colors.white,
+                          letterSpacing: 0.3,
+                          fontSize: 10.0),
+                    ),
+                  )));
+        }
+      },
+      controller: _scrollController,
+    );
   }
 
-  Future doSearch(query) async {
-    var items = await BackendService.getItems(query, Definitions.pageSize);
-    var h = items.hits;
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+            opacity: _isLoading ? 1.0 : 00,
+            child: new DotsIndicator(
+              dotsCount: 3,
+              position: 0,
+              decorator: DotsDecorator(
+                color: Colour('#546B7F'), // Inactive color
+                activeColor: Colour('#D8DCE0'),
+              ),
+            )),
+      ),
+    );
+  }
+
+  Future _getData(String query, {int page = 0, bool adding = false}) async {
+    if (!_isLoading) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      if (!adding) _hits.clear();
+
+      var items = await BackendService.getItems(query, Definitions.pageSize,
+          offset: page * Definitions.pageSize);
+
+      _hits.addAll(items.hits.hits.where((element) =>
+          element.source != null &&
+          element.source.title != null &&
+          element.source.title.isNotEmpty));
+
+      if (_isLoading) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 }
 

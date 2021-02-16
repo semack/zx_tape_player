@@ -1,0 +1,13 @@
+{
+  "zx_tape_player":"ZX TAPE PLAYER",
+  "app_title": "ZX Tape Player",
+  "copyright" : "© 2021 Андрей Сёмак & ZXINFO.DK\r\nВсе права защищены\r\n",
+  "version": " Версия %s.%s",
+  "find_tape": "Найти ленту",
+  "search_hint": "Введите текст запроса",
+  "select_file": "или выбрать из файлов",
+  "select_from_files": "ВЫБЕРИТЕ ФАЙЛ",
+  "loading": "Загрузка...",
+  "no_items_found": "Нет подсказок :(",
+  "all_tapes_by_letter": "Все ленты на букву \"%s\""
+}
