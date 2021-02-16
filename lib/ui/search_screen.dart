@@ -348,19 +348,24 @@ class _SearchScreenState extends State<SearchScreen> {
           _textController.text, Definitions.pageSize,
           offset: _page * Definitions.pageSize);
 
-      _hits.addAll(items.hits.hits.where((element) =>
-          element.source != null &&
-          element.source.title != null &&
-          element.source.title.isNotEmpty));
+      if (items.hits.hits != null) {
+        var payload = items.hits.hits.where((element) =>
+            element.source != null &&
+            element.source.title != null &&
+            element.source.title.isNotEmpty);
 
-      if (items.hits.hits.length == Definitions.pageSize) {
+        _hits.addAll(payload);
+      }
+
+      if (items.hits.hits != null &&
+          items.hits.hits.length == Definitions.pageSize) {
         increment = 1;
         _refreshController.loadComplete();
       } else
         _refreshController.loadNoData();
     } catch (e) {
-      AppCenter.trackEventAsync('error', e);
       _refreshController.loadFailed();
+      await AppCenter.trackEventAsync('error', e);
     }
     setState(() {
       _page = _page + increment;
