@@ -308,7 +308,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset('assets/images/search/like.png'),
+                            Image.asset('assets/images/search/like.png', width: 12.0, height: 12.0),
                             SizedBox(width: 5),
                             Text(
                               item.source.score.votes != null
@@ -320,7 +320,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   fontSize: 12.0),
                             ),
                             SizedBox(width: 20),
-                            Image.asset('assets/images/search/star.png'),
+                            Image.asset('assets/images/search/star.png',width: 12.0, height: 12.0),
                             SizedBox(width: 5),
                             Text(
                               item.source.score.score != null && item.source.score.score > 0
