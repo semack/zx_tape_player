@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
@@ -335,7 +336,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ]))));
         }));
   }
-  
+
   Future _onLoading({bool adding = false}) async {
     var increment = 0;
     if (!adding) {
@@ -358,6 +359,7 @@ class _SearchScreenState extends State<SearchScreen> {
       } else
         _refreshController.loadNoData();
     } catch (e) {
+      AppCenter.trackEventAsync('error', e);
       _refreshController.loadFailed();
     }
     setState(() {
