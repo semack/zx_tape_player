@@ -283,20 +283,27 @@ class _SearchScreenState extends State<SearchScreen> {
                           children: [
                             Text(
                               item.source.originalYearOfRelease != null
-                                  ? item.source.originalYearOfRelease
-                                          .toString() +
-                                      ' • '
+                                  ? item.source.originalYearOfRelease.toString()
                                   : '',
                               style: TextStyle(
                                   color: Colour('#B1B8C1'),
                                   letterSpacing: 0.3,
                                   fontSize: 12.0),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                              maxLines: 1,
                             ),
                             Text(
-                              item.source.genreType != null ? item.source.genreType : '',
+                              item.source.originalYearOfRelease != null &&
+                                      item.source.genreType != null
+                                  ? ' • '
+                                  : '',
+                              style: TextStyle(
+                                  color: Colour('#B1B8C1'),
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                            ),
+                            Text(
+                              item.source.genreType != null
+                                  ? item.source.genreType
+                                  : '',
                               style: TextStyle(
                                   color: Colour('#B1B8C1'),
                                   letterSpacing: 0.3,
