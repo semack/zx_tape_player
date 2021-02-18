@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
@@ -29,6 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
       RefreshController(initialRefresh: false);
   static int _page = 0;
   var _initialized = false;
+  var _isLoading = false;
   List<Hits> _hits = [];
 
   @override
@@ -64,9 +66,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: _buildSearchList(context),
-                ))
+              width: MediaQuery.of(context).size.width,
+              child: _isLoading
+                  ? _buildLoadingProgress(context)
+                  : _buildSearchList(context),
+            ))
           ],
         ),
         resizeToAvoidBottomPadding: false);
@@ -146,22 +150,15 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           );
         },
-        loadingBuilder: (BuildContext context) {
-          return Center(
-            child: Text(
-              tr('loading'),
-              style: TextStyle(
-                  fontSize: 14, color: Colour('#AFB6BB'), letterSpacing: -0.5),
-              textAlign: TextAlign.center,
-            ),
-          );
-        },
+        loadingBuilder: (BuildContext context) =>
+            _buildLoadingProgress(context),
         itemBuilder: (context, suggestion) {
           var text = suggestion.text;
           if (suggestion.type == Definitions.letterType)
             text = tr('all_tapes_by_letter').format([text]);
           return ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 0.00),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 0.00, vertical: 0.00),
               trailing: Text('>', style: TextStyle(color: Colour('#AFB6BB'))),
               title: Text(text,
                   style: TextStyle(
@@ -240,6 +237,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: Colour('#3B4E63'),
                       borderRadius: BorderRadius.all(Radius.circular(4.0))),
                   child: ListTile(
+                      onTap: () async => Navigator.pushNamed(
+                          context, PlayerScreen.routeName, arguments: item.id),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
                       leading: new Container(
@@ -292,7 +291,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             Text(
                               item.source.originalYearOfRelease != null &&
-                                      item.source.genreType != null
+                                  item.source.genreType != null
                                   ? ' • '
                                   : '',
                               style: TextStyle(
@@ -344,11 +343,25 @@ class _SearchScreenState extends State<SearchScreen> {
         }));
   }
 
+  Widget _buildLoadingProgress(BuildContext context) {
+    return Center(
+      child: Text(
+        tr('loading'),
+        style: TextStyle(
+            fontSize: 14, color: Colour('#AFB6BB'), letterSpacing: -0.5),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   Future _onLoading({bool adding = false}) async {
     var increment = 0;
     if (!adding) {
-      _hits.clear();
-      _page = 0;
+      setState(() {
+        _hits.clear();
+        _page = 0;
+        _isLoading = true;
+      });
     }
     try {
       var items = await BackendService.getItems(
@@ -364,8 +377,7 @@ class _SearchScreenState extends State<SearchScreen> {
         _hits.addAll(payload);
       }
 
-      if (items.hits.hits != null &&
-          items.hits.hits.length == Definitions.pageSize) {
+      if (items.hits.hits != null && items.hits.hits.length > 0) {
         increment = 1;
         _refreshController.loadComplete();
       } else
@@ -376,6 +388,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
     setState(() {
       _page = _page + increment;
+      _isLoading = false;
     });
   }
 }
