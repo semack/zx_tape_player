@@ -355,7 +355,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future _onLoading({bool adding = false}) async {
-    var increment = 0;
     if (!adding) {
       setState(() {
         _hits.clear();
@@ -378,7 +377,7 @@ class _SearchScreenState extends State<SearchScreen> {
       }
 
       if (items.hits.hits != null && items.hits.hits.length > 0) {
-        increment = 1;
+        _page++;
         _refreshController.loadComplete();
       } else
         _refreshController.loadNoData();
@@ -387,7 +386,6 @@ class _SearchScreenState extends State<SearchScreen> {
       await AppCenter.trackEventAsync('error', e);
     }
     setState(() {
-      _page = _page + increment;
       _isLoading = false;
     });
   }
