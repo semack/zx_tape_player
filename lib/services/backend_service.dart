@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:zx_tape_player/models/item_dto.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
 import 'package:zx_tape_player/models/term_dto.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
@@ -12,8 +13,9 @@ class BackendService {
   static const _termsUrl = '/suggest/%s';
   static const _itemsUrl = '/search?query=%s&mode=compact' +
       '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
-  static const _letterUrl = '/games/byletter/%s?mode=compact'+
+  static const _letterUrl = '/games/byletter/%s?mode=compact' +
       '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
+  static const _itemUrl = '/games/%s?mode=full';
 
   static Future<List<TermDto>> getSuggestions(String query) async {
     var result = new List<TermDto>();
@@ -50,9 +52,26 @@ class BackendService {
     }
     if (url == Definitions.baseUrl) url += _itemsUrl;
     url = url.format([query, size, offset]);
-    var response = await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    var response =
+        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
     if (response.statusCode == 200)
       result = ItemsDto.fromJson(json.decode(response.body));
+    return result;
+  }
+
+  static Future<ItemDto> getItem(String id) async {
+    ItemDto result;
+    var url = Definitions.baseUrl + _itemUrl.format([id]);
+    var response =
+        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    // try {
+      if (response.statusCode == 200)
+        result = ItemDto.fromJson(json.decode(response.body));
+    // }
+    // catch(e)
+    // {
+    //     var z = e;
+    // }
     return result;
   }
 

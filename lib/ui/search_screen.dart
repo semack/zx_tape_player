@@ -7,10 +7,13 @@ import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
+import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
+
+import 'widgets/loading_progress.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key key}) : super(key: key);
@@ -68,7 +71,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Container(
               width: MediaQuery.of(context).size.width,
               child: _isLoading
-                  ? _buildLoadingProgress(context)
+                  ? LoadingProgress()
                   : _buildSearchList(context),
             ))
           ],
@@ -150,8 +153,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           );
         },
-        loadingBuilder: (BuildContext context) =>
-            _buildLoadingProgress(context),
+        loadingBuilder: (BuildContext context) => LoadingProgress(),
         itemBuilder: (context, suggestion) {
           var text = suggestion.text;
           if (suggestion.type == Definitions.letterType)
@@ -238,7 +240,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(4.0))),
                   child: ListTile(
                       onTap: () async => Navigator.pushNamed(
-                          context, PlayerScreen.routeName, arguments: item.id),
+                          context, PlayerScreen.routeName,
+                          arguments: PlayerArgs(PlayerArgsTypeEnum.network,
+                              item.id, item.source.title)),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
                       leading: new Container(
@@ -341,17 +345,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         )
                       ]))));
         }));
-  }
-
-  Widget _buildLoadingProgress(BuildContext context) {
-    return Center(
-      child: Text(
-        tr('loading'),
-        style: TextStyle(
-            fontSize: 14, color: Colour('#AFB6BB'), letterSpacing: -0.5),
-        textAlign: TextAlign.center,
-      ),
-    );
   }
 
   Future _onLoading({bool adding = false}) async {
