@@ -31,10 +31,11 @@ class _SplashScreenState extends State<SplashScreen>
     // if (const String.fromEnvironment('DEBUG') != null) duration = 0;
     Timer(
         Duration(seconds: duration),
-        () => Navigator.of(context).pushReplacement(
+            () =>
+            Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (BuildContext context) {
-              return HomeScreen();
-            })));
+                  return HomeScreen();
+                })));
   }
 
   @override
@@ -50,83 +51,98 @@ class _SplashScreenState extends State<SplashScreen>
         body: Column(children: <Widget>[
           Expanded(
               child: Container(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: 260,
-                  height: 189,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/splash/logo.png'),
-                        fit: BoxFit.fill,
-                      ),
-                      shape: BoxShape.rectangle),
-                  child: Row(
-                      children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(top: 55, left: 60),
-                          child: RotationTransition(
-                            turns: Tween(begin: 0.0, end: 1.9)
-                                .animate(_rotationController),
-                            child:
-                                Image.asset('assets/images/splash/spool.png'),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 260,
+                      height: 189,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/splash/logo.png'),
+                            fit: BoxFit.fill,
                           ),
-                        ),
-                      ],
+                          shape: BoxShape.rectangle),
+                      child: Row(
+                          children: <Widget>[
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(top: 55, left: 60),
+                                  child: RotationTransition(
+                                    turns: Tween(begin: 0.0, end: 1.9)
+                                        .animate(_rotationController),
+                                    child:
+                                    Image.asset(
+                                        'assets/images/splash/spool.png'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(top: 55, left: 30),
+                                  child: RotationTransition(
+                                    turns: Tween(begin: 0.0, end: 1.9)
+                                        .animate(_rotationController),
+                                    child: Image.asset(
+                                        'assets/images/splash/spool.png'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ]),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(top: 55, left: 30),
-                          child: RotationTransition(
-                        turns: Tween(begin: 0.0, end: 1.9)
-                            .animate(_rotationController),
-                        child: Image.asset('assets/images/splash/spool.png'),
-                      ),
-                    ),
+                    Container(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: Text('zx_tape_player',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 22, color: Colour('##E7ECED')))
+                            .tr()),
                   ],
                 ),
-              ]),
-            ),
-            Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: Text('zx_tape_player',
+              )),
+          Container(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
+              child: Column(children: <Widget>[
+                FutureBuilder<PackageInfo>(
+                  builder:
+                      (BuildContext context,
+                      AsyncSnapshot<PackageInfo> snapshot) {
+                    var copyrightText = tr('copyright');
+                    if (snapshot.hasData) {
+                      copyrightText += tr('version').format(
+                          [snapshot.data.version, snapshot.data.buildNumber]);
+                    }
+                    return Text(copyrightText,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 22, color: Colour('##E7ECED')))
-                    .tr()),
-          ],
-        ),
-      )),
-      Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
-          child: Column(children: <Widget>[
-            FutureBuilder<PackageInfo>(
-              builder:
-                  (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-                    var copyrightText = tr('copyright');
-                if (snapshot.hasData) {
-                  copyrightText += tr('version').format([snapshot.data.version, snapshot.data.buildNumber]);
-                }
-                return Text(copyrightText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 12, height: 1.8, color: Colour('#AFB6BB')));
-              },
-              future: PackageInfo.fromPlatform(),
-            ),
-          ]))
-    ]));
+                            fontSize: 12,
+                            height: 1.8,
+                            color: Colour('#AFB6BB')));
+                  },
+                  future: PackageInfo.fromPlatform(),
+                ),
+              ]))
+        ]));
   }
 }

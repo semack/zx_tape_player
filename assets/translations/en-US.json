@@ -14,7 +14,5 @@
   "load_failed_retry": "Load failed, tap to retry...",
   "release_load_more": "Please release to load more",
   "no_more_data": "No more data available",
-  "na": "-",
-  "no_description": "Description is not available.",
-  "price_label": "Price:"
+  "na": "-"
 }
