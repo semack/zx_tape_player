@@ -1,6 +1,8 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:zx_tape_player/models/item_dto.dart';
 import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
@@ -35,7 +37,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _args = ModalRoute.of(context).settings.arguments;
+    _args = ModalRoute.of(this.context).settings.arguments;
     _loadData();
   }
 
@@ -207,6 +209,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
             ]))));
   }
 
+  var _currentFileIndex = 0;
+
   Widget _buildPlayerWidget(BuildContext context) {
     return Center(
         child: Container(
@@ -214,13 +218,80 @@ class _PlayerScreenState extends State<PlayerScreen> {
       color: Colour('#28384C'),
       child: Column(
         children: [
-          Row(),
+          Row(
+            children: [
+              Column(children: [
+                Container(
+                    //color: Colors.blue,
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    width: MediaQuery.of(context).size.width,
+                    height: 112,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colour('#172434'),
+                        borderRadius: BorderRadius.circular(3.5),
+                      ),
+                      child: CarouselSlider(
+                        items: _getPaths(_item)
+                            .map((text) => Container(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: Center(
+                                      child: Text(
+                                    text,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 14.0),
+                                    maxLines: 3,
+                                  )),
+                                ))
+                            .toList(),
+                        options: CarouselOptions(
+                            autoPlay: false,
+                            enlargeCenterPage: false,
+                            aspectRatio: 2.0,
+                            viewportFraction: 1.0,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _currentFileIndex = index;
+                              });
+                            }),
+                      ),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _getPaths(_item).map((f) {
+                    int index = _getPaths(_item).indexOf(f);
+                    return Container(
+                      width: 8.0,
+                      height: 8.0,
+                      margin:
+                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 2.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentFileIndex == index
+                            ? Colour('#D8DCE0')
+                            : Colour('546B7F'),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ]),
+            ],
+          ),
           Row(),
           Row(),
           Row(),
         ],
       ),
     ));
+  }
+
+  List<String> _getPaths(ItemDto item) {
+    return item.source.tosec
+        .where((s) =>
+            s.path != null &&
+            (extension(s.path) == '.tzx' || extension(s.path) == '.tap'))
+        .map((f) => basename(f.path))
+        .toList();
   }
 
   Future _loadData() async {
