@@ -96,7 +96,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   Widget _buildNoFilesWidget(BuildContext context) {
     return  Container(
-          color: Colour('#3B4E63lote'),
+          color: Colour('#3B4E63'),
           height: 50.0,
       width: MediaQuery.of(context).size.width,
       child: Center(
