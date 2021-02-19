@@ -28,6 +28,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   List<String> _files;
   PlayerArgs _args;
   bool _isLoading = true;
+  double _filePosition = 0.0;
   CarouselController _carouselController = new CarouselController();
 
   @override
@@ -262,29 +263,31 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Widget _buildPlayerWidget(BuildContext context) {
     return Center(
         child: Container(
-      height: 292.0,
+          height: 292.0,
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      width: MediaQuery.of(context).size.width,
       color: Colour('#28384C'),
       child: Column(
         children: [
-          Row(
-            children: [
-              Column(children: [
-                Container(
-                    //color: Colors.blue,
-                    padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                    width: MediaQuery.of(context).size.width,
-                    height: 112,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colour('#172434'),
-                        borderRadius: BorderRadius.circular(3.5),
-                      ),
-                      child: CarouselSlider(
-                        carouselController: _carouselController,
-                        items: _files
-                            .map((text) => Container(
-                                  padding: EdgeInsets.all(12.0),
-                                  child: Center(
+          Column(children: [
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                width: double.infinity,
+                //constraints: BoxConstraints.expand(),
+                //padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                //width: MediaQuery.of(context).size.width,
+                height: 80.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colour('#172434'),
+                    borderRadius: BorderRadius.circular(3.5),
+                  ),
+                  child: CarouselSlider(
+                    carouselController: _carouselController,
+                    items: _files
+                        .map((text) => Container(
+                              padding: EdgeInsets.all(12.0),
+                              child: Center(
                                       child: Text(
                                     text,
                                     style: TextStyle(
@@ -311,24 +314,45 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     int index = _files.indexOf(f);
                     return Container(
                       width: 8.0,
-                      height: 8.0,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _currentFileIndex == index
-                            ? Colour('#D8DCE0')
-                            : Colour('546B7F'),
-                      ),
-                    );
-                  }).toList(),
+                  height: 8.0,
+                  margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 2.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentFileIndex == index
+                        ? Colour('#D8DCE0')
+                        : Colour('546B7F'),
+                  ),
+                );
+              }).toList(),
+            ),
+          ]),
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                Text('00:00/12:00', style: TextStyle(fontSize: 12.0, color: Colour('#B1B8C1'))),
+                Text(
+                  '12:00', style: TextStyle(fontSize: 12.0, color: Colour('#B1B8C1'))
                 ),
-              ])
-            ],
-          ),
-          Row(),
-          Row(),
-          Row(),
+              ])),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: SliderTheme(
+              data: SliderThemeData(
+                  activeTrackColor: Colour('#546B7F'),
+                  inactiveTrackColor: Colour('#546B7F'),
+                  overlappingShapeStrokeColor: Colour('#546B7F'),
+                  trackShape: CustomTrackShape(),
+                  thumbColor: Colors.white),
+              child: Slider(
+                value: _filePosition,
+                onChanged: (value) => setState(() {
+                  _filePosition = value;
+                }),
+              ),
+            ),
+          )
         ],
       ),
     ));
@@ -353,5 +377,22 @@ class _PlayerScreenState extends State<PlayerScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  Rect getPreferredRect({
+    @required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    @required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight;
+    final double trackLeft = offset.dx;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
