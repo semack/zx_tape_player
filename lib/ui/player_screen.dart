@@ -297,6 +297,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 ))
                             .toList(),
                         options: CarouselOptions(
+                            enableInfiniteScroll: _files.length > 1 ,
                             autoPlay: false,
                             enlargeCenterPage: false,
                             aspectRatio: 2.0,
@@ -310,20 +311,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: _files.map((f) {
+                  children: _files.length > 1 ? _files.map((f) {
                     int index = _files.indexOf(f);
                     return Container(
                       width: 8.0,
                   height: 8.0,
                   margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 2.0),
-                  decoration: BoxDecoration(
+                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentFileIndex == index
                         ? Colour('#D8DCE0')
                         : Colour('546B7F'),
                   ),
                 );
-              }).toList(),
+              }).toList() : [Container(height: 8.0, margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 2.0),)]
             ),
           ]),
           Padding(
