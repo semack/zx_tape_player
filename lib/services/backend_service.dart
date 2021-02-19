@@ -65,8 +65,8 @@ class BackendService {
     var response =
         await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
     // try {
-      if (response.statusCode == 200)
-        result = ItemDto.fromJson(json.decode(response.body));
+    if (response.statusCode == 200)
+      result = ItemDto.fromJson(json.decode(response.body));
     // }
     // catch(e)
     // {

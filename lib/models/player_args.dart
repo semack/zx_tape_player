@@ -1,11 +1,6 @@
-enum PlayerArgsTypeEnum
-{
-  file,
-  network
-}
+enum PlayerArgsTypeEnum { file, network }
 
-class PlayerArgs
-{
+class PlayerArgs {
   final PlayerArgsTypeEnum type;
   final String id;
   final String title;

@@ -14,16 +14,12 @@ class TermDto {
   String get type => _type;
   String get entryId => _entryId;
 
-  TermDto({
-      String text, 
-      String labeltype, 
-      String type, 
-      String entryId}){
+  TermDto({String text, String labeltype, String type, String entryId}) {
     _text = text;
     _labeltype = labeltype;
     _type = type;
     _entryId = entryId;
-}
+  }
 
   TermDto.fromJson(dynamic json) {
     _text = json["text"];
@@ -40,5 +36,4 @@ class TermDto {
     map["entry_id"] = _entryId;
     return map;
   }
-
 }

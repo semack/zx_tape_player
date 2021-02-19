@@ -26,15 +26,15 @@ class ItemDto {
   bool get found => _found;
   Source get source => _source;
 
-  ItemDto({
-      String index, 
-      String type, 
-      String id, 
-      int version, 
-      int seqNo, 
-      int primaryTerm, 
+  ItemDto(
+      {String index,
+      String type,
+      String id,
+      int version,
+      int seqNo,
+      int primaryTerm,
       bool found,
-    Source source}){
+      Source source}) {
     _index = index;
     _type = type;
     _id = id;
@@ -43,7 +43,7 @@ class ItemDto {
     _primaryTerm = primaryTerm;
     _found = found;
     _source = source;
-}
+  }
 
   ItemDto.fromJson(dynamic json) {
     _index = json["_index"];
@@ -70,7 +70,6 @@ class ItemDto {
     }
     return map;
   }
-
 }
 
 /// controls : [{"control":"Cursor"},{"control":"Interface 2 (right)"},{"control":"Kempston"},{"control":"Redefineable keys"}]
@@ -275,73 +274,73 @@ class Source {
   dynamic get multiplayerType => _multiplayerType;
   String get remarks => _remarks;
 
-  Source({
-      List<Controls> controls, 
-      List<dynamic> authoring, 
-      List<dynamic> duplicateOf, 
-      List<dynamic> bookContents, 
-      String language, 
-      List<dynamic> competition, 
-      List<dynamic> editBy, 
-      int numberOfPlayers, 
-      List<dynamic> modificationOf, 
-      Score score, 
-      List<Features> features, 
-      List<AdditionalDownloads> additionalDownloads, 
-      List<dynamic> bundledWith, 
-      List<dynamic> duplicatedBy, 
-      List<MagazineReferences> magazineReferences, 
-      List<Publishers> publishers, 
-      List<OtherSystems> otherSystems, 
-      String contentType, 
-      List<dynamic> runsWith, 
-      String originalPublication, 
-      List<dynamic> requiredByHardware, 
-      List<RelatedSites> relatedSites, 
-      dynamic originalDayOfRelease, 
-      List<dynamic> inspirationFor, 
-      List<dynamic> requiredToRun, 
-      dynamic knownErrors, 
-      List<dynamic> editorOf, 
-      List<dynamic> originOf, 
-      int originalYearOfRelease, 
-      List<dynamic> addOnAvailable, 
-      dynamic hardwareBlurb, 
-      List<dynamic> requiresHardware, 
-      List<Authors> authors, 
-      OriginalPrice originalPrice, 
-      List<dynamic> authoredWith, 
-      dynamic isbn, 
-      String availability, 
-      List<dynamic> inspiredBy, 
-      String title, 
-      dynamic originalMonthOfRelease, 
-      String genreType, 
-      List<dynamic> addOnDependsOn, 
-      List<Screens> screens, 
-      dynamic multiplayerMode, 
-      String genre, 
-      List<dynamic> derivedFrom, 
-      List<dynamic> modifiedBy, 
-      List<YouTubeLinks> youTubeLinks, 
-      String machineType, 
-      List<Tosec> tosec, 
-      List<dynamic> otherPlatform, 
-      List<dynamic> bundleContent, 
-      List<dynamic> compilationContents, 
-      String zxinfoVersion, 
-      List<dynamic> themedGroup, 
-      List<dynamic> unsortedGroup, 
-      List<RelatedLinks> relatedLinks, 
-      List<ReviewAwards> reviewAwards, 
-      List<InCompilations> inCompilations, 
-      List<Releases> releases, 
-      List<dynamic> inBook, 
-      List<Awards> awards, 
-      List<dynamic> series, 
-      String genreSubType, 
-      dynamic multiplayerType, 
-      String remarks}){
+  Source(
+      {List<Controls> controls,
+      List<dynamic> authoring,
+      List<dynamic> duplicateOf,
+      List<dynamic> bookContents,
+      String language,
+      List<dynamic> competition,
+      List<dynamic> editBy,
+      int numberOfPlayers,
+      List<dynamic> modificationOf,
+      Score score,
+      List<Features> features,
+      List<AdditionalDownloads> additionalDownloads,
+      List<dynamic> bundledWith,
+      List<dynamic> duplicatedBy,
+      List<MagazineReferences> magazineReferences,
+      List<Publishers> publishers,
+      List<OtherSystems> otherSystems,
+      String contentType,
+      List<dynamic> runsWith,
+      String originalPublication,
+      List<dynamic> requiredByHardware,
+      List<RelatedSites> relatedSites,
+      dynamic originalDayOfRelease,
+      List<dynamic> inspirationFor,
+      List<dynamic> requiredToRun,
+      dynamic knownErrors,
+      List<dynamic> editorOf,
+      List<dynamic> originOf,
+      int originalYearOfRelease,
+      List<dynamic> addOnAvailable,
+      dynamic hardwareBlurb,
+      List<dynamic> requiresHardware,
+      List<Authors> authors,
+      OriginalPrice originalPrice,
+      List<dynamic> authoredWith,
+      dynamic isbn,
+      String availability,
+      List<dynamic> inspiredBy,
+      String title,
+      dynamic originalMonthOfRelease,
+      String genreType,
+      List<dynamic> addOnDependsOn,
+      List<Screens> screens,
+      dynamic multiplayerMode,
+      String genre,
+      List<dynamic> derivedFrom,
+      List<dynamic> modifiedBy,
+      List<YouTubeLinks> youTubeLinks,
+      String machineType,
+      List<Tosec> tosec,
+      List<dynamic> otherPlatform,
+      List<dynamic> bundleContent,
+      List<dynamic> compilationContents,
+      String zxinfoVersion,
+      List<dynamic> themedGroup,
+      List<dynamic> unsortedGroup,
+      List<RelatedLinks> relatedLinks,
+      List<ReviewAwards> reviewAwards,
+      List<InCompilations> inCompilations,
+      List<Releases> releases,
+      List<dynamic> inBook,
+      List<Awards> awards,
+      List<dynamic> series,
+      String genreSubType,
+      dynamic multiplayerType,
+      String remarks}) {
     _controls = controls;
     _authoring = authoring;
     _duplicateOf = duplicateOf;
@@ -408,7 +407,7 @@ class Source {
     _genreSubType = genreSubType;
     _multiplayerType = multiplayerType;
     _remarks = remarks;
-}
+  }
 
   Source.fromJson(dynamic json) {
     if (json["controls"] != null) {
@@ -564,7 +563,9 @@ class Source {
         _authors.add(Authors.fromJson(v));
       });
     }
-    _originalPrice = json["originalPrice"] != null ? OriginalPrice.fromJson(json["originalPrice"]) : null;
+    _originalPrice = json["originalPrice"] != null
+        ? OriginalPrice.fromJson(json["originalPrice"])
+        : null;
     if (json["authoredWith"] != null) {
       _authoredWith = [];
       json["authoredWith"].forEach((v) {
@@ -731,7 +732,8 @@ class Source {
       map["features"] = _features.map((v) => v.toJson()).toList();
     }
     if (_additionalDownloads != null) {
-      map["additionalDownloads"] = _additionalDownloads.map((v) => v.toJson()).toList();
+      map["additionalDownloads"] =
+          _additionalDownloads.map((v) => v.toJson()).toList();
     }
     if (_bundledWith != null) {
       map["bundledWith"] = _bundledWith.map((v) => v.toJson()).toList();
@@ -740,7 +742,8 @@ class Source {
       map["duplicatedBy"] = _duplicatedBy.map((v) => v.toJson()).toList();
     }
     if (_magazineReferences != null) {
-      map["magazineReferences"] = _magazineReferences.map((v) => v.toJson()).toList();
+      map["magazineReferences"] =
+          _magazineReferences.map((v) => v.toJson()).toList();
     }
     if (_publishers != null) {
       map["publishers"] = _publishers.map((v) => v.toJson()).toList();
@@ -754,7 +757,8 @@ class Source {
     }
     map["originalPublication"] = _originalPublication;
     if (_requiredByHardware != null) {
-      map["requiredByHardware"] = _requiredByHardware.map((v) => v.toJson()).toList();
+      map["requiredByHardware"] =
+          _requiredByHardware.map((v) => v.toJson()).toList();
     }
     if (_relatedSites != null) {
       map["relatedSites"] = _relatedSites.map((v) => v.toJson()).toList();
@@ -779,7 +783,8 @@ class Source {
     }
     map["hardwareBlurb"] = _hardwareBlurb;
     if (_requiresHardware != null) {
-      map["requiresHardware"] = _requiresHardware.map((v) => v.toJson()).toList();
+      map["requiresHardware"] =
+          _requiresHardware.map((v) => v.toJson()).toList();
     }
     if (_authors != null) {
       map["authors"] = _authors.map((v) => v.toJson()).toList();
@@ -826,7 +831,8 @@ class Source {
       map["bundleContent"] = _bundleContent.map((v) => v.toJson()).toList();
     }
     if (_compilationContents != null) {
-      map["compilationContents"] = _compilationContents.map((v) => v.toJson()).toList();
+      map["compilationContents"] =
+          _compilationContents.map((v) => v.toJson()).toList();
     }
     map["zxinfoVersion"] = _zxinfoVersion;
     if (_themedGroup != null) {
@@ -861,7 +867,6 @@ class Source {
     map["remarks"] = _remarks;
     return map;
   }
-
 }
 
 /// section : "Awards"
@@ -874,12 +879,10 @@ class Awards {
   String get section => _section;
   String get text => _text;
 
-  Awards({
-      String section, 
-      String text}){
+  Awards({String section, String text}) {
     _section = section;
     _text = text;
-}
+  }
 
   Awards.fromJson(dynamic json) {
     _section = json["section"];
@@ -892,7 +895,6 @@ class Awards {
     map["text"] = _text;
     return map;
   }
-
 }
 
 /// releaseSeq : 0
@@ -938,20 +940,20 @@ class Releases {
   dynamic get dl => _dl;
   List<Files> get files => _files;
 
-  Releases({
-      int releaseSeq, 
-      List<Publishers> publishers, 
-      List<String> releaseTitles, 
-      int yearOfRelease, 
-      String releasePrice, 
-      dynamic budgetPrice, 
-      dynamic microdrivePrice, 
-      dynamic diskPrice, 
-      dynamic cartridgePrice, 
-      dynamic code, 
-      dynamic barcode, 
-      dynamic dl, 
-      List<Files> files}){
+  Releases(
+      {int releaseSeq,
+      List<Publishers> publishers,
+      List<String> releaseTitles,
+      int yearOfRelease,
+      String releasePrice,
+      dynamic budgetPrice,
+      dynamic microdrivePrice,
+      dynamic diskPrice,
+      dynamic cartridgePrice,
+      dynamic code,
+      dynamic barcode,
+      dynamic dl,
+      List<Files> files}) {
     _releaseSeq = releaseSeq;
     _publishers = publishers;
     _releaseTitles = releaseTitles;
@@ -965,7 +967,7 @@ class Releases {
     _barcode = barcode;
     _dl = dl;
     _files = files;
-}
+  }
 
   Releases.fromJson(dynamic json) {
     _releaseSeq = json["releaseSeq"];
@@ -975,7 +977,9 @@ class Releases {
         _publishers.add(Publishers.fromJson(v));
       });
     }
-    _releaseTitles = json["releaseTitles"] != null ? json["releaseTitles"].cast<String>() : [];
+    _releaseTitles = json["releaseTitles"] != null
+        ? json["releaseTitles"].cast<String>()
+        : [];
     _yearOfRelease = json["yearOfRelease"];
     _releasePrice = json["releasePrice"];
     _budgetPrice = json["budgetPrice"];
@@ -1014,7 +1018,6 @@ class Releases {
     }
     return map;
   }
-
 }
 
 /// path : "/pub/sinclair/games/h/HeadOverHeels.tap.zip"
@@ -1039,20 +1042,20 @@ class Files {
   dynamic get origin => _origin;
   String get encodingScheme => _encodingScheme;
 
-  Files({
-      String path, 
-      int size, 
-      String type, 
-      String format, 
-      dynamic origin, 
-      String encodingScheme}){
+  Files(
+      {String path,
+      int size,
+      String type,
+      String format,
+      dynamic origin,
+      String encodingScheme}) {
     _path = path;
     _size = size;
     _type = type;
     _format = format;
     _origin = origin;
     _encodingScheme = encodingScheme;
-}
+  }
 
   Files.fromJson(dynamic json) {
     _path = json["path"];
@@ -1073,7 +1076,6 @@ class Files {
     map["encodingScheme"] = _encodingScheme;
     return map;
   }
-
 }
 
 /// publisherSeq : 1
@@ -1092,16 +1094,13 @@ class Publishers {
   String get country => _country;
   String get labelType => _labelType;
 
-  Publishers({
-      int publisherSeq, 
-      String name, 
-      String country, 
-      String labelType}){
+  Publishers(
+      {int publisherSeq, String name, String country, String labelType}) {
     _publisherSeq = publisherSeq;
     _name = name;
     _country = country;
     _labelType = labelType;
-}
+  }
 
   Publishers.fromJson(dynamic json) {
     _publisherSeq = json["publisherSeq"];
@@ -1118,7 +1117,6 @@ class Publishers {
     map["labelType"] = _labelType;
     return map;
   }
-
 }
 
 /// entry_id : 12019
@@ -1140,18 +1138,18 @@ class InCompilations {
   String get machineType => _machineType;
   String get type => _type;
 
-  InCompilations({
-      int entryId, 
-      String title, 
-      List<Publishers> publishers, 
-      String machineType, 
-      String type}){
+  InCompilations(
+      {int entryId,
+      String title,
+      List<Publishers> publishers,
+      String machineType,
+      String type}) {
     _entryId = entryId;
     _title = title;
     _publishers = publishers;
     _machineType = machineType;
     _type = type;
-}
+  }
 
   InCompilations.fromJson(dynamic json) {
     _entryId = json["entry_id"];
@@ -1177,7 +1175,6 @@ class InCompilations {
     map["type"] = _type;
     return map;
   }
-
 }
 
 /// name : "Dixons"
@@ -1246,15 +1243,15 @@ class ReviewAwards {
   dynamic get volume => _volume;
   int get number => _number;
 
-  ReviewAwards({
-      String awardName, 
-      String magazineName, 
-      int page, 
-      int issueId, 
-      int dateYear, 
-      int dateMonth, 
-      dynamic volume, 
-      int number}){
+  ReviewAwards(
+      {String awardName,
+      String magazineName,
+      int page,
+      int issueId,
+      int dateYear,
+      int dateMonth,
+      dynamic volume,
+      int number}) {
     _awardName = awardName;
     _magazineName = magazineName;
     _page = page;
@@ -1263,7 +1260,7 @@ class ReviewAwards {
     _dateMonth = dateMonth;
     _volume = volume;
     _number = number;
-}
+  }
 
   ReviewAwards.fromJson(dynamic json) {
     _awardName = json["awardName"];
@@ -1288,7 +1285,6 @@ class ReviewAwards {
     map["number"] = _number;
     return map;
   }
-
 }
 
 /// siteName : "MobyGames"
@@ -1301,12 +1297,10 @@ class RelatedLinks {
   String get siteName => _siteName;
   String get url => _url;
 
-  RelatedLinks({
-      String siteName, 
-      String url}){
+  RelatedLinks({String siteName, String url}) {
     _siteName = siteName;
     _url = url;
-}
+  }
 
   RelatedLinks.fromJson(dynamic json) {
     _siteName = json["siteName"];
@@ -1319,7 +1313,6 @@ class RelatedLinks {
     map["url"] = _url;
     return map;
   }
-
 }
 
 /// path : "Games/[TZX]/Head Over Heels (1987)(Ocean)(48K-128K)[SpeedLock 2][aka Foot and Mouth].tzx"
@@ -1329,10 +1322,9 @@ class Tosec {
 
   String get path => _path;
 
-  Tosec({
-      String path}){
+  Tosec({String path}) {
     _path = path;
-}
+  }
 
   Tosec.fromJson(dynamic json) {
     _path = json["path"];
@@ -1343,7 +1335,6 @@ class Tosec {
     map["path"] = _path;
     return map;
   }
-
 }
 
 /// siteName : "RZX Archive - YouTube"
@@ -1356,12 +1347,10 @@ class YouTubeLinks {
   String get siteName => _siteName;
   String get url => _url;
 
-  YouTubeLinks({
-      String siteName, 
-      String url}){
+  YouTubeLinks({String siteName, String url}) {
     _siteName = siteName;
     _url = url;
-}
+  }
 
   YouTubeLinks.fromJson(dynamic json) {
     _siteName = json["siteName"];
@@ -1374,7 +1363,6 @@ class YouTubeLinks {
     map["url"] = _url;
     return map;
   }
-
 }
 
 /// filename : "HeadOverHeels-load.png"
@@ -1399,20 +1387,20 @@ class Screens {
   String get format => _format;
   String get title => _title;
 
-  Screens({
-      String filename, 
-      String url, 
-      int size, 
-      String type, 
-      String format, 
-      String title}){
+  Screens(
+      {String filename,
+      String url,
+      int size,
+      String type,
+      String format,
+      String title}) {
     _filename = filename;
     _url = url;
     _size = size;
     _type = type;
     _format = format;
     _title = title;
-}
+  }
 
   Screens.fromJson(dynamic json) {
     _filename = json["filename"];
@@ -1433,7 +1421,6 @@ class Screens {
     map["title"] = _title;
     return map;
   }
-
 }
 
 /// amount : "7.95"
@@ -1446,12 +1433,10 @@ class OriginalPrice {
   String get amount => _amount;
   String get currency => _currency;
 
-  OriginalPrice({
-      String amount, 
-      String currency}){
+  OriginalPrice({String amount, String currency}) {
     _amount = amount;
     _currency = currency;
-}
+  }
 
   OriginalPrice.fromJson(dynamic json) {
     _amount = json["amount"];
@@ -1464,7 +1449,6 @@ class OriginalPrice {
     map["currency"] = _currency;
     return map;
   }
-
 }
 
 /// type : "Creator"
@@ -1501,17 +1485,17 @@ class Authors {
   dynamic get groupType => _groupType;
   List<dynamic> get notes => _notes;
 
-  Authors({
-      String type, 
-      int authorSeq, 
-      String name, 
-      String country, 
-      String labelType, 
-      List<dynamic> roles, 
-      dynamic groupName, 
-      dynamic groupCountry, 
-      dynamic groupType, 
-      List<dynamic> notes}){
+  Authors(
+      {String type,
+      int authorSeq,
+      String name,
+      String country,
+      String labelType,
+      List<dynamic> roles,
+      dynamic groupName,
+      dynamic groupCountry,
+      dynamic groupType,
+      List<dynamic> notes}) {
     _type = type;
     _authorSeq = authorSeq;
     _name = name;
@@ -1522,7 +1506,7 @@ class Authors {
     _groupCountry = groupCountry;
     _groupType = groupType;
     _notes = notes;
-}
+  }
 
   Authors.fromJson(dynamic json) {
     _type = json["type"];
@@ -1565,7 +1549,6 @@ class Authors {
     }
     return map;
   }
-
 }
 
 /// siteName : "Freebase"
@@ -1578,12 +1561,10 @@ class RelatedSites {
   String get siteName => _siteName;
   String get url => _url;
 
-  RelatedSites({
-      String siteName, 
-      String url}){
+  RelatedSites({String siteName, String url}) {
     _siteName = siteName;
     _url = url;
-}
+  }
 
   RelatedSites.fromJson(dynamic json) {
     _siteName = json["siteName"];
@@ -1596,7 +1577,6 @@ class RelatedSites {
     map["url"] = _url;
     return map;
   }
-
 }
 
 /// name : "Amstrad CPC"
@@ -1609,12 +1589,10 @@ class OtherSystems {
   String get name => _name;
   String get url => _url;
 
-  OtherSystems({
-      String name, 
-      String url}){
+  OtherSystems({String name, String url}) {
     _name = name;
     _url = url;
-}
+  }
 
   OtherSystems.fromJson(dynamic json) {
     _name = json["name"];
@@ -1627,7 +1605,6 @@ class OtherSystems {
     map["url"] = _url;
     return map;
   }
-
 }
 
 /// publisherSeq : 1
@@ -1702,14 +1679,11 @@ class Notes {
   String get section => _section;
   String get noteType => _noteType;
 
-  Notes({
-      String text, 
-      String section, 
-      String noteType}){
+  Notes({String text, String section, String noteType}) {
     _text = text;
     _section = section;
     _noteType = noteType;
-}
+  }
 
   Notes.fromJson(dynamic json) {
     _text = json["text"];
@@ -1724,7 +1698,6 @@ class Notes {
     map["noteType"] = _noteType;
     return map;
   }
-
 }
 
 /// type : "News/Note"
@@ -1761,17 +1734,17 @@ class MagazineReferences {
   int get number => _number;
   dynamic get score => _score;
 
-  MagazineReferences({
-      String type, 
-      dynamic featureName, 
-      String magazineName, 
-      int page, 
-      int issueId, 
-      int dateYear, 
-      int dateMonth, 
-      dynamic volume, 
-      int number, 
-      dynamic score}){
+  MagazineReferences(
+      {String type,
+      dynamic featureName,
+      String magazineName,
+      int page,
+      int issueId,
+      int dateYear,
+      int dateMonth,
+      dynamic volume,
+      int number,
+      dynamic score}) {
     _type = type;
     _featureName = featureName;
     _magazineName = magazineName;
@@ -1782,7 +1755,7 @@ class MagazineReferences {
     _volume = volume;
     _number = number;
     _score = score;
-}
+  }
 
   MagazineReferences.fromJson(dynamic json) {
     _type = json["type"];
@@ -1811,7 +1784,6 @@ class MagazineReferences {
     map["score"] = _score;
     return map;
   }
-
 }
 
 /// path : "/pub/sinclair/games-adverts/h/HeadOverHeels.jpg"
@@ -1833,18 +1805,14 @@ class AdditionalDownloads {
   String get format => _format;
   dynamic get language => _language;
 
-  AdditionalDownloads({
-      String path, 
-      int size, 
-      String type, 
-      String format, 
-      dynamic language}){
+  AdditionalDownloads(
+      {String path, int size, String type, String format, dynamic language}) {
     _path = path;
     _size = size;
     _type = type;
     _format = format;
     _language = language;
-}
+  }
 
   AdditionalDownloads.fromJson(dynamic json) {
     _path = json["path"];
@@ -1863,7 +1831,6 @@ class AdditionalDownloads {
     map["language"] = _language;
     return map;
   }
-
 }
 
 /// name : "Isometric 3D Graphics"
@@ -1873,10 +1840,9 @@ class Features {
 
   String get name => _name;
 
-  Features({
-      String name}){
+  Features({String name}) {
     _name = name;
-}
+  }
 
   Features.fromJson(dynamic json) {
     _name = json["name"];
@@ -1887,7 +1853,6 @@ class Features {
     map["name"] = _name;
     return map;
   }
-
 }
 
 /// score : 8.48
@@ -1900,12 +1865,10 @@ class Score {
   double get score => _score;
   int get votes => _votes;
 
-  Score({
-      double score, 
-      int votes}){
+  Score({double score, int votes}) {
     _score = score;
     _votes = votes;
-}
+  }
 
   Score.fromJson(dynamic json) {
     _score = json["score"] != null ? json["score"].toDouble() : null;
@@ -1918,7 +1881,6 @@ class Score {
     map["votes"] = _votes;
     return map;
   }
-
 }
 
 /// control : "Cursor"
@@ -1928,10 +1890,9 @@ class Controls {
 
   String get control => _control;
 
-  Controls({
-      String control}){
+  Controls({String control}) {
     _control = control;
-}
+  }
 
   Controls.fromJson(dynamic json) {
     _control = json["control"];
@@ -1942,5 +1903,4 @@ class Controls {
     map["control"] = _control;
     return map;
   }
-
 }

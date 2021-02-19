@@ -14,16 +14,12 @@ class ItemsDto {
   Shards get shards => _shards;
   Hits get hits => _hits;
 
-  ItemsDto({
-      int took, 
-      bool timedOut, 
-      Shards shards,
-      Hits hits}){
+  ItemsDto({int took, bool timedOut, Shards shards, Hits hits}) {
     _took = took;
     _timedOut = timedOut;
     _shards = shards;
     _hits = hits;
-}
+  }
 
   ItemsDto.fromJson(dynamic json) {
     _took = json["took"];
@@ -44,7 +40,6 @@ class ItemsDto {
     }
     return map;
   }
-
 }
 
 /// total : {"value":1862,"relation":"eq"}
@@ -64,18 +59,18 @@ class Hits {
   dynamic get id => _id;
   Source get source => _source;
 
-  Hits({
-      dynamic id,
+  Hits(
+      {dynamic id,
       Source source,
-      Total total, 
+      Total total,
       dynamic maxScore,
-      List<Hits> hits}){
+      List<Hits> hits}) {
     _total = total;
     _maxScore = maxScore;
     _hits = hits;
     _id = id;
     _source = source;
-}
+  }
 
   Hits.fromJson(dynamic json) {
     _total = json["total"] != null ? Total.fromJson(json["total"]) : null;
@@ -101,9 +96,7 @@ class Hits {
     }
     return map;
   }
-
 }
-
 
 /// originalDayOfRelease : null
 /// availability : "Available"
@@ -154,22 +147,22 @@ class Source {
   String get machineType => _machineType;
   List<Authors> get authors => _authors;
 
-  Source({
-      dynamic originalDayOfRelease, 
-      String availability, 
-      String title, 
-      List<Releases> releases, 
-      dynamic originalMonthOfRelease, 
-      Score score, 
-      String genreType, 
-      List<AdditionalDownloads> additionalDownloads, 
-      List<Screens> screens, 
-      int originalYearOfRelease, 
-      String genre, 
-      List<Publishers> publishers, 
-      String genreSubType, 
-      String machineType, 
-      List<Authors> authors}){
+  Source(
+      {dynamic originalDayOfRelease,
+      String availability,
+      String title,
+      List<Releases> releases,
+      dynamic originalMonthOfRelease,
+      Score score,
+      String genreType,
+      List<AdditionalDownloads> additionalDownloads,
+      List<Screens> screens,
+      int originalYearOfRelease,
+      String genre,
+      List<Publishers> publishers,
+      String genreSubType,
+      String machineType,
+      List<Authors> authors}) {
     _originalDayOfRelease = originalDayOfRelease;
     _availability = availability;
     _title = title;
@@ -185,7 +178,7 @@ class Source {
     _genreSubType = genreSubType;
     _machineType = machineType;
     _authors = authors;
-}
+  }
 
   Source.fromJson(dynamic json) {
     _originalDayOfRelease = json["originalDayOfRelease"];
@@ -244,7 +237,8 @@ class Source {
     }
     map["genreType"] = _genreType;
     if (_additionalDownloads != null) {
-      map["additionalDownloads"] = _additionalDownloads.map((v) => v.toJson()).toList();
+      map["additionalDownloads"] =
+          _additionalDownloads.map((v) => v.toJson()).toList();
     }
     if (_screens != null) {
       map["screens"] = _screens.map((v) => v.toJson()).toList();
@@ -261,7 +255,6 @@ class Source {
     }
     return map;
   }
-
 }
 
 /// country : "UK"
@@ -298,17 +291,17 @@ class Authors {
   String get labelType => _labelType;
   String get type => _type;
 
-  Authors({
-      String country, 
-      dynamic groupName, 
-      dynamic groupType, 
-      List<dynamic> notes, 
-      dynamic groupCountry, 
-      int authorSeq, 
-      List<dynamic> roles, 
-      String name, 
-      String labelType, 
-      String type}){
+  Authors(
+      {String country,
+      dynamic groupName,
+      dynamic groupType,
+      List<dynamic> notes,
+      dynamic groupCountry,
+      int authorSeq,
+      List<dynamic> roles,
+      String name,
+      String labelType,
+      String type}) {
     _country = country;
     _groupName = groupName;
     _groupType = groupType;
@@ -319,7 +312,7 @@ class Authors {
     _name = name;
     _labelType = labelType;
     _type = type;
-}
+  }
 
   Authors.fromJson(dynamic json) {
     _country = json["country"];
@@ -362,7 +355,6 @@ class Authors {
     map["type"] = _type;
     return map;
   }
-
 }
 
 /// country : "UK"
@@ -384,18 +376,18 @@ class Publishers {
   String get labelType => _labelType;
   int get publisherSeq => _publisherSeq;
 
-  Publishers({
-      String country, 
-      List<dynamic> notes, 
-      String name, 
-      String labelType, 
-      int publisherSeq}){
+  Publishers(
+      {String country,
+      List<dynamic> notes,
+      String name,
+      String labelType,
+      int publisherSeq}) {
     _country = country;
     _notes = notes;
     _name = name;
     _labelType = labelType;
     _publisherSeq = publisherSeq;
-}
+  }
 
   Publishers.fromJson(dynamic json) {
     _country = json["country"];
@@ -421,7 +413,6 @@ class Publishers {
     map["publisherSeq"] = _publisherSeq;
     return map;
   }
-
 }
 
 /// filename : "ABC.gif"
@@ -446,20 +437,20 @@ class Screens {
   dynamic get title => _title;
   String get url => _url;
 
-  Screens({
-      String filename, 
-      int size, 
-      String format, 
-      String type, 
-      dynamic title, 
-      String url}){
+  Screens(
+      {String filename,
+      int size,
+      String format,
+      String type,
+      dynamic title,
+      String url}) {
     _filename = filename;
     _size = size;
     _format = format;
     _type = type;
     _title = title;
     _url = url;
-}
+  }
 
   Screens.fromJson(dynamic json) {
     _filename = json["filename"];
@@ -480,7 +471,6 @@ class Screens {
     map["url"] = _url;
     return map;
   }
-
 }
 
 /// path : "/pub/sinclair/games-inlays/a/ABC.jpg"
@@ -502,18 +492,14 @@ class AdditionalDownloads {
   dynamic get language => _language;
   String get type => _type;
 
-  AdditionalDownloads({
-      String path, 
-      int size, 
-      String format, 
-      dynamic language, 
-      String type}){
+  AdditionalDownloads(
+      {String path, int size, String format, dynamic language, String type}) {
     _path = path;
     _size = size;
     _format = format;
     _language = language;
     _type = type;
-}
+  }
 
   AdditionalDownloads.fromJson(dynamic json) {
     _path = json["path"];
@@ -532,7 +518,6 @@ class AdditionalDownloads {
     map["type"] = _type;
     return map;
   }
-
 }
 
 /// score : 5
@@ -545,12 +530,10 @@ class Score {
   double get score => _score;
   int get votes => _votes;
 
-  Score({
-      double score,
-      int votes}){
+  Score({double score, int votes}) {
     _score = score;
     _votes = votes;
-}
+  }
 
   Score.fromJson(dynamic json) {
     _score = json["score"] != null ? json["score"].toDouble() : 0;
@@ -563,7 +546,6 @@ class Score {
     map["votes"] = _votes;
     return map;
   }
-
 }
 
 /// publishers : [{"country":"UK","name":"Artic Computing Ltd","labelType":"Company: Publisher/Manager","publisherSeq":1}]
@@ -573,10 +555,9 @@ class Releases {
 
   List<Publishers> get publishers => _publishers;
 
-  Releases({
-      List<Publishers> publishers}){
+  Releases({List<Publishers> publishers}) {
     _publishers = publishers;
-}
+  }
 
   Releases.fromJson(dynamic json) {
     if (json["publishers"] != null) {
@@ -594,10 +575,7 @@ class Releases {
     }
     return map;
   }
-
 }
-
-
 
 /// value : 1862
 /// relation : "eq"
@@ -609,12 +587,10 @@ class Total {
   int get value => _value;
   String get relation => _relation;
 
-  Total({
-      int value, 
-      String relation}){
+  Total({int value, String relation}) {
     _value = value;
     _relation = relation;
-}
+  }
 
   Total.fromJson(dynamic json) {
     _value = json["value"];
@@ -627,7 +603,6 @@ class Total {
     map["relation"] = _relation;
     return map;
   }
-
 }
 
 /// total : 1
@@ -646,16 +621,12 @@ class Shards {
   int get skipped => _skipped;
   int get failed => _failed;
 
-  Shards({
-      int total, 
-      int successful, 
-      int skipped, 
-      int failed}){
+  Shards({int total, int successful, int skipped, int failed}) {
     _total = total;
     _successful = successful;
     _skipped = skipped;
     _failed = failed;
-}
+  }
 
   Shards.fromJson(dynamic json) {
     _total = json["total"];
@@ -672,5 +643,4 @@ class Shards {
     map["failed"] = _failed;
     return map;
   }
-
 }

@@ -70,9 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
                 child: Container(
               width: MediaQuery.of(context).size.width,
-              child: _isLoading
-                  ? LoadingProgress()
-                  : _buildSearchList(context),
+              child: _isLoading ? LoadingProgress() : _buildSearchList(context),
             ))
           ],
         ),
@@ -100,13 +98,13 @@ class _SearchScreenState extends State<SearchScreen> {
             prefixIcon: _textController.text.isEmpty
                 ? null
                 : IconButton(
-                icon: Icon(Icons.close, color: Colour("#546B7F")),
-                onPressed: () {
-                  setState(() {
-                    _textController.clear();
-                  });
-                  Navigator.pop(context);
-                }),
+                    icon: Icon(Icons.close, color: Colour("#546B7F")),
+                    onPressed: () {
+                      setState(() {
+                        _textController.clear();
+                      });
+                      Navigator.pop(context);
+                    }),
             suffixIcon: IconButton(
                 icon: Icon(Icons.search, color: Colour("#68AD56")),
                 onPressed: () async {
@@ -181,7 +179,7 @@ class _SearchScreenState extends State<SearchScreen> {
         enablePullDown: false,
         enablePullUp: true,
         controller: _refreshController,
-        onLoading: () async =>  _onLoading(adding: true),
+        onLoading: () async => _onLoading(adding: true),
         footer: CustomFooter(
           builder: (BuildContext context, LoadStatus mode) {
             var hint = '';
@@ -295,7 +293,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             Text(
                               item.source.originalYearOfRelease != null &&
-                                  item.source.genreType != null
+                                      item.source.genreType != null
                                   ? ' • '
                                   : '',
                               style: TextStyle(
@@ -318,7 +316,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset('assets/images/search/like.png', width: 12.0, height: 12.0),
+                            Image.asset('assets/images/search/like.png',
+                                width: 12.0, height: 12.0),
                             SizedBox(width: 5),
                             Text(
                               item.source.score.votes != null
@@ -330,10 +329,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                   fontSize: 12.0),
                             ),
                             SizedBox(width: 20),
-                            Image.asset('assets/images/search/star.png',width: 12.0, height: 12.0),
+                            Image.asset('assets/images/search/star.png',
+                                width: 12.0, height: 12.0),
                             SizedBox(width: 5),
                             Text(
-                              item.source.score.score != null && item.source.score.score > 0
+                              item.source.score.score != null &&
+                                      item.source.score.score > 0
                                   ? item.source.score.score.toString()
                                   : tr('na'),
                               style: TextStyle(
