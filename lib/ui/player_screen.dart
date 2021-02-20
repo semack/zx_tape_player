@@ -266,7 +266,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           height: 292.0,
       padding: EdgeInsets.symmetric(vertical: 16.0),
       width: MediaQuery.of(context).size.width,
-      color: Colour('#28384C'),
+      color: Colour('#3B4E63'),
       child: Column(
         children: [
           Column(children: [
@@ -328,7 +328,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             ),
           ]),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -338,10 +338,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ),
               ])),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: SliderTheme(
               data: SliderThemeData(
-                  activeTrackColor: Colour('#546B7F'),
+                  activeTrackColor: Colors.white,// Colour('#546B7F'),
                   inactiveTrackColor: Colour('#546B7F'),
                   overlappingShapeStrokeColor: Colour('#546B7F'),
                   trackShape: CustomTrackShape(),
@@ -353,7 +353,48 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 }),
               ),
             ),
-          )
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FlatButton(
+                onPressed: () {},
+                //elevation: 0,
+                color: Colors.transparent,
+                child: Icon(
+                  Icons.refresh_rounded,
+                  color: Colour('#546B7F'),
+                  size: 50.0,
+                ),
+                padding: EdgeInsets.all(10.0),
+                shape: CircleBorder(),
+              ),
+              FlatButton(
+                onPressed: () {},
+                //elevation: 0,
+                color: Colour('#28384C'),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 50.0,
+                ),
+                padding: EdgeInsets.all(10.0),
+                shape: CircleBorder(),
+              ),
+              FlatButton(
+                onPressed: () {},
+                //elevation: 0,
+                color: Colors.transparent,
+                child: Icon(
+                  Icons.stop_rounded,
+                  color: Colour('#546B7F'),
+                  size: 50.0,
+                ),
+                padding: EdgeInsets.all(10.0),
+                shape: CircleBorder(),
+              ),
+            ],
+          ),
         ],
       ),
     ));
