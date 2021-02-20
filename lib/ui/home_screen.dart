@@ -1,7 +1,8 @@
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_document_picker/flutter_document_picker.dart';
+import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
 
@@ -98,18 +99,16 @@ class _HomeScreenState extends State<HomeScreen> {
           textColor: Theme.of(context).primaryColor,
           padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
           onPressed: () async {
-            FilePickerResult result = await FilePicker.platform.pickFiles(
-              allowMultiple: false,
-              type: FileType.custom,
-              allowedExtensions: [
-                'tap',
-                'tzx',
-              ],
+            FlutterDocumentPickerParams params = FlutterDocumentPickerParams(
+              allowedFileExtensions: ['tap', 'tzx'],
+              invalidFileNameSymbols: ['/'],
             );
-
-            if (result.files != null && result.files.length > 0)
+            final result =
+                await FlutterDocumentPicker.openDocument(params: params);
+            if (result != null && result.isNotEmpty)
               Navigator.pushNamed(context, PlayerScreen.routeName,
-                  arguments: result.files.first);
+                  arguments: PlayerArgs(
+                      PlayerArgsTypeEnum.file, result, tr('local_file')));
           },
           child: Text(
             tr('select_from_files'),

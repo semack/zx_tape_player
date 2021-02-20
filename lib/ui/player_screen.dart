@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'dart:ui';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
@@ -12,11 +10,10 @@ import 'package:path/path.dart';
 import 'package:zx_tape_player/models/item_dto.dart';
 import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
-import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_player/utils/platform.dart';
-import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class PlayerScreen extends StatefulWidget {
   PlayerScreen({Key key}) : super(key: key);
@@ -30,10 +27,11 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> {
   ItemDto _item;
-  List<String> _files;
+  List<String> _files = [];
   PlayerArgs _args;
   bool _isLoading = true;
   double _filePosition = 0.0;
+  bool _isPlaying = false;
   CarouselController _carouselController = new CarouselController();
 
   @override
@@ -50,7 +48,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _args = ModalRoute.of(this.context).settings.arguments;
-    _loadData();
+    if (_args.type == PlayerArgsTypeEnum.file) {
+      setState(() {
+        _isLoading = false;
+        _files.add(_args.id);
+      });
+    } else
+      _loadData();
   }
 
   @override
@@ -119,29 +123,37 @@ class _PlayerScreenState extends State<PlayerScreen> {
         child: Container(
           //color: Colors.black.withOpacity(0.7),
             color: Colour('#172434'),
-            child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _getFistLine(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colour('#B1B8C1'),
-                            letterSpacing: 0.3,
-                            fontSize: 12.0),
-                      ),
-                      SizedBox(height: 14.0),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+            child: _args.type == PlayerArgsTypeEnum.file
+                ? Center(
+                    child: Container(
+                    child: Cassette(
+                      animated: _isPlaying,
+                      durationSec: 30,
+                    ),
+                  ))
+                : SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.thumb_up_rounded,
-                            color: Colour('#B1B8C1'),
-                            size: 12.0,
+                          Text(
+                            _getFistLine(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colour('#B1B8C1'),
+                                letterSpacing: 0.3,
+                                fontSize: 12.0),
+                          ),
+                          SizedBox(height: 14.0),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.thumb_up_rounded,
+                                color: Colour('#B1B8C1'),
+                                size: 12.0,
                           ),
                           SizedBox(width: 5),
                           Text(
@@ -379,8 +391,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     shape: CircleBorder(),
                   ),
                   FlatButton(
-                    onPressed: () async {
-                      await _play();
+                    onPressed: () {    this.setState(() {
+                      _isPlaying = true;
+                    });
                     },
                     //elevation: 0,
                     color: Colour('#28384C'),
@@ -393,7 +406,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     shape: CircleBorder(),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {    setState(() {
+                      _isPlaying = false;
+                    });},
                     //elevation: 0,
                     color: Colors.transparent,
                     child: Icon(
@@ -412,7 +427,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Future _play() async {
-    setState(() {});
+    setState(() {
+      _isPlaying = true;
+    });
     // var url = Definitions.tapeBaseUrl + '/' + _files[_currentFileIndex];
     // var source = await BackendService.downloadTape(url);
     // var tape = await ZxTape.create(source);

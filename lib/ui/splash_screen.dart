@@ -4,6 +4,7 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
 import 'home_screen.dart';
@@ -14,17 +15,10 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  AnimationController _rotationController;
-
+     {
   @override
   void initState() {
-    _rotationController = AnimationController(
-      duration: const Duration(seconds: 3),
-      vsync: this,
-    );
     super.initState();
-    _rotationController.forward();
     var duration = 3;
     // skip annoying splash for debug mode
     // if (const String.fromEnvironment('DEBUG') != null) duration = 0;
@@ -38,8 +32,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    _rotationController.stop();
-    _rotationController.dispose();
     super.dispose();
   }
 
@@ -54,46 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: 260,
-              height: 189,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/splash/logo.png'),
-                    fit: BoxFit.fill,
-                  ),
-                  shape: BoxShape.rectangle),
-              child: Row(children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 55, left: 60),
-                      child: RotationTransition(
-                        turns: Tween(begin: 0.0, end: 1.9)
-                            .animate(_rotationController),
-                        child: Image.asset('assets/images/splash/spool.png'),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 55, left: 30),
-                      child: RotationTransition(
-                        turns: Tween(begin: 0.0, end: 1.9)
-                            .animate(_rotationController),
-                        child: Image.asset('assets/images/splash/spool.png'),
-                      ),
-                    ),
-                  ],
-                ),
-              ]),
-            ),
+           Cassette(),
             Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
