@@ -41,6 +41,7 @@ dependencies:
   carousel_slider: ^3.0.0
   just_audio: ^0.6.13
   progress_button: ^0.0.2
+  loading: ^1.0.2
 
 
   # The following adds the Cupertino Icons font to your application.
