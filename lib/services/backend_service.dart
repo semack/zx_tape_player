@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -76,17 +77,6 @@ class BackendService {
     // }
     return result;
   }
-
-  // Future<File> _downloadFile(String url, String filename) async {
-  //   var request = await httpClient.getUrl(Uri.parse(url));
-  //   var response = await request.close();
-  //   var bytes = await consolidateHttpClientResponseBytes(response);
-  //   String dir = (await getApplicationDocumentsDirectory()).path;
-  //   File file = new File('$dir/$filename');
-  //   await file.writeAsBytes(bytes);
-  //   return file;
-  // }
-
 
   static Future<Uint8List> downloadTape(String url) async {
     var response =

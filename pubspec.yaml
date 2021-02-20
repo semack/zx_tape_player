@@ -33,14 +33,14 @@ dependencies:
   sprintf: ^5.0.0
   http: ^0.12.2
   easy_localization: ^2.3.3
-  #ile_picker: ^2.1.6
   flutter_document_picker: ^4.0.1
   flutter_appcenter_bundle: ^3.2.0+2
   avatar_abc: ^1.0.4
   cached_network_image: ^2.5.0
   pull_to_refresh: 1.6.3
   carousel_slider: ^3.0.0
-  audio_service: ^0.16.2
+  just_audio: ^0.6.13
+  progress_button: ^0.0.2
 
 
   # The following adds the Cupertino Icons font to your application.

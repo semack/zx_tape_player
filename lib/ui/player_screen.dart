@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,7 +7,9 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:zx_tape_player/models/item_dto.dart';
 import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
@@ -14,6 +17,7 @@ import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_player/utils/platform.dart';
+import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class PlayerScreen extends StatefulWidget {
   PlayerScreen({Key key}) : super(key: key);
@@ -33,6 +37,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   double _filePosition = 0.0;
   bool _isPlaying = false;
   CarouselController _carouselController = new CarouselController();
+  final _player = AudioPlayer();
 
   @override
   void initState() {
@@ -83,13 +88,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
       body: _isLoading
           ? LoadingProgress()
           : Column(
-              children: <Widget>[
-                _buildInfoWidget(context),
-                _files.length > 0
-                    ? _buildPlayerWidget(context)
-                    : _buildNoFilesWidget(context)
-              ],
-            ),
+        children: <Widget>[
+          _buildInfoWidget(context),
+          _files.length > 0
+              ? _buildPlayerWidget(context)
+              : _buildNoFilesWidget(context)
+        ],
+      ),
     );
   }
 
@@ -125,58 +130,58 @@ class _PlayerScreenState extends State<PlayerScreen> {
             color: Colour('#172434'),
             child: _args.type == PlayerArgsTypeEnum.file
                 ? Center(
-                    child: Container(
-                    child: Cassette(
-                      animated: _isPlaying,
-                      durationSec: 30,
-                    ),
-                  ))
+                child: Container(
+                  child: Cassette(
+                    animated: _isPlaying,
+                    durationSec: 30,
+                  ),
+                ))
                 : SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _getFistLine(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Colour('#B1B8C1'),
+                            letterSpacing: 0.3,
+                            fontSize: 12.0),
+                      ),
+                      SizedBox(height: 14.0),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            _getFistLine(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colour('#B1B8C1'),
-                                letterSpacing: 0.3,
-                                fontSize: 12.0),
-                          ),
-                          SizedBox(height: 14.0),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
                               Icon(
                                 Icons.thumb_up_rounded,
                                 color: Colour('#B1B8C1'),
                                 size: 12.0,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            _item.source.score.votes != null
-                                ? _item.source.score.votes.toString()
-                                : tr('na'),
-                            style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 0.3,
-                                fontSize: 12.0),
-                          ),
-                          SizedBox(width: 20),
-                          Icon(
-                            Icons.star_rounded,
-                            color: Colour('#B1B8C1'),
-                            size: 14.0,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            _item.source.score.score != null &&
-                                    _item.source.score.score > 0
-                                ? _item.source.score.score.toString()
-                                : tr('na'),
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                _item.source.score.votes != null
+                                    ? _item.source.score.votes.toString()
+                                    : tr('na'),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 0.3,
+                                    fontSize: 12.0),
+                              ),
+                              SizedBox(width: 20),
+                              Icon(
+                                Icons.star_rounded,
+                                color: Colour('#B1B8C1'),
+                                size: 14.0,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                _item.source.score.score != null &&
+                                        _item.source.score.score > 0
+                                    ? _item.source.score.score.toString()
+                                    : tr('na'),
                             style: TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.3,
@@ -198,13 +203,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           ),
                           Text(
                             _item.source.originalPrice != null &&
-                                    _item.source.originalPrice.currency !=
-                                        null &&
-                                    _item.source.originalPrice.currency
-                                            .replaceAll('/', '') !=
-                                        'NA'
-                                ? _item.source.originalPrice.currency
-                                : '',
+                                        _item.source.originalPrice.currency !=
+                                            null &&
+                                        _item.source.originalPrice.currency
+                                                .replaceAll('/', '') !=
+                                            'NA'
+                                    ? _item.source.originalPrice.currency
+                                    : '',
                             style: TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.3,
@@ -217,18 +222,19 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           : SizedBox.shrink(),
                       Row(children: [
                         Expanded(
-                            child: _item.source.remarks != null
-                                ? Text(
-                                    _item.source.remarks.removeAllHtmlTags(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 0.3,
-                                        height: 1.4,
-                                        fontSize: 14.0),
-                                    maxLines: 256,
-                                  )
-                                : SizedBox.shrink())
-                      ]),
+                                child: _item.source.remarks != null
+                                    ? Text(
+                                        _item.source.remarks
+                                            .removeAllHtmlTags(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            letterSpacing: 0.3,
+                                            height: 1.4,
+                                            fontSize: 14.0),
+                                        maxLines: 256,
+                                      )
+                                    : SizedBox.shrink())
+                          ]),
                       SizedBox(height: 24.0),
                       Row(children: [
                         Expanded(
@@ -248,22 +254,22 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       ]),
                       SizedBox(height: 24.0),
                       Column(
-                          children: _item.source.screens
-                              .map(
-                                (e) => Center(
-                                  child: CachedNetworkImage(
-                                    imageUrl: fixScreenShotUrl(e.url),
-                                    imageBuilder: (context, provider) {
-                                      return Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(0, 0, 0, 16),
-                                          child: Image(image: provider));
-                                    },
-                                  ),
-                                ),
-                              )
-                              .toList())
-                    ]))));
+                              children: _item.source.screens
+                                  .map(
+                                    (e) => Center(
+                                      child: CachedNetworkImage(
+                                        imageUrl: fixScreenShotUrl(e.url),
+                                        imageBuilder: (context, provider) {
+                                          return Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 16),
+                                              child: Image(image: provider));
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                  .toList())
+                        ]))));
   }
 
   var _currentFileIndex = 0;
@@ -272,114 +278,114 @@ class _PlayerScreenState extends State<PlayerScreen> {
     return Center(
         child: Container(
           height: 292.0,
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      width: MediaQuery.of(context).size.width,
-      color: Colour('#3B4E63'),
-      child: Column(
-        children: [
-          Column(children: [
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                width: double.infinity,
-                //constraints: BoxConstraints.expand(),
-                //padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                //width: MediaQuery.of(context).size.width,
-                height: 80.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colour('#172434'),
-                    borderRadius: BorderRadius.circular(3.5),
-                  ),
-                  child: CarouselSlider(
-                    carouselController: _carouselController,
-                    items: _files
-                        .map((fileName) => Container(
-                              padding: EdgeInsets.all(12.0),
-                              child: Center(
-                                  child: Text(
+          padding: EdgeInsets.symmetric(vertical: 16.0),
+          width: MediaQuery.of(context).size.width,
+          color: Colour('#3B4E63'),
+          child: Column(
+            children: [
+              Column(children: [
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    width: double.infinity,
+                    //constraints: BoxConstraints.expand(),
+                    //padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    //width: MediaQuery.of(context).size.width,
+                    height: 80.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colour('#172434'),
+                        borderRadius: BorderRadius.circular(3.5),
+                      ),
+                      child: CarouselSlider(
+                        carouselController: _carouselController,
+                        items: _files
+                            .map((fileName) => Container(
+                          padding: EdgeInsets.all(12.0),
+                          child: Center(
+                              child: Text(
                                 basename(fileName),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 14.0),
                                 maxLines: 3,
                               )),
-                            ))
-                        .toList(),
-                    options: CarouselOptions(
-                        enableInfiniteScroll: _files.length > 1,
-                        autoPlay: false,
-                        enlargeCenterPage: false,
-                        aspectRatio: 2.0,
-                        viewportFraction: 1.0,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currentFileIndex = index;
-                          });
-                        }),
+                        ))
+                            .toList(),
+                        options: CarouselOptions(
+                            enableInfiniteScroll: _files.length > 1,
+                            autoPlay: false,
+                            enlargeCenterPage: false,
+                            aspectRatio: 2.0,
+                            viewportFraction: 1.0,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _currentFileIndex = index;
+                              });
+                            }),
+                      ),
+                    )),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _files.length > 1
+                        ? _files.map((f) {
+                      int index = _files.indexOf(f);
+                      return Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 2.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentFileIndex == index
+                              ? Colour('#D8DCE0')
+                              : Colour('546B7F'),
+                        ),
+                      );
+                    }).toList()
+                        : [
+                      Container(
+                        height: 8.0,
+                        margin: EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 2.0),
+                      )
+                    ]),
+              ]),
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('00:00/12:00',
+                            style: TextStyle(
+                                fontSize: 12.0, color: Colour('#B1B8C1'))),
+                        Text('12:00',
+                            style: TextStyle(
+                                fontSize: 12.0, color: Colour('#B1B8C1'))),
+                      ])),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: SliderTheme(
+                  data: SliderThemeData(
+                      activeTrackColor: Colors.white,
+                      // Colour('#546B7F'),
+                      inactiveTrackColor: Colour('#546B7F'),
+                      overlappingShapeStrokeColor: Colour('#546B7F'),
+                      trackShape: CustomTrackShape(),
+                      thumbColor: Colors.white),
+                  child: Slider(
+                    value: _filePosition,
+                    onChanged: (value) => setState(() {
+                      _filePosition = value;
+                    }),
                   ),
-                )),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _files.length > 1
-                    ? _files.map((f) {
-                        int index = _files.indexOf(f);
-                        return Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: EdgeInsets.symmetric(
-                              vertical: 16.0, horizontal: 2.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _currentFileIndex == index
-                                ? Colour('#D8DCE0')
-                                : Colour('546B7F'),
-                          ),
-                        );
-                      }).toList()
-                    : [
-                        Container(
-                          height: 8.0,
-                          margin: EdgeInsets.symmetric(
-                              vertical: 16.0, horizontal: 2.0),
-                        )
-                      ]),
-          ]),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('00:00/12:00',
-                        style: TextStyle(
-                            fontSize: 12.0, color: Colour('#B1B8C1'))),
-                    Text('12:00',
-                        style: TextStyle(
-                            fontSize: 12.0, color: Colour('#B1B8C1'))),
-                  ])),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: SliderTheme(
-              data: SliderThemeData(
-                  activeTrackColor: Colors.white,
-                  // Colour('#546B7F'),
-                  inactiveTrackColor: Colour('#546B7F'),
-                  overlappingShapeStrokeColor: Colour('#546B7F'),
-                  trackShape: CustomTrackShape(),
-                  thumbColor: Colors.white),
-              child: Slider(
-                value: _filePosition,
-                onChanged: (value) => setState(() {
-                  _filePosition = value;
-                }),
+                ),
               ),
-            ),
-          ),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 60.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FlatButton(
-                    onPressed: () {},
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 60.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FlatButton(
+                        onPressed: () {},
                     //elevation: 0,
                     color: Colors.transparent,
                     child: Icon(
@@ -391,11 +397,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     shape: CircleBorder(),
                   ),
                   FlatButton(
-                    onPressed: () {    this.setState(() {
-                      _isPlaying = true;
-                    });
-                    },
-                    //elevation: 0,
+                    onPressed: () => _play(),
                     color: Colour('#28384C'),
                     child: Icon(
                       Icons.play_arrow_rounded,
@@ -406,9 +408,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     shape: CircleBorder(),
                   ),
                   FlatButton(
-                    onPressed: () {    setState(() {
-                      _isPlaying = false;
-                    });},
+                    onPressed: () {
+                      setState(() {
+                        _isPlaying = false;
+                      });
+                    },
                     //elevation: 0,
                     color: Colors.transparent,
                     child: Icon(
@@ -419,34 +423,40 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     padding: EdgeInsets.all(10.0),
                     shape: CircleBorder(),
                   ),
-                ],
-              )),
-        ],
-      ),
-    ));
+                    ],
+                  )),
+            ],
+          ),
+        ));
   }
 
   Future _play() async {
     setState(() {
       _isPlaying = true;
     });
-    // var url = Definitions.tapeBaseUrl + '/' + _files[_currentFileIndex];
-    // var source = await BackendService.downloadTape(url);
-    // var tape = await ZxTape.create(source);
-    // var wav = await tape.toWavBytes();
-    // var file = File('zxtape.wav');
-    // await file.writeAsBytes(wav);
-    // AudioService.customAction('setVolume', 0.75);
-    // var mediaItem = MediaItem(id: 'zxtape.wav');
-    // AudioService.playMediaItem(mediaItem);
+    try {
+      var url = fixToSecUrl(_files[_currentFileIndex]);
+      var source = await BackendService.downloadTape(url);
+      var tape = await ZxTape.create(source);
+      var wav = await tape.toWavBytes();
+      var tempFile = '%s/%s.wav'.format([(await getTemporaryDirectory()).path,
+          basename(_files[_currentFileIndex])]);
+      var file = File(tempFile);
+      await file.writeAsBytes(wav);
+      await _player.setFilePath(tempFile);
+      await _player.setVolume(0.75);
+      _player.play();
+    } catch (e) {
+      var z = e;
+    }
   }
 
   List<String> _getFiles(ItemDto item) {
     return item.source.tosec
         .where((s) =>
-            s.path != null &&
-            (extension(s.path).toLowerCase() == '.tzx' ||
-                extension(s.path).toLowerCase() == '.tap'))
+    s.path != null &&
+        (extension(s.path).toLowerCase() == '.tzx' ||
+            extension(s.path).toLowerCase() == '.tap'))
         .map((s) => s.path)
         .toList();
   }
