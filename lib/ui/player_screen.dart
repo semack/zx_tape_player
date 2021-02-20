@@ -412,7 +412,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Future _play() async {
-    // setState(() {});
+    setState(() {});
     // var url = Definitions.tapeBaseUrl + '/' + _files[_currentFileIndex];
     // var source = await BackendService.downloadTape(url);
     // var tape = await ZxTape.create(source);
