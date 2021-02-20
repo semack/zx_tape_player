@@ -39,6 +39,7 @@ dependencies:
   cached_network_image: ^2.5.0
   pull_to_refresh: 1.6.3
   carousel_slider: ^3.0.0
+  audio_service: ^0.16.2
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -83,8 +84,6 @@ flutter:
     - assets/images/splash/spool.png
     - assets/images/home/search-icon.png
     - assets/translations/
-    - assets/images/search/like.png
-    - assets/images/search/star.png
 
   fonts:
     - family: ZxSpectrum

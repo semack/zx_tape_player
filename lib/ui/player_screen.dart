@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:zx_tape_player/models/item_dto.dart';
@@ -12,6 +15,8 @@ import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
+import 'package:zx_tape_player/utils/platform.dart';
+import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class PlayerScreen extends StatefulWidget {
   PlayerScreen({Key key}) : super(key: key);
@@ -111,21 +116,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   Widget _buildInfoWidget(BuildContext context) {
     return Expanded(
-        // child: Container(
-        //     width: MediaQuery.of(context).size.width,
-        //     decoration: BoxDecoration(
-        //       image: DecorationImage(
-        //         image: _item.source.screens.length > 0
-        //             ? NetworkImage(Definitions.contentBaseUrl +
-        //                 _item.source.screens[0].url)
-        //             : null,
-        //         fit: BoxFit.cover,
-        //       ),
-        //     ),
-        //     child: BackdropFilter(
-        //         filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
         child: Container(
-            //color: Colors.black.withOpacity(0.7),
+          //color: Colors.black.withOpacity(0.7),
             color: Colour('#172434'),
             child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
@@ -146,8 +138,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset('assets/images/search/like.png',
-                              width: 12.0, height: 12.0),
+                          Icon(
+                            Icons.thumb_up_rounded,
+                            color: Colour('#B1B8C1'),
+                            size: 12.0,
+                          ),
                           SizedBox(width: 5),
                           Text(
                             _item.source.score.votes != null
@@ -159,8 +154,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 fontSize: 12.0),
                           ),
                           SizedBox(width: 20),
-                          Image.asset('assets/images/search/star.png',
-                              width: 12.0, height: 12.0),
+                          Icon(
+                            Icons.star_rounded,
+                            color: Colour('#B1B8C1'),
+                            size: 14.0,
+                          ),
                           SizedBox(width: 5),
                           Text(
                             _item.source.score.score != null &&
@@ -175,7 +173,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           SizedBox(width: 20),
                           Text(
                             _item.source.originalPrice != null &&
-                                    _item.source.originalPrice.amount != null
+                                _item.source.originalPrice.amount != null
                                 ? _item.source.originalPrice.amount
                                 : '',
                             style: TextStyle(
@@ -187,7 +185,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             width: 5.0,
                           ),
                           Text(
-                            _item.source.originalPrice != null && _item.source.originalPrice.currency != null &&
+                            _item.source.originalPrice != null &&
+                                    _item.source.originalPrice.currency !=
+                                        null &&
                                     _item.source.originalPrice.currency
                                             .replaceAll('/', '') !=
                                         'NA'
@@ -240,17 +240,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               .map(
                                 (e) => Center(
                                   child: CachedNetworkImage(
-                                    imageUrl:
-                                        Definitions.contentBaseUrl + e.url,
+                                    imageUrl: fixScreenShotUrl(e.url),
                                     imageBuilder: (context, provider) {
                                       return Padding(
                                           padding:
                                               EdgeInsets.fromLTRB(0, 0, 0, 16),
                                           child: Image(image: provider));
                                     },
-                                    //   errorWidget: (context, url, error) => Padding(
-                                    //   padding: EdgeInsets.fromLTRB(0, 0, 0, 0)
-                                    // ),
                                   ),
                                 ),
                               )
@@ -285,63 +281,74 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   child: CarouselSlider(
                     carouselController: _carouselController,
                     items: _files
-                        .map((text) => Container(
+                        .map((fileName) => Container(
                               padding: EdgeInsets.all(12.0),
                               child: Center(
-                                      child: Text(
-                                    text,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 14.0),
-                                    maxLines: 3,
-                                  )),
-                                ))
-                            .toList(),
-                        options: CarouselOptions(
-                            enableInfiniteScroll: _files.length > 1 ,
-                            autoPlay: false,
-                            enlargeCenterPage: false,
-                            aspectRatio: 2.0,
-                            viewportFraction: 1.0,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                _currentFileIndex = index;
-                              });
-                            }),
-                      ),
-                    )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: _files.length > 1 ? _files.map((f) {
-                    int index = _files.indexOf(f);
-                    return Container(
-                      width: 8.0,
-                  height: 8.0,
-                  margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 2.0),
-                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentFileIndex == index
-                        ? Colour('#D8DCE0')
-                        : Colour('546B7F'),
+                                  child: Text(
+                                basename(fileName),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14.0),
+                                maxLines: 3,
+                              )),
+                            ))
+                        .toList(),
+                    options: CarouselOptions(
+                        enableInfiniteScroll: _files.length > 1,
+                        autoPlay: false,
+                        enlargeCenterPage: false,
+                        aspectRatio: 2.0,
+                        viewportFraction: 1.0,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _currentFileIndex = index;
+                          });
+                        }),
                   ),
-                );
-              }).toList() : [Container(height: 8.0, margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 2.0),)]
-            ),
+                )),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _files.length > 1
+                    ? _files.map((f) {
+                        int index = _files.indexOf(f);
+                        return Container(
+                          width: 8.0,
+                          height: 8.0,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 2.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _currentFileIndex == index
+                                ? Colour('#D8DCE0')
+                                : Colour('546B7F'),
+                          ),
+                        );
+                      }).toList()
+                    : [
+                        Container(
+                          height: 8.0,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 2.0),
+                        )
+                      ]),
           ]),
           Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                Text('00:00/12:00', style: TextStyle(fontSize: 12.0, color: Colour('#B1B8C1'))),
-                Text(
-                  '12:00', style: TextStyle(fontSize: 12.0, color: Colour('#B1B8C1'))
-                ),
-              ])),
+                    Text('00:00/12:00',
+                        style: TextStyle(
+                            fontSize: 12.0, color: Colour('#B1B8C1'))),
+                    Text('12:00',
+                        style: TextStyle(
+                            fontSize: 12.0, color: Colour('#B1B8C1'))),
+                  ])),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: SliderTheme(
               data: SliderThemeData(
-                  activeTrackColor: Colors.white,// Colour('#546B7F'),
+                  activeTrackColor: Colors.white,
+                  // Colour('#546B7F'),
                   inactiveTrackColor: Colour('#546B7F'),
                   overlappingShapeStrokeColor: Colour('#546B7F'),
                   trackShape: CustomTrackShape(),
@@ -354,50 +361,67 @@ class _PlayerScreenState extends State<PlayerScreen> {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              FlatButton(
-                onPressed: () {},
-                //elevation: 0,
-                color: Colors.transparent,
-                child: Icon(
-                  Icons.refresh_rounded,
-                  color: Colour('#546B7F'),
-                  size: 50.0,
-                ),
-                padding: EdgeInsets.all(10.0),
-                shape: CircleBorder(),
-              ),
-              FlatButton(
-                onPressed: () {},
-                //elevation: 0,
-                color: Colour('#28384C'),
-                child: Icon(
-                  Icons.play_arrow_rounded,
-                  color: Colors.white,
-                  size: 50.0,
-                ),
-                padding: EdgeInsets.all(10.0),
-                shape: CircleBorder(),
-              ),
-              FlatButton(
-                onPressed: () {},
-                //elevation: 0,
-                color: Colors.transparent,
-                child: Icon(
-                  Icons.stop_rounded,
-                  color: Colour('#546B7F'),
-                  size: 50.0,
-                ),
-                padding: EdgeInsets.all(10.0),
-                shape: CircleBorder(),
-              ),
-            ],
-          ),
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 60.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FlatButton(
+                    onPressed: () {},
+                    //elevation: 0,
+                    color: Colors.transparent,
+                    child: Icon(
+                      Icons.refresh_rounded,
+                      color: Colour('#546B7F'),
+                      size: 50.0,
+                    ),
+                    padding: EdgeInsets.all(10.0),
+                    shape: CircleBorder(),
+                  ),
+                  FlatButton(
+                    onPressed: () async {
+                      await _play();
+                    },
+                    //elevation: 0,
+                    color: Colour('#28384C'),
+                    child: Icon(
+                      Icons.play_arrow_rounded,
+                      color: Colors.white,
+                      size: 50.0,
+                    ),
+                    padding: EdgeInsets.all(10.0),
+                    shape: CircleBorder(),
+                  ),
+                  FlatButton(
+                    onPressed: () {},
+                    //elevation: 0,
+                    color: Colors.transparent,
+                    child: Icon(
+                      Icons.stop_rounded,
+                      color: Colour('#546B7F'),
+                      size: 50.0,
+                    ),
+                    padding: EdgeInsets.all(10.0),
+                    shape: CircleBorder(),
+                  ),
+                ],
+              )),
         ],
       ),
     ));
+  }
+
+  Future _play() async {
+    // setState(() {});
+    // var url = Definitions.tapeBaseUrl + '/' + _files[_currentFileIndex];
+    // var source = await BackendService.downloadTape(url);
+    // var tape = await ZxTape.create(source);
+    // var wav = await tape.toWavBytes();
+    // var file = File('zxtape.wav');
+    // await file.writeAsBytes(wav);
+    // AudioService.customAction('setVolume', 0.75);
+    // var mediaItem = MediaItem(id: 'zxtape.wav');
+    // AudioService.playMediaItem(mediaItem);
   }
 
   List<String> _getFiles(ItemDto item) {
@@ -406,7 +430,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             s.path != null &&
             (extension(s.path).toLowerCase() == '.tzx' ||
                 extension(s.path).toLowerCase() == '.tap'))
-        .map((s) => basename(s.path))
+        .map((s) => s.path)
         .toList();
   }
 

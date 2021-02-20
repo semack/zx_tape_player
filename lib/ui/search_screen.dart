@@ -12,6 +12,7 @@ import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
+import 'package:zx_tape_player/utils/platform.dart';
 
 import 'widgets/loading_progress.dart';
 
@@ -65,7 +66,7 @@ class _SearchScreenState extends State<SearchScreen> {
         body: Column(
           children: <Widget>[
             Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 4.0),
+                padding: EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 4.0),
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
@@ -217,7 +218,7 @@ class _SearchScreenState extends State<SearchScreen> {
           if (index >= _hits.length) return null;
           var item = _hits[index];
           var url = item.source.screens.length > 0
-              ? Definitions.contentBaseUrl + item.source.screens[0].url
+              ? fixScreenShotUrl(item.source.screens[0].url)
               : '';
           var textAvatar = AbcAvatar(
             item.source.title,
@@ -316,8 +317,11 @@ class _SearchScreenState extends State<SearchScreen> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset('assets/images/search/like.png',
-                                width: 12.0, height: 12.0),
+                            Icon(
+                              Icons.thumb_up_rounded,
+                              color: Colour('#B1B8C1'),
+                              size: 12.0,
+                            ),
                             SizedBox(width: 5),
                             Text(
                               item.source.score.votes != null
@@ -329,8 +333,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                   fontSize: 12.0),
                             ),
                             SizedBox(width: 20),
-                            Image.asset('assets/images/search/star.png',
-                                width: 12.0, height: 12.0),
+                            Icon(
+                              Icons.star_rounded,
+                              color: Colour('#B1B8C1'),
+                              size: 14.0,
+                            ),
                             SizedBox(width: 5),
                             Text(
                               item.source.score.score != null &&

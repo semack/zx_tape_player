@@ -4,6 +4,7 @@ class Definitions {
   static const contentType = 'SOFTWARE';
   static const pageSize = 30;
   static const baseUrl = 'https://api.zxinfo.dk/v3';
+  static const contentBaseUrl2 = 'https://zxinfo.dk/media';
   static const contentBaseUrl = 'https://spectrumcomputing.co.uk';
   static const tapeBaseUrl = "https://worldofspectrum.net";
   static const userAgent = 'ZX Tape Player/1.0';

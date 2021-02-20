@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:zx_tape_player/models/item_dto.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
@@ -73,6 +75,25 @@ class BackendService {
     //     var z = e;
     // }
     return result;
+  }
+
+  // Future<File> _downloadFile(String url, String filename) async {
+  //   var request = await httpClient.getUrl(Uri.parse(url));
+  //   var response = await request.close();
+  //   var bytes = await consolidateHttpClientResponseBytes(response);
+  //   String dir = (await getApplicationDocumentsDirectory()).path;
+  //   File file = new File('$dir/$filename');
+  //   await file.writeAsBytes(bytes);
+  //   return file;
+  // }
+
+
+  static Future<Uint8List> downloadTape(String url) async {
+    var response =
+    await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    if (response.statusCode == 200)
+      return response.bodyBytes;
+    return null;
   }
 
   static Future<String> _tryGetLetter(String query) async {
