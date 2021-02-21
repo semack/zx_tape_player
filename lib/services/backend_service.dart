@@ -13,9 +13,11 @@ import 'package:zx_tape_player/utils/user_agent_client.dart';
 class BackendService {
   static const _termsUrl = '/suggest/%s';
   static const _itemsUrl = '/search?query=%s&mode=compact' +
-      '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
+      '&sort=rel_desc&availability=Available'+
+      '&machinetype=ZXSPECTRUM&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _letterUrl = '/games/byletter/%s?mode=compact' +
-      '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
+      '&availability=Available'+
+      '&machinetype=ZXSPECTRUM&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _itemUrl = '/games/%s?mode=full';
 
   static Future<List<TermDto>> getSuggestions(String query) async {
