@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/item_dto.dart';
 import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
@@ -80,15 +81,17 @@ class _PlayerScreenState extends State<PlayerScreen> {
       body: _isLoading
           ? LoadingProgress()
           : Column(
-        children: <Widget>[
-          _buildInfoWidget(context),
-          _files.length > 0
+              children: <Widget>[
+                _buildInfoWidget(context),
+                _files.length > 0
                     ? Player(
                         files: _files,
+                        sourceType: _args.type,
+                        audioPlayer: audioPlayer,
                       )
                     : _buildNoFilesWidget(context)
               ],
-      ),
+            ),
     );
   }
 
@@ -124,30 +127,30 @@ class _PlayerScreenState extends State<PlayerScreen> {
             color: Colour('#172434'),
             child: _args.type == PlayerArgsTypeEnum.file
                 ? Center(
-                child: Container(
-                  child: Cassette(
-                    animated: false,
+                    child: Container(
+                    child: Cassette(
+                      animated: false,
                     ),
-                ))
+                  ))
                 : SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _getFistLine(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colour('#B1B8C1'),
-                            letterSpacing: 0.3,
-                            fontSize: 12.0),
-                      ),
-                      SizedBox(height: 14.0),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            _getFistLine(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colour('#B1B8C1'),
+                                letterSpacing: 0.3,
+                                fontSize: 12.0),
+                          ),
+                          SizedBox(height: 14.0),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
                               Icon(
                                 Icons.thumb_up_rounded,
                                 color: Colour('#B1B8C1'),
@@ -175,27 +178,28 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                         _item.source.score.score > 0
                                     ? _item.source.score.score.toString()
                                     : tr('na'),
-                            style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 0.3,
-                                fontSize: 12.0),
-                          ),
-                          SizedBox(width: 20),
-                          Text(
-                            _item.source.originalPrice != null &&
-                                _item.source.originalPrice.amount != null
-                                ? _item.source.originalPrice.amount
-                                : '',
-                            style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 0.3,
-                                fontSize: 12.0),
-                          ),
-                          SizedBox(
-                            width: 5.0,
-                          ),
-                          Text(
-                            _item.source.originalPrice != null &&
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 0.3,
+                                    fontSize: 12.0),
+                              ),
+                              SizedBox(width: 20),
+                              Text(
+                                _item.source.originalPrice != null &&
+                                        _item.source.originalPrice.amount !=
+                                            null
+                                    ? _item.source.originalPrice.amount
+                                    : '',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 0.3,
+                                    fontSize: 12.0),
+                              ),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              Text(
+                                _item.source.originalPrice != null &&
                                         _item.source.originalPrice.currency !=
                                             null &&
                                         _item.source.originalPrice.currency
@@ -203,18 +207,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                             'NA'
                                     ? _item.source.originalPrice.currency
                                     : '',
-                            style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 0.3,
-                                fontSize: 12.0),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 0.3,
+                                    fontSize: 12.0),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      _item.source.remarks != null
-                          ? SizedBox(height: 24.0)
-                          : SizedBox.shrink(),
-                      Row(children: [
-                        Expanded(
+                          _item.source.remarks != null
+                              ? SizedBox(height: 24.0)
+                              : SizedBox.shrink(),
+                          Row(children: [
+                            Expanded(
                                 child: _item.source.remarks != null
                                     ? Text(
                                         _item.source.remarks
@@ -228,25 +232,26 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                       )
                                     : SizedBox.shrink())
                           ]),
-                      SizedBox(height: 24.0),
-                      Row(children: [
-                        Expanded(
-                          child: Text(
-                            _item.source.authors
-                                .where((a) => a.name != null && a.type != null)
-                                .map((a) => '· ' + a.name + ' - ' + a.type)
-                                .join('\r\n'),
-                            style: TextStyle(
-                                color: Colour('#B1B8C1'),
-                                letterSpacing: 0.3,
-                                height: 1.6,
-                                fontSize: 12.0),
-                            overflow: TextOverflow.clip,
-                          ),
-                        )
-                      ]),
-                      SizedBox(height: 24.0),
-                      Column(
+                          SizedBox(height: 24.0),
+                          Row(children: [
+                            Expanded(
+                              child: Text(
+                                _item.source.authors
+                                    .where(
+                                        (a) => a.name != null && a.type != null)
+                                    .map((a) => '· ' + a.name + ' - ' + a.type)
+                                    .join('\r\n'),
+                                style: TextStyle(
+                                    color: Colour('#B1B8C1'),
+                                    letterSpacing: 0.3,
+                                    height: 1.6,
+                                    fontSize: 12.0),
+                                overflow: TextOverflow.clip,
+                              ),
+                            )
+                          ]),
+                          SizedBox(height: 24.0),
+                          Column(
                               children: _item.source.screens
                                   .map(
                                     (e) => Center(
@@ -268,9 +273,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
   List<String> _getFiles(ItemDto item) {
     return item.source.tosec
         .where((s) =>
-    s.path != null &&
-        (extension(s.path).toLowerCase() == '.tzx' ||
-            extension(s.path).toLowerCase() == '.tap'))
+            s.path != null &&
+            (extension(s.path).toLowerCase() == '.tzx' ||
+                extension(s.path).toLowerCase() == '.tap'))
         .map((s) => s.path)
         .toList();
   }

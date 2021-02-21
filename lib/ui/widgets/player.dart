@@ -6,17 +6,27 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_player/utils/platform.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class Player extends StatefulWidget {
-  Player({Key key, List<String> files}) : super(key: key) {
-    _files = files;
-  }
-
+  PlayerArgsTypeEnum _sourceType;
   List<String> _files;
+  AudioPlayer _audioPlayer;
+
+  Player(
+      {Key key,
+      PlayerArgsTypeEnum sourceType = PlayerArgsTypeEnum.network,
+      List<String> files,
+      AudioPlayer audioPlayer})
+      : super(key: key) {
+    _files = files;
+    _sourceType = sourceType;
+    _audioPlayer = audioPlayer;
+  }
 
   @override
   _PlayerState createState() {
@@ -25,13 +35,19 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
-  final _player = AudioPlayer();
   int _currentFileIndex = 0;
   double _filePosition = 0;
-  bool _isPlaying = false;
+  bool _isPreparation = false;
+  bool _paused = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
   }
 
@@ -77,7 +93,11 @@ class _PlayerState extends State<Player> {
                             ))
                         .toList(),
                     options: CarouselOptions(
-                        enableInfiniteScroll: widget._files.length > 1,
+                        scrollPhysics: widget._files.length < 2 ||
+                                widget._audioPlayer.playing ||
+                                _paused
+                            ? const NeverScrollableScrollPhysics()
+                            : const AlwaysScrollableScrollPhysics(),
                         autoPlay: false,
                         enlargeCenterPage: false,
                         aspectRatio: 2.0,
@@ -91,7 +111,8 @@ class _PlayerState extends State<Player> {
                 )),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: widget._files.length > 1
+                children: widget._files.length > 1 &&
+                        !(widget._audioPlayer.playing || _paused)
                     ? widget._files.map((f) {
                         int index = widget._files.indexOf(f);
                         return Container(
@@ -145,78 +166,127 @@ class _PlayerState extends State<Player> {
               ),
             ),
           ),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 60.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FlatButton(
-                    onPressed: () {},
-                    //elevation: 0,
-                    color: Colors.transparent,
-                    child: Icon(
-                      Icons.refresh_rounded,
-                      color: Colour('#546B7F'),
-                      size: 50.0,
-                    ),
-                    padding: EdgeInsets.all(10.0),
-                    shape: CircleBorder(),
-                  ),
-                  FlatButton(
-                    onPressed: () => _play(),
-                    color: Colour('#28384C'),
-                    child: Icon(
-                      Icons.play_arrow_rounded,
-                      color: Colors.white,
-                      size: 50.0,
-                    ),
-                    padding: EdgeInsets.all(10.0),
-                    shape: CircleBorder(),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        _isPlaying = false;
-                      });
-                    },
-                    //elevation: 0,
-                    color: Colors.transparent,
-                    child: Icon(
-                      Icons.stop_rounded,
-                      color: Colour('#546B7F'),
-                      size: 50.0,
-                    ),
-                    padding: EdgeInsets.all(10.0),
-                    shape: CircleBorder(),
-                  ),
-                ],
-              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FlatButton(
+                onPressed: () {
+                  _paused = false;
+                  widget._audioPlayer.stop();
+                  widget._audioPlayer.play();
+                  setState(() {});
+                },
+                color: Colors.transparent,
+                child: Icon(
+                  Icons.refresh_rounded,
+                  color: widget._audioPlayer.playing || _paused
+                      ? Colors.white
+                      : Colour('#546B7F'),
+                  size: 40.0,
+                ),
+                padding: EdgeInsets.all(10.0),
+                shape: CircleBorder(),
+              ),
+              Container(
+                width: 90.0,
+                child: Center(child:
+              _isPreparation
+                  ? Container(
+                      width: 60.0,
+                      height: 60.0,
+                      decoration: BoxDecoration(
+                        color: Colour('#28384C'),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30),
+                        ),
+                      ),
+                      child: Center( child:SizedBox(
+                        height: 40.0,
+                        width: 40.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                            backgroundColor: Colors.transparent,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white)),
+                      )))
+                  : FlatButton(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      onPressed: () => _play(),
+                      color: Colour('#28384C'),
+                      child: Icon(
+                        widget._audioPlayer.playing
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        color: Colors.white,
+                        size: 50.0,
+                      ),
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(5.0),
+                    ),),),
+              FlatButton(
+                onPressed: () {
+                  _paused = false;
+                  widget._audioPlayer.stop();
+                  setState(() {});
+                },
+                //elevation: 0,
+                color: Colors.transparent,
+                child: Icon(
+                  Icons.stop_rounded,
+                  color: widget._audioPlayer.playing || _paused
+                      ? Colors.white
+                      : Colour('#546B7F'),
+                  size: 40.0,
+                ),
+                padding: EdgeInsets.all(10.0),
+                shape: CircleBorder(),
+              ),
+            ],
+          ),
         ],
       ),
     ));
   }
 
   Future _play() async {
-    setState(() {
-      _isPlaying = true;
-    });
+    var tempFile =
+        '%s/zxtape.tmp.wav'.format([(await getTemporaryDirectory()).path]);
+    var file = File(tempFile);
     try {
-      var url = fixToSecUrl(widget._files[_currentFileIndex]);
-      var source = await BackendService.downloadTape(url);
-      var tape = await ZxTape.create(source);
-      var wav = await tape.toWavBytes();
-      var tempFile = '%s/%s.wav'.format([
-        (await getTemporaryDirectory()).path,
-        basename(widget._files[_currentFileIndex])
-      ]);
-      var file = File(tempFile);
-      await file.writeAsBytes(wav);
-      await _player.setFilePath(tempFile);
-      await _player.setVolume(0.75);
-      _player.play();
+      if (widget._audioPlayer.playing) {
+        widget._audioPlayer.pause();
+        _paused = true;
+      } else {
+        if (!_paused) {
+          setState(() {
+            _isPreparation = true;
+          });
+          var url = fixToSecUrl(widget._files[_currentFileIndex]);
+          var source = await BackendService.downloadTape(url);
+          var tape = await ZxTape.create(source);
+          var wav = await tape.toWavBytes();
+          await file.writeAsBytes(wav);
+          await widget._audioPlayer.setFilePath(tempFile);
+          await widget._audioPlayer.setVolume(0.75);
+        }
+        widget._audioPlayer.play();
+      }
     } catch (e) {
-      var z = e;
+      if (await file.exists()) await file.delete();
+      final snackBar = SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          e.toString(),
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+      // Find the Scaffold in the widget tree and use
+      // it to show a SnackBar.
+      Scaffold.of(this.context).showSnackBar(snackBar);
     }
+    setState(() {
+      _isPreparation = false;
+    });
   }
 }
 

@@ -14,8 +14,7 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-     {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -46,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-           Cassette(),
+            Cassette(),
             Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),

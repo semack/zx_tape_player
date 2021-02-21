@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:zx_tape_player/models/item_dto.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
@@ -67,22 +65,15 @@ class BackendService {
     var url = Definitions.baseUrl + _itemUrl.format([id]);
     var response =
         await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
-    // try {
     if (response.statusCode == 200)
       result = ItemDto.fromJson(json.decode(response.body));
-    // }
-    // catch(e)
-    // {
-    //     var z = e;
-    // }
     return result;
   }
 
   static Future<Uint8List> downloadTape(String url) async {
     var response =
-    await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
-    if (response.statusCode == 200)
-      return response.bodyBytes;
+        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    if (response.statusCode == 200) return response.bodyBytes;
     return null;
   }
 

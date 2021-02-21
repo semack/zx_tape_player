@@ -14,6 +14,7 @@ import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_player/utils/platform.dart';
 
+import '../main.dart';
 import 'widgets/loading_progress.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class SearchScreen extends StatefulWidget {
   }
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends State<SearchScreen> with RouteAware {
   TextEditingController _textController = TextEditingController();
   SuggestionsBoxController _suggestionsBoxController =
       SuggestionsBoxController();
@@ -45,6 +46,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(this.context));
     if (!_initialized) {
       _textController.text = ModalRoute.of(context).settings.arguments;
       _textController.selection = TextSelection.fromPosition(
@@ -54,7 +56,13 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
+  void didPopNext() {
+    audioPlayer.stop();
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _refreshController.dispose();
     _textController.dispose();
     super.dispose();

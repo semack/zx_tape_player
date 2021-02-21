@@ -6,7 +6,8 @@ class Definitions {
   static const baseUrl = 'https://api.zxinfo.dk/v3';
   static const contentBaseUrl2 = 'https://zxinfo.dk/media';
   static const contentBaseUrl = 'https://spectrumcomputing.co.uk';
-  static const tapeBaseUrl = "https://archive.org/download/zx-spectrum-tosec-set-v-2020-02-18-lady-eklipse/%s.zip%s";
+  static const tapeBaseUrl =
+      "https://archive.org/download/zx-spectrum-tosec-set-v-2020-02-18-lady-eklipse/%s.zip%s";
   static const userAgent = 'ZX Tape Player/1.0';
   static const appCenter_secret_iOS = 'b1cba03b-9d97-40bb-b013-d72470115b6e';
   static const appCenter_secret_Android =

@@ -27,8 +27,7 @@ class _CassetteState extends State<Cassette>
       vsync: this,
     );
     super.initState();
-    if (widget._animated)
-      _rotationController.forward();
+    if (widget._animated) _rotationController.forward();
   }
 
   @override
@@ -43,7 +42,6 @@ class _CassetteState extends State<Cassette>
 
   @override
   void dispose() {
-    _rotationController.stop();
     _rotationController.dispose();
     super.dispose();
   }

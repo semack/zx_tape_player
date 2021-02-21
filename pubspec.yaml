@@ -27,7 +27,7 @@ dependencies:
   path_provider: ^1.6.27
   path: ^1.7.0
   flutter_typeahead: ^2.0.0
-  zx_tape_to_wav: ^1.0.8
+  zx_tape_to_wav: ^1.0.14
   ocarina: ^0.0.5
   package_info: ^0.4.0+16
   sprintf: ^5.0.0
@@ -40,8 +40,8 @@ dependencies:
   pull_to_refresh: 1.6.3
   carousel_slider: ^3.0.0
   just_audio: ^0.6.13
-  progress_button: ^0.0.2
   loading: ^1.0.2
+  progress_indicator_button: ^0.0.3
 
 
   # The following adds the Cupertino Icons font to your application.
