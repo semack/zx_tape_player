@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
@@ -17,12 +18,11 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    SystemChannels.textInput
+        .invokeMethod('TextInput.hide'); // hide the keyboard
     super.initState();
-    var duration = 3;
-    // skip annoying splash for debug mode
-    // if (const String.fromEnvironment('DEBUG') != null) duration = 0;
     Timer(
-        Duration(seconds: duration),
+        Duration(seconds: 3),
         () => Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (BuildContext context) {
               return HomeScreen();
@@ -37,46 +37,51 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(children: <Widget>[
-      Expanded(
-          child: Container(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Cassette(),
-            Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: Text('zx_tape_player',
-                        textAlign: TextAlign.center,
-                        style:
-                            TextStyle(fontSize: 22, color: Colour('##E7ECED')))
-                    .tr()),
-          ],
-        ),
-      )),
-      Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
-          child: Column(children: <Widget>[
-            FutureBuilder<PackageInfo>(
-              builder:
-                  (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-                var copyrightText = tr('copyright');
-                if (snapshot.hasData) {
-                  copyrightText += tr('version').format(
-                      [snapshot.data.version, snapshot.data.buildNumber]);
-                }
-                return Text(copyrightText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 12, height: 1.8, color: Colour('#AFB6BB')));
-              },
-              future: PackageInfo.fromPlatform(),
-            ),
-          ]))
-    ]));
+        body: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Column(children: <Widget>[
+              Expanded(
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Cassette(),
+                      Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                          child: Text(tr('zx_tape_player'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 22, color: Colour('##E7ECED')))),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
+                  child: Column(children: <Widget>[
+                    FutureBuilder<PackageInfo>(
+                      builder: (BuildContext context,
+                          AsyncSnapshot<PackageInfo> snapshot) {
+                        var copyrightText = tr('copyright');
+                        if (snapshot.hasData) {
+                          copyrightText += tr('version').format([
+                            snapshot.data.version,
+                            snapshot.data.buildNumber
+                          ]);
+                        }
+                        return Text(copyrightText,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 12,
+                                height: 1.8,
+                                color: Colour('#AFB6BB')));
+                      },
+                      future: PackageInfo.fromPlatform(),
+                    ),
+                  ]))
+            ])));
   }
 }

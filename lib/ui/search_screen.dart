@@ -5,6 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/models/items_dto.dart';
 import 'package:zx_tape_player/models/player_args.dart';
@@ -35,7 +37,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       RefreshController(initialRefresh: false);
   static int _page = 0;
   var _initialized = false;
-  var _isLoading = false;
+  var _isNewSearch = false;
   List<Hits> _hits = [];
 
   @override
@@ -57,6 +59,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
 
   @override
   void didPopNext() {
+    audioPlayer.setFilePath('');
     audioPlayer.stop();
   }
 
@@ -78,8 +81,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: _isLoading ? LoadingProgress() : _buildSearchList(context),
+                  width: MediaQuery.of(context).size.width,
+              child:
+                  _isNewSearch ? LoadingProgress() : _buildSearchList(context),
             ))
           ],
         ),
@@ -193,30 +197,34 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
           builder: (BuildContext context, LoadStatus mode) {
             var hint = '';
             switch (mode) {
-              case LoadStatus.idle:
-                hint = tr('pull_up_to_load');
-                break;
+              // case LoadStatus.idle:
+              //   hint = tr('pull_up_to_load');
+              //   break;
               case LoadStatus.loading:
-                hint = tr('loading');
-                break;
+                return Container(
+                  height: 55.0, child: Center(
+                  child: Loading(
+                      indicator: BallPulseIndicator(),
+                      size: 30.0,
+                      color: Colour('#AFB6BB')),
+                ));
               case LoadStatus.failed:
-                hint = tr('load_failed_retry');
-                break;
-              case LoadStatus.canLoading:
-                hint = tr('release_load_more');
-                break;
-              case LoadStatus.noMore:
-                hint = tr('no_more_data');
-                break;
+                return Container(
+                  height: 55.0,
+                  child: Center(
+                      child: Text(tr('load_failed_retry'),
+                          style: TextStyle(
+                              fontSize: 11, color: Colour('#B1B8C1')))),
+                );
+              //break;
+              // case LoadStatus.canLoading:
+              //   hint = tr('release_load_more');
+              //   break;
+              // case LoadStatus.noMore:
+              //   hint = tr('no_more_data');
+              //   break;
             }
-
-            return Container(
-              height: 55.0,
-              child: Center(
-                  child: Text(hint,
-                      style:
-                          TextStyle(fontSize: 11, color: Colour('#B1B8C1')))),
-            );
+            return SizedBox(height: 0.0,);
           },
         ),
         child: ListView.builder(
@@ -291,34 +299,23 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              item.source.originalYearOfRelease != null
+                            FutureBuilder(builder: (context, snapshot) {
+                              var result = item.source.originalYearOfRelease !=
+                                      null
                                   ? item.source.originalYearOfRelease.toString()
-                                  : '',
-                              style: TextStyle(
-                                  color: Colour('#B1B8C1'),
-                                  letterSpacing: 0.3,
-                                  fontSize: 12.0),
-                            ),
-                            Text(
-                              item.source.originalYearOfRelease != null &&
-                                      item.source.genreType != null
-                                  ? ' • '
-                                  : '',
-                              style: TextStyle(
-                                  color: Colour('#B1B8C1'),
-                                  letterSpacing: 0.3,
-                                  fontSize: 12.0),
-                            ),
-                            Text(
-                              item.source.genreType != null
-                                  ? item.source.genreType
-                                  : '',
-                              style: TextStyle(
-                                  color: Colour('#B1B8C1'),
-                                  letterSpacing: 0.3,
-                                  fontSize: 12.0),
-                            ),
+                                  : '';
+                              if (item.source.genre != null) {
+                                if (result.isNotEmpty) result += ' • ';
+                                result += item.source.genreType;
+                              }
+                              return Text(
+                                result,
+                                style: TextStyle(
+                                    color: Colour('#B1B8C1'),
+                                    letterSpacing: 0.3,
+                                    fontSize: 12.0),
+                              );
+                            }),
                           ],
                         ),
                         SizedBox(height: 5.0),
@@ -368,7 +365,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       setState(() {
         _hits.clear();
         _page = 0;
-        _isLoading = true;
+        _isNewSearch = true;
       });
     }
     try {
@@ -395,7 +392,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       await AppCenter.trackEventAsync('error', e);
     }
     setState(() {
-      _isLoading = false;
+      _isNewSearch = false;
     });
   }
 }

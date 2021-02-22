@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
@@ -39,6 +41,8 @@ class _PlayerState extends State<Player> {
   double _filePosition = 0;
   bool _isPreparation = false;
   bool _paused = false;
+
+  AudioPlayer get _player => widget._audioPlayer;
 
   @override
   void didChangeDependencies() {
@@ -150,21 +154,55 @@ class _PlayerState extends State<Player> {
                   ])),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: SliderTheme(
-              data: SliderThemeData(
-                  activeTrackColor: Colors.white,
-                  // Colour('#546B7F'),
-                  inactiveTrackColor: Colour('#546B7F'),
-                  overlappingShapeStrokeColor: Colour('#546B7F'),
-                  trackShape: CustomTrackShape(),
-                  thumbColor: Colors.white),
-              child: Slider(
-                value: _filePosition,
-                onChanged: (value) => setState(() {
-                  _filePosition = value;
-                }),
-              ),
+            child: StreamBuilder<Duration>(
+              stream: _player.durationStream,
+              builder: (context, snapshot) {
+                final duration = snapshot.data ?? Duration.zero;
+                return StreamBuilder<PositionData>(
+                  stream: Rx.combineLatest2<Duration, Duration, PositionData>(
+                      _player.positionStream,
+                      _player.bufferedPositionStream,
+                          (position, bufferedPosition) =>
+                          PositionData(position, bufferedPosition)),
+                  builder: (context, snapshot) {
+                    final positionData = snapshot.data ??
+                        PositionData(Duration.zero, Duration.zero);
+                    var position = positionData.position ?? Duration.zero;
+                    if (position > duration) {
+                      position = duration;
+                    }
+                    var bufferedPosition =
+                        positionData.bufferedPosition ?? Duration.zero;
+                    if (bufferedPosition > duration) {
+                      bufferedPosition = duration;
+                    }
+                    return SeekBar(
+                      duration: duration,
+                      position: position,
+                      bufferedPosition: bufferedPosition,
+                      onChangeEnd: (newPosition) {
+                        _player.seek(newPosition);
+                      },
+                    );
+                  },
+                );
+              },
             ),
+            // child: SliderTheme(
+            //   data: SliderThemeData(
+            //       activeTrackColor: Colors.white,
+            //       // Colour('#546B7F'),
+            //       inactiveTrackColor: Colour('#546B7F'),
+            //       overlappingShapeStrokeColor: Colour('#546B7F'),
+            //       trackShape: CustomTrackShape(),
+            //       thumbColor: Colors.white),
+            //   child: Slider(
+            //     value: _filePosition,
+            //     onChanged: (value) => setState(() {
+            //       _filePosition = value;
+            //     }),
+            //   ),
+            // ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -241,6 +279,24 @@ class _PlayerState extends State<Player> {
                 padding: EdgeInsets.all(10.0),
                 shape: CircleBorder(),
               ),
+              StreamBuilder<double>(
+                stream: _player.speedStream,
+                builder: (context, snapshot) => IconButton(
+                  icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    _showSliderDialog(
+                      context: context,
+                      title: "Adjust speed",
+                      divisions: 10,
+                      min: 0.5,
+                      max: 1.5,
+                      stream: _player.speedStream,
+                      onChanged: _player.setSpeed,
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ],
@@ -248,6 +304,45 @@ class _PlayerState extends State<Player> {
     ));
   }
 
+  _showSliderDialog({
+    BuildContext context,
+    String title,
+    int divisions,
+    double min,
+    double max,
+    String valueSuffix = '',
+    Stream<double> stream,
+    ValueChanged<double> onChanged,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title, textAlign: TextAlign.center),
+        content: StreamBuilder<double>(
+          stream: stream,
+          builder: (context, snapshot) => Container(
+            height: 100.0,
+            child: Column(
+              children: [
+                Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
+                    style: TextStyle(
+                        fontFamily: 'Fixed',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0)),
+                Slider(
+                  divisions: divisions,
+                  min: min,
+                  max: max,
+                  value: snapshot.data ?? 1.0,
+                  onChanged: onChanged,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   Future _play() async {
     var tempFile =
         '%s/zxtape.tmp.wav'.format([(await getTemporaryDirectory()).path]);
@@ -305,4 +400,148 @@ class CustomTrackShape extends RoundedRectSliderTrackShape {
     final double trackWidth = parentBox.size.width;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
+}
+
+class PositionData {
+  final Duration position;
+  final Duration bufferedPosition;
+
+  PositionData(this.position, this.bufferedPosition);
+}
+
+class SeekBar extends StatefulWidget {
+  final Duration duration;
+  final Duration position;
+  final Duration bufferedPosition;
+  final ValueChanged<Duration> onChanged;
+  final ValueChanged<Duration> onChangeEnd;
+
+  SeekBar({
+    @required this.duration,
+    @required this.position,
+    @required this.bufferedPosition,
+    this.onChanged,
+    this.onChangeEnd,
+  });
+
+  @override
+  _SeekBarState createState() => _SeekBarState();
+}
+
+class _SeekBarState extends State<SeekBar> {
+  double _dragValue;
+  SliderThemeData _sliderThemeData;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _sliderThemeData = SliderTheme.of(this.context).copyWith(
+      trackHeight: 2.0,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SliderTheme(
+          data: _sliderThemeData.copyWith(
+            thumbShape: HiddenThumbComponentShape(),
+            activeTrackColor: Colors.blue.shade100,
+            inactiveTrackColor: Colors.grey.shade300,
+          ),
+          child: ExcludeSemantics(
+            child: Slider(
+              min: 0.0,
+              max: widget.duration.inMilliseconds.toDouble(),
+              value: widget.bufferedPosition.inMilliseconds.toDouble(),
+              onChangeStart: (value){
+                setState(() {
+                  _dragValue = value;
+                });
+              },
+              onChanged: (value) {
+                setState(() {
+                  _dragValue = value;
+                });
+                if (widget.onChanged != null) {
+                  widget.onChanged(Duration(milliseconds: value.round()));
+                }
+              },
+              onChangeEnd: (value) {
+                if (widget.onChangeEnd != null) {
+                  widget.onChangeEnd(Duration(milliseconds: value.round()));
+                }
+                _dragValue = null;
+              },
+            ),
+          ),
+        ),
+        SliderTheme(
+          data: _sliderThemeData.copyWith(
+            inactiveTrackColor: Colors.transparent,
+          ),
+          child: Slider(
+            min: 0.0,
+            max: widget.duration.inMilliseconds.toDouble(),
+            value: min(_dragValue ?? widget.position.inMilliseconds.toDouble(),
+                widget.duration.inMilliseconds.toDouble()),
+            onChanged: (value) {
+              setState(() {
+                _dragValue = value;
+              });
+              if (widget.onChanged != null) {
+                widget.onChanged(Duration(milliseconds: value.round()));
+              }
+            },
+            onChangeEnd: (value) {
+              if (widget.onChangeEnd != null) {
+                widget.onChangeEnd(Duration(milliseconds: value.round()));
+              }
+              _dragValue = null;
+            },
+          ),
+        ),
+        Positioned(
+          right: 16.0,
+          bottom: 0.0,
+          child: Text(
+              RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
+                  .firstMatch("$_remaining")
+                  ?.group(1) ??
+                  '$_remaining',
+              style: Theme.of(context).textTheme.caption),
+        ),
+        Positioned(
+          left: 16.0,
+          bottom: 0.0,
+          child: Text(_dragValue.toString(),
+              style: Theme.of(context).textTheme.caption),
+        ),
+      ],
+    );
+  }
+  Duration get _remaining => widget.duration - widget.position;
+}
+
+class HiddenThumbComponentShape extends SliderComponentShape {
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) => Size.zero;
+
+  @override
+  void paint(
+      PaintingContext context,
+      Offset center, {
+        Animation<double> activationAnimation,
+        Animation<double> enableAnimation,
+        bool isDiscrete,
+        TextPainter labelPainter,
+        RenderBox parentBox,
+        SliderThemeData sliderTheme,
+        TextDirection textDirection,
+        double value,
+        double textScaleFactor,
+        Size sizeWithOverflow,
+      }) {}
 }

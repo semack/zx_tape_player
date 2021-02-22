@@ -20,6 +20,10 @@ class _CassetteState extends State<Cassette>
     with SingleTickerProviderStateMixin {
   AnimationController _rotationController;
 
+  bool get _animated => widget._animated;
+  int get _durationSec => widget._durationSec;
+  final double _rotationRatio = 0.63;
+
   @override
   void initState() {
     _rotationController = AnimationController(
@@ -32,10 +36,10 @@ class _CassetteState extends State<Cassette>
 
   @override
   void didUpdateWidget(covariant Cassette oldWidget) {
-    _rotationController.duration = Duration(seconds: widget._durationSec);
-    if (widget._animated && !_rotationController.isAnimating)
+    _rotationController.duration = Duration(seconds: _durationSec);
+    if (_animated && !_rotationController.isAnimating)
       _rotationController.forward();
-    else if (!widget._animated && _rotationController.isAnimating)
+    else if (!_animated && _rotationController.isAnimating)
       _rotationController.stop();
     super.didUpdateWidget(oldWidget);
   }
@@ -57,33 +61,19 @@ class _CassetteState extends State<Cassette>
             fit: BoxFit.fill,
           ),
           shape: BoxShape.rectangle),
-      child: Row(children: <Widget>[
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 55, left: 60),
-              child: RotationTransition(
-                turns: Tween(begin: 0.0, end: 1.9).animate(_rotationController),
-                child: Image.asset('assets/images/splash/spool.png'),
-              ),
-            ),
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 55, left: 30),
-              child: RotationTransition(
-                turns: Tween(begin: 0.0, end: 1.9).animate(_rotationController),
-                child: Image.asset('assets/images/splash/spool.png'),
-              ),
-            ),
-          ],
-        ),
+      child: Stack(children: [
+        Positioned(
+          top: 55, left: 60,
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: _rotationRatio * _durationSec).animate(_rotationController),
+            child: Image.asset('assets/images/splash/spool.png'),
+          ),),
+        Positioned(
+          top: 55, right: 60,
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: _rotationRatio * _durationSec).animate(_rotationController),
+            child: Image.asset('assets/images/splash/spool.png'),
+          ),),
       ]),
     );
   }
