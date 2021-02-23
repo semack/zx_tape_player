@@ -55,6 +55,23 @@ class _PlayerScreenState extends State<PlayerScreen> {
       _loadData();
   }
 
+  Future _loadData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    _item = await BackendService.getItem(_args.id);
+    _files = _item.source.tosec
+        .where((s) =>
+            s.path != null &&
+            (extension(s.path).toLowerCase() == '.tzx' ||
+                extension(s.path).toLowerCase() == '.tap'))
+        .map((s) => s.path)
+        .toList();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     //_loadData();
@@ -95,17 +112,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
     );
   }
 
-  String _getFistLine() {
-    var result = _item.source.originalYearOfRelease != null
-        ? _item.source.originalYearOfRelease.toString()
-        : '';
-    if (_item.source.genre != null) {
-      if (result.isNotEmpty) result += ' • ';
-      result += _item.source.genre;
-    }
-    return result;
-  }
-
   Widget _buildNoFilesWidget(BuildContext context) {
     return Container(
         color: Colour('#3B4E63'),
@@ -134,19 +140,29 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ))
                 : SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                //clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            _getFistLine(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colour('#B1B8C1'),
-                                letterSpacing: 0.3,
-                                fontSize: 12.0),
-                          ),
+                          FutureBuilder(builder: (context, snapshot) {
+                            var result = _item.source.originalYearOfRelease !=
+                                    null
+                                ? _item.source.originalYearOfRelease.toString()
+                                : '';
+                            if (_item.source.genre != null) {
+                              if (result.isNotEmpty) result += ' • ';
+                              result += _item.source.genre;
+                            }
+                            return Text(
+                              result,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: Colour('#B1B8C1'),
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                            );
+                          }),
                           SizedBox(height: 14.0),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -268,26 +284,5 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                   )
                                   .toList())
                         ]))));
-  }
-
-  List<String> _getFiles(ItemDto item) {
-    return item.source.tosec
-        .where((s) =>
-            s.path != null &&
-            (extension(s.path).toLowerCase() == '.tzx' ||
-                extension(s.path).toLowerCase() == '.tap'))
-        .map((s) => s.path)
-        .toList();
-  }
-
-  Future _loadData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    _item = await BackendService.getItem(_args.id);
-    _files = _getFiles(_item);
-    setState(() {
-      _isLoading = false;
-    });
   }
 }
