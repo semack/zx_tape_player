@@ -12,7 +12,7 @@ import 'package:zx_tape_player/models/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
-import 'package:zx_tape_player/ui/widgets/player.dart';
+import 'package:zx_tape_player/ui/widgets/tape_player.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_player/utils/platform.dart';
 
@@ -101,7 +101,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
               children: <Widget>[
                 _buildInfoWidget(context),
                 _files.length > 0
-                    ? Player(
+                    ? TapePlayer(
                         files: _files,
                         sourceType: _args.type,
                         audioPlayer: audioPlayer,
@@ -129,7 +129,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Widget _buildInfoWidget(BuildContext context) {
     return Expanded(
         child: Container(
-          //color: Colors.black.withOpacity(0.7),
+            //color: Colors.black.withOpacity(0.7),
             color: Colour('#172434'),
             child: _args.type == PlayerArgsTypeEnum.file
                 ? Center(
@@ -140,15 +140,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ))
                 : SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
-                //clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FutureBuilder(builder: (context, snapshot) {
-                            var result = _item.source.originalYearOfRelease !=
-                                    null
-                                ? _item.source.originalYearOfRelease.toString()
-                                : '';
+                            var result = _item.source.originalYearOfRelease
+                                    ?.toString() ??
+                                '';
                             if (_item.source.genre != null) {
                               if (result.isNotEmpty) result += ' • ';
                               result += _item.source.genre;
@@ -172,23 +171,21 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 color: Colour('#B1B8C1'),
                                 size: 12.0,
                               ),
-                              SizedBox(width: 5),
+                              SizedBox(width: 5.0),
                               Text(
-                                _item.source.score.votes != null
-                                    ? _item.source.score.votes.toString()
-                                    : tr('na'),
+                                _item.source.score.votes?.toString() ?? tr('na'),
                                 style: TextStyle(
                                     color: Colors.white,
                                     letterSpacing: 0.3,
                                     fontSize: 12.0),
                               ),
-                              SizedBox(width: 20),
+                              SizedBox(width: 8),
                               Icon(
                                 Icons.star_rounded,
                                 color: Colour('#B1B8C1'),
                                 size: 14.0,
                               ),
-                              SizedBox(width: 5),
+                              SizedBox(width: 5.0),
                               Text(
                                 _item.source.score.score != null &&
                                         _item.source.score.score > 0
@@ -199,35 +196,33 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                     letterSpacing: 0.3,
                                     fontSize: 12.0),
                               ),
-                              SizedBox(width: 20),
-                              Text(
-                                _item.source.originalPrice != null &&
-                                        _item.source.originalPrice.amount !=
-                                            null
-                                    ? _item.source.originalPrice.amount
-                                    : '',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 0.3,
-                                    fontSize: 12.0),
+                              SizedBox(width: 8),
+                              Icon(
+                                Icons.attach_money_rounded,
+                                color: Colour('#B1B8C1'),
+                                size: 14.0,
                               ),
-                              SizedBox(
-                                width: 5.0,
-                              ),
-                              Text(
-                                _item.source.originalPrice != null &&
-                                        _item.source.originalPrice.currency !=
-                                            null &&
-                                        _item.source.originalPrice.currency
-                                                .replaceAll('/', '') !=
-                                            'NA'
-                                    ? _item.source.originalPrice.currency
-                                    : '',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 0.3,
-                                    fontSize: 12.0),
-                              ),
+                              SizedBox(width: 2),
+                              FutureBuilder(builder: (context, snapshot) {
+                                var price = '-';
+                                if (_item.source.originalPrice != null) {
+                                  price =
+                                      _item.source.originalPrice.amount ?? '';
+                                  var currency = _item
+                                          .source.originalPrice.currency
+                                          ?.replaceAll('/', '') ??
+                                      '';
+                                  if (currency != 'NA') price += currency;
+                                }
+                                return Text(
+                                  price,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      letterSpacing: 0.3,
+                                      fontSize: 12.0),
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              }),
                             ],
                           ),
                           _item.source.remarks != null

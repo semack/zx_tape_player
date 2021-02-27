@@ -9,9 +9,17 @@ extension StringIsNullOrEmpty on String {
       (arguments == null || arguments.toString().trim().isEmpty);
 }
 
-extension RmoveAllHtmlTagsExtension on String {
+extension RemoveAllHtmlTagsExtension on String {
   String removeAllHtmlTags() {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
     return this.replaceAll(exp, '');
+  }
+}
+
+extension DurationToStringExtension on Duration {
+  String toTimeString() {
+    RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
+        .firstMatch("$this")
+        ?.group(1);
   }
 }

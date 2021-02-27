@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
@@ -14,35 +15,29 @@ import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_player/utils/platform.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
-class Player extends StatefulWidget {
-  PlayerArgsTypeEnum _sourceType;
-  List<String> _files;
-  AudioPlayer _audioPlayer;
+class TapePlayer extends StatefulWidget {
+  final List<String> files;
+  final AudioPlayer audioPlayer;
 
-  Player(
+  TapePlayer(
       {Key key,
       PlayerArgsTypeEnum sourceType = PlayerArgsTypeEnum.network,
-      List<String> files,
-      AudioPlayer audioPlayer})
-      : super(key: key) {
-    _files = files;
-    _sourceType = sourceType;
-    _audioPlayer = audioPlayer;
-  }
+      @required this.files,
+      @required this.audioPlayer})
+      : super(key: key) {}
 
   @override
-  _PlayerState createState() {
-    return _PlayerState();
+  _TapePlayerState createState() {
+    return _TapePlayerState();
   }
 }
 
-class _PlayerState extends State<Player> {
+class _TapePlayerState extends State<TapePlayer> {
   int _currentFileIndex = 0;
-  double _filePosition = 0;
   bool _isPreparation = false;
   bool _paused = false;
 
-  AudioPlayer get _player => widget._audioPlayer;
+  AudioPlayer get _player => widget.audioPlayer;
 
   @override
   void didChangeDependencies() {
@@ -84,21 +79,24 @@ class _PlayerState extends State<Player> {
                     borderRadius: BorderRadius.circular(3.5),
                   ),
                   child: CarouselSlider(
-                    items: widget._files
+                    items: widget.files
                         .map((fileName) => Container(
                               padding: EdgeInsets.all(12.0),
                               child: Center(
                                   child: Text(
                                 basename(fileName),
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 14.0),
+                                    color: Colors.white, fontSize: 12.0),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
                                 maxLines: 3,
                               )),
                             ))
                         .toList(),
                     options: CarouselOptions(
-                        scrollPhysics: widget._files.length < 2 ||
-                                widget._audioPlayer.playing ||
+                        scrollPhysics:
+                        // widget.files.length < 2 ||
+                                widget.audioPlayer.playing ||
                                 _paused
                             ? const NeverScrollableScrollPhysics()
                             : const AlwaysScrollableScrollPhysics(),
@@ -115,10 +113,11 @@ class _PlayerState extends State<Player> {
                 )),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: widget._files.length > 1 &&
-                        !(widget._audioPlayer.playing || _paused)
-                    ? widget._files.map((f) {
-                        int index = widget._files.indexOf(f);
+                children:
+                // widget.files.length > 1
+                //     ?
+                widget.files.map((f) {
+                        int index = widget.files.indexOf(f);
                         return Container(
                           width: 8.0,
                           height: 8.0,
@@ -132,28 +131,17 @@ class _PlayerState extends State<Player> {
                           ),
                         );
                       }).toList()
-                    : [
-                        Container(
-                          height: 8.0,
-                          margin: EdgeInsets.symmetric(
-                              vertical: 16.0, horizontal: 2.0),
-                        )
-                      ]),
+                    // : [
+                    //     Container(
+                    //       height: 8.0,
+                    //       margin: EdgeInsets.symmetric(
+                    //           vertical: 16.0, horizontal: 2.0),
+                    //     )
+                    //   ]
+            ),
           ]),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('00:00/12:00',
-                        style: TextStyle(
-                            fontSize: 12.0, color: Colour('#B1B8C1'))),
-                    Text('12:00',
-                        style: TextStyle(
-                            fontSize: 12.0, color: Colour('#B1B8C1'))),
-                  ])),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
             child: StreamBuilder<Duration>(
               stream: _player.durationStream,
               builder: (context, snapshot) {
@@ -162,7 +150,7 @@ class _PlayerState extends State<Player> {
                   stream: Rx.combineLatest2<Duration, Duration, PositionData>(
                       _player.positionStream,
                       _player.bufferedPositionStream,
-                          (position, bufferedPosition) =>
+                      (position, bufferedPosition) =>
                           PositionData(position, bufferedPosition)),
                   builder: (context, snapshot) {
                     final positionData = snapshot.data ??
@@ -188,21 +176,6 @@ class _PlayerState extends State<Player> {
                 );
               },
             ),
-            // child: SliderTheme(
-            //   data: SliderThemeData(
-            //       activeTrackColor: Colors.white,
-            //       // Colour('#546B7F'),
-            //       inactiveTrackColor: Colour('#546B7F'),
-            //       overlappingShapeStrokeColor: Colour('#546B7F'),
-            //       trackShape: CustomTrackShape(),
-            //       thumbColor: Colors.white),
-            //   child: Slider(
-            //     value: _filePosition,
-            //     onChanged: (value) => setState(() {
-            //       _filePosition = value;
-            //     }),
-            //   ),
-            // ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -210,14 +183,14 @@ class _PlayerState extends State<Player> {
               FlatButton(
                 onPressed: () {
                   _paused = false;
-                  widget._audioPlayer.stop();
-                  widget._audioPlayer.play();
+                  widget.audioPlayer.stop();
+                  widget.audioPlayer.play();
                   setState(() {});
                 },
                 color: Colors.transparent,
                 child: Icon(
                   Icons.refresh_rounded,
-                  color: widget._audioPlayer.playing || _paused
+                  color: widget.audioPlayer.playing || _paused
                       ? Colors.white
                       : Colour('#546B7F'),
                   size: 40.0,
@@ -227,51 +200,55 @@ class _PlayerState extends State<Player> {
               ),
               Container(
                 width: 90.0,
-                child: Center(child:
-              _isPreparation
-                  ? Container(
-                      width: 60.0,
-                      height: 60.0,
-                      decoration: BoxDecoration(
-                        color: Colour('#28384C'),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(30),
+                child: Center(
+                  child: _isPreparation
+                      ? Container(
+                          width: 60.0,
+                          height: 60.0,
+                          decoration: BoxDecoration(
+                            color: Colour('#28384C'),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                          child: Center(
+                              child: SizedBox(
+                            height: 40.0,
+                            width: 40.0,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                backgroundColor: Colors.transparent,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white)),
+                          )))
+                      : FlatButton(
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          onPressed: () => _play(),
+                          color: Colour('#28384C'),
+                          child: Icon(
+                            widget.audioPlayer.playing
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            color: Colors.white,
+                            size: 50.0,
+                          ),
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.all(5.0),
                         ),
-                      ),
-                      child: Center( child:SizedBox(
-                        height: 40.0,
-                        width: 40.0,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.0,
-                            backgroundColor: Colors.transparent,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white)),
-                      )))
-                  : FlatButton(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      onPressed: () => _play(),
-                      color: Colour('#28384C'),
-                      child: Icon(
-                        widget._audioPlayer.playing
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
-                        color: Colors.white,
-                        size: 50.0,
-                      ),
-                      shape: CircleBorder(),
-                      padding: EdgeInsets.all(5.0),
-                    ),),),
+                ),
+              ),
               FlatButton(
                 onPressed: () {
                   _paused = false;
-                  widget._audioPlayer.stop();
+                  widget.audioPlayer.stop();
                   setState(() {});
                 },
                 //elevation: 0,
                 color: Colors.transparent,
                 child: Icon(
                   Icons.stop_rounded,
-                  color: widget._audioPlayer.playing || _paused
+                  color: widget.audioPlayer.playing || _paused
                       ? Colors.white
                       : Colour('#546B7F'),
                   size: 40.0,
@@ -287,10 +264,10 @@ class _PlayerState extends State<Player> {
                   onPressed: () {
                     _showSliderDialog(
                       context: context,
-                      title: "Adjust speed",
-                      divisions: 10,
-                      min: 0.5,
-                      max: 1.5,
+                      title: tr('adjust_speed'),
+                      divisions: 12,
+                      min: 1,
+                      max: 4,
                       stream: _player.speedStream,
                       onChanged: _player.setSpeed,
                     );
@@ -310,14 +287,17 @@ class _PlayerState extends State<Player> {
     int divisions,
     double min,
     double max,
-    String valueSuffix = '',
+    String valueSuffix = 'x',
     Stream<double> stream,
     ValueChanged<double> onChanged,
   }) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title, textAlign: TextAlign.center),
+        backgroundColor: Colour('#3B4E63'),
+        title: Text(title,
+            textAlign: TextAlign.center,
+            style: TextStyle(wordSpacing: 0.3, color: Colors.white)),
         content: StreamBuilder<double>(
           stream: stream,
           builder: (context, snapshot) => Container(
@@ -326,16 +306,24 @@ class _PlayerState extends State<Player> {
               children: [
                 Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
                     style: TextStyle(
-                        fontFamily: 'Fixed',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24.0)),
-                Slider(
-                  divisions: divisions,
-                  min: min,
-                  max: max,
-                  value: snapshot.data ?? 1.0,
-                  onChanged: onChanged,
+                        wordSpacing: 0.5, fontSize: 24.0, color: Colors.white)),
+                SizedBox(
+                  height: 16.0,
                 ),
+                SliderTheme(
+                    data: SliderThemeData(
+                        activeTickMarkColor: Colors.white,
+                        activeTrackColor: Colors.white,
+                        inactiveTickMarkColor: Colors.white,
+                        inactiveTrackColor: Colour('#546B7F'),
+                        thumbColor: Colors.white),
+                    child: Slider(
+                      divisions: divisions,
+                      min: min,
+                      max: max,
+                      value: snapshot.data ?? 1.0,
+                      onChanged: onChanged,
+                    )),
               ],
             ),
           ),
@@ -343,28 +331,29 @@ class _PlayerState extends State<Player> {
       ),
     );
   }
+
   Future _play() async {
     var tempFile =
         '%s/zxtape.tmp.wav'.format([(await getTemporaryDirectory()).path]);
     var file = File(tempFile);
     try {
-      if (widget._audioPlayer.playing) {
-        widget._audioPlayer.pause();
+      if (widget.audioPlayer.playing) {
+        widget.audioPlayer.pause();
         _paused = true;
       } else {
         if (!_paused) {
           setState(() {
             _isPreparation = true;
           });
-          var url = fixToSecUrl(widget._files[_currentFileIndex]);
+          var url = fixToSecUrl(widget.files[_currentFileIndex]);
           var source = await BackendService.downloadTape(url);
           var tape = await ZxTape.create(source);
           var wav = await tape.toWavBytes();
           await file.writeAsBytes(wav);
-          await widget._audioPlayer.setFilePath(tempFile);
-          await widget._audioPlayer.setVolume(0.75);
+          await widget.audioPlayer.setFilePath(tempFile);
+          await widget.audioPlayer.setVolume(0.75);
         }
-        widget._audioPlayer.play();
+        widget.audioPlayer.play();
       }
     } catch (e) {
       if (await file.exists()) await file.delete();
@@ -448,19 +437,20 @@ class _SeekBarState extends State<SeekBar> {
         SliderTheme(
           data: _sliderThemeData.copyWith(
             thumbShape: HiddenThumbComponentShape(),
-            activeTrackColor: Colors.blue.shade100,
-            inactiveTrackColor: Colors.grey.shade300,
+            activeTrackColor: Colors.white30,
+            inactiveTrackColor: Colour('#546B7F'),
+            trackShape: CustomTrackShape(),
           ),
           child: ExcludeSemantics(
             child: Slider(
               min: 0.0,
               max: widget.duration.inMilliseconds.toDouble(),
               value: widget.bufferedPosition.inMilliseconds.toDouble(),
-              onChangeStart: (value){
-                setState(() {
-                  _dragValue = value;
-                });
-              },
+              // onChangeStart: (value) {
+              //   setState(() {
+              //     _dragValue = value;
+              //   });
+              // },
               onChanged: (value) {
                 setState(() {
                   _dragValue = value;
@@ -480,7 +470,10 @@ class _SeekBarState extends State<SeekBar> {
         ),
         SliderTheme(
           data: _sliderThemeData.copyWith(
+            activeTrackColor: Colors.white,
             inactiveTrackColor: Colors.transparent,
+            thumbColor: Colour(Colors.white),
+            trackShape: CustomTrackShape(),
           ),
           child: Slider(
             min: 0.0,
@@ -504,24 +497,40 @@ class _SeekBarState extends State<SeekBar> {
           ),
         ),
         Positioned(
-          right: 16.0,
-          bottom: 0.0,
-          child: Text(
-              RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                  .firstMatch("$_remaining")
-                  ?.group(1) ??
-                  '$_remaining',
-              style: Theme.of(context).textTheme.caption),
+          left: 0.0,
+          top: 0.0,
+          child: FutureBuilder(builder: (context, snapshot) {
+            return Text(_getTimeString(_position),
+                style: TextStyle(fontSize: 12.0, color: Colour('#B1B8C1')));
+          }),
         ),
         Positioned(
-          left: 16.0,
-          bottom: 0.0,
-          child: Text(_dragValue.toString(),
-              style: Theme.of(context).textTheme.caption),
-        ),
+            right: 0.0,
+            top: 0.0,
+            child: Text(
+                "%s/%s".format([
+                  _getTimeString(_remaining),
+                  _getTimeString(widget.duration)
+                ]),
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colour('#B1B8C1'),
+                ))),
       ],
     );
   }
+
+  String _getTimeString(Duration time) {
+    return RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
+            .firstMatch("$time")
+            ?.group(1) ??
+        "$time";
+  }
+
+  Duration get _position => _dragValue != null
+      ? Duration(milliseconds: _dragValue.round())
+      : widget.position;
+
   Duration get _remaining => widget.duration - widget.position;
 }
 
@@ -530,18 +539,15 @@ class HiddenThumbComponentShape extends SliderComponentShape {
   Size getPreferredSize(bool isEnabled, bool isDiscrete) => Size.zero;
 
   @override
-  void paint(
-      PaintingContext context,
-      Offset center, {
-        Animation<double> activationAnimation,
-        Animation<double> enableAnimation,
-        bool isDiscrete,
-        TextPainter labelPainter,
-        RenderBox parentBox,
-        SliderThemeData sliderTheme,
-        TextDirection textDirection,
-        double value,
-        double textScaleFactor,
-        Size sizeWithOverflow,
-      }) {}
+  void paint(PaintingContext context, Offset center,
+      {Animation<double> activationAnimation,
+      Animation<double> enableAnimation,
+      bool isDiscrete,
+      TextPainter labelPainter,
+      RenderBox parentBox,
+      SliderThemeData sliderTheme,
+      TextDirection textDirection,
+      double value,
+      double textScaleFactor,
+      Size sizeWithOverflow}) {}
 }
