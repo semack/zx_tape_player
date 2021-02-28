@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
-import 'package:zx_tape_player/models/item_dto.dart';
-import 'package:zx_tape_player/models/items_dto.dart';
-import 'package:zx_tape_player/models/term_dto.dart';
+import 'package:path/path.dart';
+import 'package:zx_tape_player/models/application/item_model.dart';
+import 'package:zx_tape_player/models/remote/item_dto.dart';
+import 'package:zx_tape_player/models/remote/items_dto.dart';
+import 'package:zx_tape_player/models/remote/term_dto.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
+import 'package:zx_tape_player/utils/platform.dart';
 import 'package:zx_tape_player/utils/user_agent_client.dart';
 
 class BackendService {
@@ -60,13 +63,31 @@ class BackendService {
     return result;
   }
 
-  static Future<ItemDto> getItem(String id) async {
-    ItemDto result;
+  static Future<ItemModel> getItemModel(String id) async {
+    ItemModel result;
     var url = Definitions.baseUrl + _itemUrl.format([id]);
     var response =
         await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
-    if (response.statusCode == 200)
-      result = ItemDto.fromJson(json.decode(response.body));
+    if (response.statusCode == 200) {
+      var list = <ItemDto>[];
+      list.add(ItemDto.fromJson(json.decode(response.body)));
+      result = list.map((e) => ItemModel(
+          e.source.title,
+          e.source.originalYearOfRelease?.toString(),
+          e.source.genre,
+          e.source.score?.votes,
+          e.source.score?.score,
+          (e.source.originalPrice?.amount ?? '' + (e.source.originalPrice?.currency ?? '')
+              .replaceAll('/', '').replaceAll('NA', '')),
+          e.source.remarks,
+          e.source.authors?.map((a) => AuthorModel(a.name, a.type)),
+          e.source.screens
+              .map((s) => ScreenShotModel(s.type, fixScreenShotUrl(s.url))),
+          e.source.tosec
+              .where((t) => Definitions.supportedTapeExtensions
+                  .contains(extension(t.path)))
+              .map((t) => fixToSecUrl(t.path)))).first;
+    }
     return result;
   }
 

@@ -15,7 +15,8 @@
   "release_load_more": "Please release to load more",
   "no_more_data": "No more data available",
   "na": "-",
-  "no_tapes": "No tapes found.",
+  "no_tapes": "No compatible tapes found. :(",
   "local_file": "Local file",
-  "adjust_speed": "Adjust speed"
+  "adjust_speed": "Adjust speed",
+  "adjust_volume": "Adjust volume"
 }

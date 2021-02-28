@@ -5,16 +5,13 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:zx_tape_player/main.dart';
-import 'package:zx_tape_player/models/item_dto.dart';
-import 'package:zx_tape_player/models/player_args.dart';
+import 'package:zx_tape_player/models/application/item_model.dart';
+import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player.dart';
-import 'package:zx_tape_player/utils/extensions.dart';
-import 'package:zx_tape_player/utils/platform.dart';
 
 class PlayerScreen extends StatefulWidget {
   PlayerScreen({Key key}) : super(key: key);
@@ -27,8 +24,7 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  ItemDto _item;
-  List<String> _files = [];
+  ItemModel _item;
   PlayerArgs _args;
   bool _isLoading = true;
 
@@ -49,7 +45,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     if (_args.type == PlayerArgsTypeEnum.file) {
       setState(() {
         _isLoading = false;
-        _files.add(_args.id);
+        // _files.add(_args.id);
       });
     } else
       _loadData();
@@ -59,14 +55,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     setState(() {
       _isLoading = true;
     });
-    _item = await BackendService.getItem(_args.id);
-    _files = _item.source.tosec
-        .where((s) =>
-            s.path != null &&
-            (extension(s.path).toLowerCase() == '.tzx' ||
-                extension(s.path).toLowerCase() == '.tap'))
-        .map((s) => s.path)
-        .toList();
+    _item = await BackendService.getItemModel(_args.id);
     setState(() {
       _isLoading = false;
     });
@@ -100,9 +89,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
           : Column(
               children: <Widget>[
                 _buildInfoWidget(context),
-                _files.length > 0
+                _item.tapeFiles.length > 0
                     ? TapePlayer(
-                        files: _files,
+                        files: _item.tapeFiles.toList(),
                         sourceType: _args.type,
                         audioPlayer: audioPlayer,
                       )
@@ -145,12 +134,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FutureBuilder(builder: (context, snapshot) {
-                            var result = _item.source.originalYearOfRelease
-                                    ?.toString() ??
-                                '';
-                            if (_item.source.genre != null) {
+                            var result = _item.year;
+                            if (_item.genre != null) {
                               if (result.isNotEmpty) result += ' • ';
-                              result += _item.source.genre;
+                              result += _item.genre;
                             }
                             return Text(
                               result,
@@ -173,7 +160,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ),
                               SizedBox(width: 5.0),
                               Text(
-                                _item.source.score.votes?.toString() ?? tr('na'),
+                                _item.votes?.toString() ?? tr('na'),
                                 style: TextStyle(
                                     color: Colors.white,
                                     letterSpacing: 0.3,
@@ -187,9 +174,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ),
                               SizedBox(width: 5.0),
                               Text(
-                                _item.source.score.score != null &&
-                                        _item.source.score.score > 0
-                                    ? _item.source.score.score.toString()
+                                _item.score != null &&
+                                        _item.score > 0
+                                    ? _item.score.toString()
                                     : tr('na'),
                                 style: TextStyle(
                                     color: Colors.white,
@@ -203,37 +190,25 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 size: 14.0,
                               ),
                               SizedBox(width: 2),
-                              FutureBuilder(builder: (context, snapshot) {
-                                var price = '-';
-                                if (_item.source.originalPrice != null) {
-                                  price =
-                                      _item.source.originalPrice.amount ?? '';
-                                  var currency = _item
-                                          .source.originalPrice.currency
-                                          ?.replaceAll('/', '') ??
-                                      '';
-                                  if (currency != 'NA') price += currency;
-                                }
-                                return Text(
-                                  price,
+                                  Text(
+                                  _item.price.isEmpty? tr('na') : _item.price,
                                   style: TextStyle(
                                       color: Colors.white,
                                       letterSpacing: 0.3,
                                       fontSize: 12.0),
                                   overflow: TextOverflow.ellipsis,
-                                );
-                              }),
+                              ),
                             ],
                           ),
-                          _item.source.remarks != null
+                          _item.remarks != null
                               ? SizedBox(height: 24.0)
                               : SizedBox.shrink(),
                           Row(children: [
                             Expanded(
-                                child: _item.source.remarks != null
+                                child: _item.remarks != null
                                     ? Text(
-                                        _item.source.remarks
-                                            .removeAllHtmlTags(),
+                                        _item.remarks,
+                                          //  .removeAllHtmlTags(),
                                         style: TextStyle(
                                             color: Colors.white,
                                             letterSpacing: 0.3,
@@ -247,10 +222,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           Row(children: [
                             Expanded(
                               child: Text(
-                                _item.source.authors
+                                _item.authors
                                     .where(
-                                        (a) => a.name != null && a.type != null)
-                                    .map((a) => '· ' + a.name + ' - ' + a.type)
+                                        (a) => a.name != null && a.role != null)
+                                    .map((a) => '· ' + a.name + ' - ' + a.role)
                                     .join('\r\n'),
                                 style: TextStyle(
                                     color: Colour('#B1B8C1'),
@@ -263,11 +238,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           ]),
                           SizedBox(height: 24.0),
                           Column(
-                              children: _item.source.screens
+                              children: _item.screenShotUrls
                                   .map(
                                     (e) => Center(
                                       child: CachedNetworkImage(
-                                        imageUrl: fixScreenShotUrl(e.url),
+                                        imageUrl: e.url,
                                         imageBuilder: (context, provider) {
                                           return Padding(
                                               padding: EdgeInsets.fromLTRB(

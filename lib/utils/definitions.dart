@@ -15,4 +15,5 @@ class Definitions {
   static const appCenter_token_iOS = 'f13adfc49d8526e49cf2d01b873f8d7a500579a7';
   static const appCenter_token_Android =
       '8c20228bd26247a7c0fcbba088d5c3adbcdd9dd2';
+  static const supportedTapeExtensions = <String>['.tap', '.tzx'];
 }
