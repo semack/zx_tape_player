@@ -10,32 +10,18 @@ import 'package:zx_tape_player/utils/extensions.dart';
 
 import 'home_screen.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
+  Widget build(BuildContext context) {
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // hide the keyboard
-    super.initState();
     Timer(
         Duration(seconds: 3),
         () => Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (BuildContext context) {
               return HomeScreen();
             })));
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
             width: MediaQuery.of(context).size.width,

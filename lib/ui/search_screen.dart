@@ -8,16 +8,15 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:zx_tape_player/models/application/hit_model.dart';
 import 'package:zx_tape_player/models/remote/items_dto.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
-import 'package:zx_tape_player/utils/platform.dart';
-
-import '../main.dart';
-import 'widgets/loading_progress.dart';
+import 'package:zx_tape_player/main.dart';
+import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key key}) : super(key: key);
@@ -38,7 +37,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   static int _page = 0;
   var _initialized = false;
   var _isNewSearch = false;
-  List<Hits> _hits = [];
+  var _hits = <HitModel>[];
 
   @override
   void initState() {
@@ -81,7 +80,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
+              width: MediaQuery.of(context).size.width,
               child:
                   _isNewSearch ? LoadingProgress() : _buildSearchList(context),
             ))
@@ -202,12 +201,13 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
               //   break;
               case LoadStatus.loading:
                 return Container(
-                  height: 55.0, child: Center(
-                  child: Loading(
-                      indicator: BallPulseIndicator(),
-                      size: 30.0,
-                      color: Colour('#AFB6BB')),
-                ));
+                    height: 55.0,
+                    child: Center(
+                      child: Loading(
+                          indicator: BallPulseIndicator(),
+                          size: 30.0,
+                          color: Colour('#AFB6BB')),
+                    ));
               case LoadStatus.failed:
                 return Container(
                   height: 55.0,
@@ -224,7 +224,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
               //   hint = tr('no_more_data');
               //   break;
             }
-            return SizedBox(height: 0.0,);
+            return SizedBox(
+              height: 0.0,
+            );
           },
         ),
         child: ListView.builder(
@@ -233,11 +235,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
             itemBuilder: (BuildContext context, int index) {
           if (index >= _hits.length) return null;
           var item = _hits[index];
-          var url = item.source.screens.length > 0
-              ? fixScreenShotUrl(item.source.screens[0].url)
-              : '';
           var textAvatar = AbcAvatar(
-            item.source.title,
+            item.title,
             isRectangle: true,
             // circleConfiguration: CircleConfiguration(radius: 50),
             rectangeConfiguration: RectangeConfiguration(
@@ -256,8 +255,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                   child: ListTile(
                       onTap: () async => Navigator.pushNamed(
                           context, PlayerScreen.routeName,
-                          arguments: PlayerArgs(PlayerArgsTypeEnum.network,
-                              item.id, item.source.title)),
+                          arguments: PlayerArgs(
+                              PlayerArgsTypeEnum.network, item.id, item.title)),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
                       leading: new Container(
@@ -268,7 +267,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                               imageRenderMethodForWeb:
                                   ImageRenderMethodForWeb.HttpGet,
                               useOldImageOnUrlChange: true,
-                              imageUrl: url,
+                              imageUrl: item.iconUrl,
                               imageBuilder: (context, provider) => Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
@@ -284,7 +283,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                                 return textAvatar;
                               })),
                       title: Text(
-                        item.source.title,
+                        item.title,
                         style: TextStyle(
                             color: Colors.white,
                             letterSpacing: 0.3,
@@ -300,13 +299,10 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             FutureBuilder(builder: (context, snapshot) {
-                              var result = item.source.originalYearOfRelease !=
-                                      null
-                                  ? item.source.originalYearOfRelease.toString()
-                                  : '';
-                              if (item.source.genre != null) {
+                              var result = item.year ?? '';
+                              if (item.genre != null) {
                                 if (result.isNotEmpty) result += ' • ';
-                                result += item.source.genreType;
+                                result += item.genre;
                               }
                               return Text(
                                 result,
@@ -329,9 +325,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                             ),
                             SizedBox(width: 5),
                             Text(
-                              item.source.score.votes != null
-                                  ? item.source.score.votes.toString()
-                                  : tr('na'),
+                              item.votes?.toString() ?? tr('na'),
                               style: TextStyle(
                                   color: Colour('#B1B8C1'),
                                   letterSpacing: 0.3,
@@ -345,9 +339,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                             ),
                             SizedBox(width: 5),
                             Text(
-                              item.source.score.score != null &&
-                                      item.source.score.score > 0
-                                  ? item.source.score.score.toString()
+                              item.score != null && item.score > 0
+                                  ? item.score.toString()
                                   : tr('na'),
                               style: TextStyle(
                                   color: Colour('#B1B8C1'),
@@ -369,20 +362,11 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       });
     }
     try {
-      var items = await BackendService.getItems(
+      var items = await BackendService.getHits(
           _textController.text, Definitions.pageSize,
           offset: _page * Definitions.pageSize);
-
-      if (items.hits.hits != null) {
-        var payload = items.hits.hits.where((element) =>
-            element.source != null &&
-            element.source.title != null &&
-            element.source.title.isNotEmpty);
-
-        _hits.addAll(payload);
-      }
-
-      if (items.hits.hits != null && items.hits.hits.length > 0) {
+      _hits.addAll(items);
+      if (items.length > 0) {
         _page++;
         _refreshController.loadComplete();
       } else

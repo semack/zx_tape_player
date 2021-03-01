@@ -12,6 +12,7 @@ import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
 
 class PlayerScreen extends StatefulWidget {
   PlayerScreen({Key key}) : super(key: key);
@@ -55,7 +56,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     setState(() {
       _isLoading = true;
     });
-    _item = await BackendService.getItemModel(_args.id);
+    _item = await BackendService.getItem(_args.id);
     setState(() {
       _isLoading = false;
     });
@@ -207,8 +208,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             Expanded(
                                 child: _item.remarks != null
                                     ? Text(
-                                        _item.remarks,
-                                          //  .removeAllHtmlTags(),
+                                        _item.remarks.removeAllHtmlTags(),
                                         style: TextStyle(
                                             color: Colors.white,
                                             letterSpacing: 0.3,

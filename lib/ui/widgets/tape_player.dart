@@ -12,7 +12,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
-import 'package:zx_tape_player/utils/platform.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class TapePlayer extends StatefulWidget {
@@ -101,9 +100,7 @@ class _TapePlayerState extends State<TapePlayer> {
                         onPageChanged: (index, reason) async {
                           setState(() {
                             _currentFileIndex = index;
-                          }
-
-                          );
+                          });
                         }),
                   ),
                 )),
@@ -174,8 +171,8 @@ class _TapePlayerState extends State<TapePlayer> {
               },
             ),
           ),
-          ControlButtons(player: _player,
-              tapeUri: fixToSecUrl(widget.files[_currentFileIndex])),
+          ControlButtons(
+              player: _player, tapeUri: widget.files[_currentFileIndex]),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.center,
           //   children: [
