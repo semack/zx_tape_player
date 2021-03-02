@@ -18,5 +18,6 @@
   "no_tapes": "No compatible tapes found. :(",
   "local_file": "Local file",
   "adjust_speed": "Adjust speed",
-  "adjust_volume": "Adjust volume"
+  "adjust_volume": "Adjust volume",
+  "loading": "Loading..."
 }
