@@ -43,21 +43,23 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    var args = ModalRoute.of(this.context).settings.arguments;
+    var args = ModalRoute
+        .of(this.context)
+        .settings
+        .arguments;
     _loadData(args);
   }
 
   Future _loadData(PlayerArgs args) async {
-     switch (args.location)
-     {
-       case FileLocation.remote:
-         _item = await BackendService.getItem(args.id);
-         _title = _item.title;
-         break;
-       case FileLocation.file:
-         _item = await BackendService.recognizeTape(args.id);
-         break;
-     }
+    switch (args.location) {
+      case FileLocation.remote:
+        _item = await BackendService.getItem(args.id);
+        _title = _item.title;
+        break;
+      case FileLocation.file:
+        _item = await BackendService.recognizeTape(args.id);
+        break;
+    }
     setState(() {
       _isLoading = false;
     });
@@ -66,7 +68,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _isLoading ? null : AppBar(
+      appBar: _isLoading
+          ? null
+          : AppBar(
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_outlined,
@@ -78,26 +82,26 @@ class _PlayerScreenState extends State<PlayerScreen> {
         title: Text(
           _title,
           overflow: TextOverflow.fade,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, letterSpacing: 0.1),
         ),
-        centerTitle: false,
-        titleSpacing: NavigationToolbar.kMiddleSpacing,
+        centerTitle: true,
+        titleSpacing: 0.0,
         toolbarHeight: 60.0,
         backgroundColor: Colour('#28384C'),
       ),
       body: _isLoading
           ? LoadingProgress()
           : Column(
-              children: <Widget>[
-                _buildInfoWidget(context),
-                _item.tapeFiles.length > 0
-                    ? TapePlayer(
-                        files: _item.tapeFiles.toList(),
-                        audioPlayer: audioPlayer,
-                      )
-                    : _buildNoFilesWidget(context)
-              ],
-            ),
+        children: <Widget>[
+          _buildInfoWidget(context),
+          _item.tapeFiles.length > 0
+              ? TapePlayer(
+            files: _item.tapeFiles.toList(),
+            audioPlayer: audioPlayer,
+          )
+              : _buildNoFilesWidget(context)
+        ],
+      ),
     );
   }
 
@@ -105,7 +109,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
     return Container(
         color: Colour('#3B4E63'),
         height: 50.0,
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         child: Center(
           child: Text(
             tr('no_tapes'),
@@ -118,139 +125,154 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Widget _buildInfoWidget(BuildContext context) {
     return Expanded(
         child: Container(
-            //color: Colors.black.withOpacity(0.7),
-            color: Colour('#172434'),
-            child: !_item.isRemote
-                ? Center(
-                    child: Container(
-                    child: Cassette(
-                      animated: false,
+          //color: Colors.black.withOpacity(0.7),
+          color: Colour('#172434'),
+          child: !_item.isRemote
+              ? Center(
+              child: Container(
+                child: Cassette(
+                  animated: false,
+                ),
+              ))
+              : SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
+              //clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  FutureBuilder(builder: (context, snapshot) {
+          var result = _item.year ?? '';
+          if (_item.genre != null) {
+          if (result.isNotEmpty) result += ' • ';
+          result += _item.genre;
+          }
+          return Text(
+          result,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+          color: Colour('#B1B8C1'),
+          letterSpacing: 0.3,
+          fontSize: 12.0),
+          );
+          }),
+          SizedBox(height: 14.0),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.thumb_up_rounded,
+                color: Colour('#B1B8C1'),
+                size: 12.0,
+              ),
+              SizedBox(width: 5.0),
+              Text(
+                _item.votes?.toString() ?? tr('na'),
+                style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 0.3,
+                    fontSize: 12.0),
+              ),
+              SizedBox(width: 8),
+              Icon(
+                Icons.star_rounded,
+                color: Colour('#B1B8C1'),
+                size: 14.0,
+              ),
+              SizedBox(width: 5.0),
+              Text(
+                _item.score != null && _item.score > 0
+                    ? _item.score.toString()
+                    : tr('na'),
+                style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 0.3,
+                    fontSize: 12.0),
+              ),
+              SizedBox(width: 8),
+              Icon(
+                Icons.attach_money_rounded,
+                color: Colour('#B1B8C1'),
+                size: 14.0,
+              ),
+              SizedBox(width: 2),
+              Text(
+                _item.price != null && _item.price.isNotEmpty
+                    ? _item.price
+                    : tr('na'),
+                style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 0.3,
+                    fontSize: 12.0),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          _item.remarks != null
+              ? SizedBox(height: 24.0)
+              : SizedBox.shrink(),
+          Row(children: [
+            Expanded(
+                child: _item.remarks != null
+                    ? Text(
+                  _item.remarks.removeAllHtmlTags(),
+                  style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 0.3,
+                      height: 1.4,
+                      fontSize: 14.0),
+                  maxLines: 256,
+                )
+                    : SizedBox.shrink())
+          ]),
+          SizedBox(height: 24.0),
+          Row(children: [
+            Expanded(
+              child: Text(
+                _item.authors
+                    .where(
+                        (a) => a.name != null && a.role != null)
+                    .map((a) => '· ' + a.name + ' - ' + a.role)
+                    .join('\r\n'),
+                style: TextStyle(
+                    color: Colour('#B1B8C1'),
+                    letterSpacing: 0.3,
+                    height: 1.6,
+                    fontSize: 12.0),
+                overflow: TextOverflow.clip,
+              ),
+            )
+          ]),
+          SizedBox(height: 24.0),
+          Column(
+              children: _item.screenShotUrls
+                  .map(
+                      (e) =>
+                      Center(
+                          child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                          0, 0, 0, 16),
+                  child:
+                  Column(children: [
+                    CachedNetworkImage(
+                      imageUrl: e.url,
+                      imageBuilder: (context, provider) {
+                        return Image(image: provider);
+                      },
                     ),
-                  ))
-                : SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 24.0),
-                    //clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FutureBuilder(builder: (context, snapshot) {
-                            var result = _item.year ?? '';
-                            if (_item.genre != null) {
-                              if (result.isNotEmpty) result += ' • ';
-                              result += _item.genre;
-                            }
-                            return Text(
-                              result,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colour('#B1B8C1'),
-                                  letterSpacing: 0.3,
-                                  fontSize: 12.0),
-                            );
-                          }),
-                          SizedBox(height: 14.0),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.thumb_up_rounded,
-                                color: Colour('#B1B8C1'),
-                                size: 12.0,
-                              ),
-                              SizedBox(width: 5.0),
-                              Text(
-                                _item.votes?.toString() ?? tr('na'),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 0.3,
-                                    fontSize: 12.0),
-                              ),
-                              SizedBox(width: 8),
-                              Icon(
-                                Icons.star_rounded,
-                                color: Colour('#B1B8C1'),
-                                size: 14.0,
-                              ),
-                              SizedBox(width: 5.0),
-                              Text(
-                                _item.score != null && _item.score > 0
-                                    ? _item.score.toString()
-                                    : tr('na'),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 0.3,
-                                    fontSize: 12.0),
-                              ),
-                              SizedBox(width: 8),
-                              Icon(
-                                Icons.attach_money_rounded,
-                                color: Colour('#B1B8C1'),
-                                size: 14.0,
-                              ),
-                              SizedBox(width: 2),
-                              Text(
-                                _item.price != null && _item.price.isNotEmpty ?  _item.price : tr('na'),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 0.3,
-                                    fontSize: 12.0),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                          _item.remarks != null
-                              ? SizedBox(height: 24.0)
-                              : SizedBox.shrink(),
-                          Row(children: [
-                            Expanded(
-                                child: _item.remarks != null
-                                    ? Text(
-                                        _item.remarks.removeAllHtmlTags(),
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            letterSpacing: 0.3,
-                                            height: 1.4,
-                                            fontSize: 14.0),
-                                        maxLines: 256,
-                                      )
-                                    : SizedBox.shrink())
-                          ]),
-                          SizedBox(height: 24.0),
-                          Row(children: [
-                            Expanded(
-                              child: Text(
-                                _item.authors
-                                    .where(
-                                        (a) => a.name != null && a.role != null)
-                                    .map((a) => '· ' + a.name + ' - ' + a.role)
-                                    .join('\r\n'),
-                                style: TextStyle(
-                                    color: Colour('#B1B8C1'),
-                                    letterSpacing: 0.3,
-                                    height: 1.6,
-                                    fontSize: 12.0),
-                                overflow: TextOverflow.clip,
-                              ),
-                            )
-                          ]),
-                          SizedBox(height: 24.0),
-                          Column(
-                              children: _item.screenShotUrls
-                                  .map(
-                                    (e) => Center(
-                                      child: CachedNetworkImage(
-                                        imageUrl: e.url,
-                                        imageBuilder: (context, provider) {
-                                          return Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 16),
-                                              child: Image(image: provider));
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                  .toList())
-                        ]))));
+                    SizedBox(height: 4.0,),
+                    Text(
+                      e.type,
+                      style: TextStyle(
+                          color: Colour('#B1B8C1'),
+                          letterSpacing: 0.3,
+                          fontSize: 12.0),
+                    )
+                  ]))),
+        )
+            .toList())])
+    )
+    )
+    );
   }
 }

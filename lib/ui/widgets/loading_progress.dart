@@ -9,19 +9,19 @@ class LoadingProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Container(child:
+    return Center(child:
       Column( mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [Loading(
           indicator: BallPulseIndicator(),
           size: 30.0,
           color: Colour('#AFB6BB')),
-        SizedBox(height: 2.0,),
+        SizedBox(height: 5.0,),
         Text(tr("Loading"), style: TextStyle(
           color: Colour('#AFB6BB'),
           fontSize: 12.0
         ),),
-    ]))
+    ])
     );
   }
 }
