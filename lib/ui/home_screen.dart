@@ -2,6 +2,7 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
+import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
@@ -68,16 +69,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       filled: true,
                       fillColor: Colour('#28384C'),
                       isDense: true,
-                      prefixIconConstraints: BoxConstraints(minWidth: 16, minHeight: 16),
-            prefixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Image.asset('assets/images/home/search-icon.png')),
-            hintStyle: TextStyle(
-              fontSize: 14.0,
-              color: Colour('546B7F'),
-              letterSpacing: -0.5,
-            ),
-            contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                      prefixIconConstraints:
+                          BoxConstraints(minWidth: 16, minHeight: 16),
+                      prefixIcon: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Image.asset(
+                              'assets/images/home/search-icon.png')),
+                      hintStyle: TextStyle(
+                        fontSize: 14.0,
+                        color: Colour('546B7F'),
+                        letterSpacing: -0.5,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 16.0),
                       focusedBorder: UnderlineInputBorder(
                         borderSide:
                             BorderSide(color: Colors.transparent, width: 0.0),
@@ -106,15 +109,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () async {
                       FlutterDocumentPickerParams params =
                           FlutterDocumentPickerParams(
-                        allowedFileExtensions: Definitions.supportedTapeExtensions,
+                        allowedFileExtensions:
+                            Definitions.supportedTapeExtensions,
                         invalidFileNameSymbols: ['/'],
                       );
                       final result = await FlutterDocumentPicker.openDocument(
                           params: params);
                       if (result != null && result.isNotEmpty)
                         Navigator.pushNamed(context, PlayerScreen.routeName,
-                            arguments: PlayerArgs(PlayerArgsTypeEnum.file,
-                                result, tr('local_file')));
+                            arguments: PlayerArgs(result, FileLocation.file));
                     },
                     child: Text(
                       tr('select_from_files'),

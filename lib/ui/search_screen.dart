@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
 import 'package:zx_tape_player/models/remote/items_dto.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
@@ -255,8 +256,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                   child: ListTile(
                       onTap: () async => Navigator.pushNamed(
                           context, PlayerScreen.routeName,
-                          arguments: PlayerArgs(
-                              PlayerArgsTypeEnum.network, item.id, item.title)),
+                          arguments: PlayerArgs(item.id, FileLocation.remote)),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
                       leading: new Container(

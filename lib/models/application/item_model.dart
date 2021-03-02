@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart';
+import 'package:zx_tape_player/enums/file_location.dart';
 
 class ItemModel {
   final bool isRemote;
@@ -13,7 +14,7 @@ class ItemModel {
   final String remarks;
   final Iterable<AuthorModel> authors;
   final Iterable<ScreenShotModel> screenShotUrls;
-  final Iterable<String> tapeFiles;
+  final Iterable<FileModel> tapeFiles;
 
   ItemModel(
       this.isRemote,
@@ -42,7 +43,7 @@ class ItemModel {
           null,
           <AuthorModel>[],
           <ScreenShotModel>[],
-          <String>[filePath]);
+          <FileModel>[FileModel(FileLocation.file, filePath)]);
     } else
       throw FileSystemException('File not found.');
   }
@@ -53,6 +54,13 @@ class ScreenShotModel {
   final String url;
 
   ScreenShotModel(this.type, this.url);
+}
+
+class FileModel {
+  final FileLocation location;
+  final String url;
+
+  FileModel(this.location, this.url);
 }
 
 class AuthorModel {

@@ -5,6 +5,7 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/application/item_model.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
@@ -27,7 +28,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   ItemModel _item;
   bool _isLoading = true;
-  // PlayerArgs _args;
+  String _title = tr('local_file');
 
   @override
   void initState() {
@@ -47,10 +48,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Future _loadData(PlayerArgs args) async {
-    if (args.type == PlayerArgsTypeEnum.network)
-      _item = await BackendService.getItem(args.id);
-    else if (args.type == PlayerArgsTypeEnum.file)
-      _item = await BackendService.recognizeTape(args.id);
+     switch (args.location)
+     {
+       case FileLocation.remote:
+         _item = await BackendService.getItem(args.id);
+         _title = _item.title;
+         break;
+       case FileLocation.file:
+         _item = await BackendService.recognizeTape(args.id);
+         break;
+     }
     setState(() {
       _isLoading = false;
     });
@@ -59,7 +66,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: _isLoading ? null : AppBar(
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_outlined,
@@ -69,7 +76,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          _item?.title ?? '',
+          _title,
           overflow: TextOverflow.fade,
           style: TextStyle(color: Colors.white),
         ),
@@ -86,8 +93,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 _item.tapeFiles.length > 0
                     ? TapePlayer(
                         files: _item.tapeFiles.toList(),
-                        // TODO: need to review
-                        sourceType: PlayerArgsTypeEnum.network,
                         audioPlayer: audioPlayer,
                       )
                     : _buildNoFilesWidget(context)

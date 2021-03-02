@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
 import 'package:zx_tape_player/models/application/item_model.dart';
 import 'package:zx_tape_player/models/application/term_model.dart';
@@ -114,7 +115,8 @@ class BackendService {
               e.source.tosec
                   .where((t) => Definitions.supportedTapeExtensions
                       .contains(extension(t.path).replaceAll('.', '')))
-                  .map((t) => _fixToSecUrl(t.path))))
+                  .map((t) =>
+                      FileModel(FileLocation.remote, _fixToSecUrl(t.path)))))
           .first;
     }
     return result;
@@ -126,7 +128,7 @@ class BackendService {
     var fileCheckUrl = Definitions.baseUrl + _fileCheckUrl.format([md5]);
     var response = await UserAgentClient(Definitions.userAgent, http.Client())
         .get(fileCheckUrl);
-    if (response.statusCode == 200) {
+    if (response.statusCode != 200) {
       var fileCheck = FileCheckDto.fromJson(json.decode(response.body));
       result = await getItem(fileCheck.entryId);
     } else {

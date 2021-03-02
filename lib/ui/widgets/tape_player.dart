@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
@@ -9,21 +10,18 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:zx_tape_player/models/args/player_args.dart';
+import 'package:zx_tape_player/enums/file_location.dart';
+import 'package:zx_tape_player/models/application/item_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class TapePlayer extends StatefulWidget {
-  final List<String> files;
+  final List<FileModel> files;
   final AudioPlayer audioPlayer;
 
-  TapePlayer(
-      {Key key,
-      PlayerArgsTypeEnum sourceType = PlayerArgsTypeEnum.network,
-      @required this.files,
-      @required this.audioPlayer})
-      : super(key: key) {}
+  TapePlayer({Key key, @required this.files, @required this.audioPlayer})
+      : super(key: key);
 
   @override
   _TapePlayerState createState() {
@@ -74,11 +72,11 @@ class _TapePlayerState extends State<TapePlayer> {
                   ),
                   child: CarouselSlider(
                     items: widget.files
-                        .map((fileName) => Container(
+                        .map((file) => Container(
                               padding: EdgeInsets.all(12.0),
                               child: Center(
                                   child: Text(
-                                basename(fileName),
+                                basename(file.url),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 12.0),
                                 textAlign: TextAlign.center,
@@ -172,7 +170,7 @@ class _TapePlayerState extends State<TapePlayer> {
             ),
           ),
           ControlButtons(
-              player: _player, tapeUri: widget.files[_currentFileIndex]),
+              player: _player, file: widget.files[_currentFileIndex]),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.center,
           //   children: [
@@ -303,10 +301,10 @@ class PositionData {
 }
 
 class ControlButtons extends StatefulWidget {
-  ControlButtons({Key key, @required this.player, @required this.tapeUri})
+  ControlButtons({Key key, @required this.player, @required this.file})
       : super(key: key);
   final AudioPlayer player;
-  final String tapeUri;
+  final FileModel file;
 
   @override
   _ControlButtonsState createState() {
@@ -317,7 +315,7 @@ class ControlButtons extends StatefulWidget {
 class _ControlButtonsState extends State<ControlButtons> {
   AudioPlayer get player => widget.player;
 
-  String get tapeUri => widget.tapeUri;
+  FileModel get _file => widget.file;
   bool _isLoading = false;
   String wavFileName = '';
 
@@ -342,10 +340,10 @@ class _ControlButtonsState extends State<ControlButtons> {
             _showSliderDialog(
               context: context,
               title: tr("adjust_volume"),
-              valueSuffix: "%",
+              valueSuffix: "",
               divisions: 20,
               min: 0,
-              max: 100,
+              max: 1,
               stream: player.volumeStream,
               onChanged: player.setVolume,
             );
@@ -380,8 +378,15 @@ class _ControlButtonsState extends State<ControlButtons> {
                       ]);
                       var file = File(wavFileName);
                       try {
-                        await BackendService.downloadTape(this.tapeUri)
-                            .then((source) => ZxTape.create(source))
+                        Uint8List bytes;
+                        if (_file.location == FileLocation.remote)
+                          bytes = await BackendService.downloadTape(_file.url);
+                        else if (_file.location == FileLocation.file)
+                          bytes = await File(_file.url).readAsBytes();
+                        else
+                          throw ArgumentError('Unrecognized file location');
+
+                        await ZxTape.create(bytes)
                             .then((tape) =>
                                 tape.toWavBytes(amplifySoundSignal: true))
                             .then((wav) => file.writeAsBytes(wav))

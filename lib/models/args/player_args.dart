@@ -1,8 +1,8 @@
-enum PlayerArgsTypeEnum { file, network }
+import 'package:zx_tape_player/enums/file_location.dart';
 
 class PlayerArgs {
-  final PlayerArgsTypeEnum type;
   final String id;
-  final String title;
-  PlayerArgs(this.type, this.id, this.title);
+  final FileLocation location;
+
+  PlayerArgs(this.id, this.location);
 }
