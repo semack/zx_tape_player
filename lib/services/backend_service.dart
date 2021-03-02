@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
 import 'package:zx_tape_player/models/application/item_model.dart';
 import 'package:zx_tape_player/models/application/term_model.dart';
+import 'package:zx_tape_player/models/remote/file_check_dto.dart';
 import 'package:zx_tape_player/models/remote/item_dto.dart';
 import 'package:zx_tape_player/models/remote/items_dto.dart';
 import 'package:zx_tape_player/models/remote/term_dto.dart';
@@ -21,6 +24,7 @@ class BackendService {
   static const _letterUrl = '/games/byletter/%s?mode=compact' +
       '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _itemUrl = '/games/%s?mode=full';
+  static const _fileCheckUrl = '/filecheck/%s';
 
   static Future<List<TermModel>> getSuggestions(String query) async {
     var result = new List<TermModel>();
@@ -70,7 +74,7 @@ class BackendService {
             .map((e) => HitModel(
                 e.id,
                 e.source.screens.length > 0
-                    ? fixScreenShotUrl(e.source?.screens[0].url)
+                    ? _fixScreenShotUrl(e.source?.screens[0].url)
                     : '',
                 e.source.title,
                 e.source.originalYearOfRelease?.toString(),
@@ -92,6 +96,7 @@ class BackendService {
       list.add(ItemDto.fromJson(json.decode(response.body)));
       result = list
           .map((e) => ItemModel(
+              true,
               e.source.title,
               e.source.originalYearOfRelease?.toString(),
               e.source.genre,
@@ -104,13 +109,28 @@ class BackendService {
                           .replaceAll('NA', '')),
               e.source.remarks,
               e.source.authors?.map((a) => AuthorModel(a.name, a.type)),
-              e.source.screens
-                  .map((s) => ScreenShotModel(s.type, fixScreenShotUrl(s.url))),
+              e.source.screens.map(
+                  (s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url))),
               e.source.tosec
                   .where((t) => Definitions.supportedTapeExtensions
-                      .contains(extension(t.path)))
-                  .map((t) => fixToSecUrl(t.path))))
+                      .contains(extension(t.path).replaceAll('.', '')))
+                  .map((t) => _fixToSecUrl(t.path))))
           .first;
+    }
+    return result;
+  }
+
+  static Future<ItemModel> recognizeTape(String filePath) async {
+    ItemModel result;
+    var md5 = await _calculateMD5Sum(filePath);
+    var fileCheckUrl = Definitions.baseUrl + _fileCheckUrl.format([md5]);
+    var response = await UserAgentClient(Definitions.userAgent, http.Client())
+        .get(fileCheckUrl);
+    if (response.statusCode == 200) {
+      var fileCheck = FileCheckDto.fromJson(json.decode(response.body));
+      result = await getItem(fileCheck.entryId);
+    } else {
+      result = await ItemModel.createFromFile(filePath);
     }
     return result;
   }
@@ -130,14 +150,25 @@ class BackendService {
     return null;
   }
 
-  static String fixScreenShotUrl(String url) {
+  static String _fixScreenShotUrl(String url) {
     if (url.startsWith('/zxscreens')) return Definitions.contentBaseUrl2 + url;
     return Definitions.contentBaseUrl + url;
   }
 
-  static String fixToSecUrl(String url) {
+  static String _fixToSecUrl(String url) {
     var prefix = url.split('/')[1];
     url = Definitions.tapeBaseUrl.format([prefix, url]);
     return url;
+  }
+
+  static Future<String> _calculateMD5Sum(String filePath) async {
+    var result;
+    var file = File(filePath);
+    if (await file.exists()) {
+      var bytes = await file.readAsBytes();
+      var digest = md5.convert(bytes);
+      result = digest.toString();
+    }
+    return result;
   }
 }

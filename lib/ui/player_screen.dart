@@ -26,8 +26,8 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> {
   ItemModel _item;
-  PlayerArgs _args;
   bool _isLoading = true;
+  // PlayerArgs _args;
 
   @override
   void initState() {
@@ -42,21 +42,15 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _args = ModalRoute.of(this.context).settings.arguments;
-    if (_args.type == PlayerArgsTypeEnum.file) {
-      setState(() {
-        _isLoading = false;
-        // _files.add(_args.id);
-      });
-    } else
-      _loadData();
+    var args = ModalRoute.of(this.context).settings.arguments;
+    _loadData(args);
   }
 
-  Future _loadData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    _item = await BackendService.getItem(_args.id);
+  Future _loadData(PlayerArgs args) async {
+    if (args.type == PlayerArgsTypeEnum.network)
+      _item = await BackendService.getItem(args.id);
+    else if (args.type == PlayerArgsTypeEnum.file)
+      _item = await BackendService.recognizeTape(args.id);
     setState(() {
       _isLoading = false;
     });
@@ -64,7 +58,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //_loadData();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -76,7 +69,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          _args.title,
+          _item?.title ?? '',
           overflow: TextOverflow.fade,
           style: TextStyle(color: Colors.white),
         ),
@@ -93,7 +86,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 _item.tapeFiles.length > 0
                     ? TapePlayer(
                         files: _item.tapeFiles.toList(),
-                        sourceType: _args.type,
+                        // TODO: need to review
+                        sourceType: PlayerArgsTypeEnum.network,
                         audioPlayer: audioPlayer,
                       )
                     : _buildNoFilesWidget(context)
@@ -121,7 +115,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         child: Container(
             //color: Colors.black.withOpacity(0.7),
             color: Colour('#172434'),
-            child: _args.type == PlayerArgsTypeEnum.file
+            child: !_item.isRemote
                 ? Center(
                     child: Container(
                     child: Cassette(
@@ -135,7 +129,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FutureBuilder(builder: (context, snapshot) {
-                            var result = _item.year;
+                            var result = _item.year ?? '';
                             if (_item.genre != null) {
                               if (result.isNotEmpty) result += ' • ';
                               result += _item.genre;
@@ -175,8 +169,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ),
                               SizedBox(width: 5.0),
                               Text(
-                                _item.score != null &&
-                                        _item.score > 0
+                                _item.score != null && _item.score > 0
                                     ? _item.score.toString()
                                     : tr('na'),
                                 style: TextStyle(
@@ -191,13 +184,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 size: 14.0,
                               ),
                               SizedBox(width: 2),
-                                  Text(
-                                  _item.price.isEmpty? tr('na') : _item.price,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      letterSpacing: 0.3,
-                                      fontSize: 12.0),
-                                  overflow: TextOverflow.ellipsis,
+                              Text(
+                                _item.price != null && _item.price.isNotEmpty ?  _item.price : tr('na'),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 0.3,
+                                    fontSize: 12.0),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),

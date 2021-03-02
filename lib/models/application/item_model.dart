@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:path/path.dart';
+
 class ItemModel {
+  final bool isRemote;
   final String title;
   final String year;
   final String genre;
@@ -11,6 +16,7 @@ class ItemModel {
   final Iterable<String> tapeFiles;
 
   ItemModel(
+      this.isRemote,
       this.title,
       this.year,
       this.genre,
@@ -21,9 +27,28 @@ class ItemModel {
       this.authors,
       this.screenShotUrls,
       this.tapeFiles);
+
+  static Future<ItemModel> createFromFile(String filePath) async {
+    var file = File(filePath);
+    if (await file.exists()) {
+      return ItemModel(
+          false,
+          basenameWithoutExtension(filePath),
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          <AuthorModel>[],
+          <ScreenShotModel>[],
+          <String>[filePath]);
+    } else
+      throw FileSystemException('File not found.');
+  }
 }
 
-class ScreenShotModel{
+class ScreenShotModel {
   final String type;
   final String url;
 

@@ -4,7 +4,7 @@ import 'package:zx_tape_player/utils/definitions.dart';
 class AppCenterInitializer {
   AppCenterInitializer._();
 
-  static Future register() async {
+  static Future initialize() async {
     await AppCenter.startAsync(
       appSecretAndroid: Definitions.appCenter_secret_Android,
       appSecretIOS: Definitions.appCenter_secret_iOS,

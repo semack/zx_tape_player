@@ -5,6 +5,7 @@ import 'package:flutter_document_picker/flutter_document_picker.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
+import 'package:zx_tape_player/utils/definitions.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -105,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () async {
                       FlutterDocumentPickerParams params =
                           FlutterDocumentPickerParams(
-                        allowedFileExtensions: ['tap', 'tzx'],
+                        allowedFileExtensions: Definitions.supportedTapeExtensions,
                         invalidFileNameSymbols: ['/'],
                       );
                       final result = await FlutterDocumentPicker.openDocument(
