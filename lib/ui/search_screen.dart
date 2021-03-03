@@ -365,9 +365,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       });
     }
     try {
-      var items = await getIt<BackendService>().getHits(
-          _textController.text, Definitions.pageSize,
-          offset: _page);
+      var items = await getIt<BackendService>()
+          .getHits(_textController.text, Definitions.pageSize, offset: _page);
       _hits.addAll(items);
       if (items.length > 0) {
         _page++;

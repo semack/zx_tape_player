@@ -383,7 +383,8 @@ class _ControlButtonsState extends State<ControlButtons> {
                       try {
                         Uint8List bytes;
                         if (_file.location == FileLocation.remote)
-                          bytes = await getIt<BackendService>().downloadTape(_file.url);
+                          bytes = await getIt<BackendService>()
+                              .downloadTape(_file.url);
                         else if (_file.location == FileLocation.file)
                           bytes = await File(_file.url).readAsBytes();
                         else
