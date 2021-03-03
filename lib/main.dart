@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
-import 'package:zx_tape_player/services/zxapi_backend_service.dart';
+import 'package:zx_tape_player/services/zxapi_service.dart';
 import 'package:zx_tape_player/ui/home_screen.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/app_center_initializer.dart';
@@ -18,7 +18,7 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final GetIt getIt = GetIt.instance;
 
 void main() async {
-  getIt.registerLazySingleton<BackendService>(() => ZxApiBackendService());
+  getIt.registerLazySingleton<BackendService>(() => ZxApiService());
   WidgetsFlutterBinding.ensureInitialized();
   await AppCenterInitializer.initialize();
   await SystemChrome.setPreferredOrientations(

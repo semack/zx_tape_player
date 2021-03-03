@@ -18,7 +18,7 @@ import 'package:zx_tape_player/services/abstract/backend_service.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
-class ZxApiBackendService implements BackendService {
+class ZxApiService implements BackendService {
   static const _baseUrl = 'https://api.zxinfo.dk/v3';
   static const _contentBaseUrl2 = 'https://zxinfo.dk/media';
   static const _contentBaseUrl = 'https://spectrumcomputing.co.uk';
