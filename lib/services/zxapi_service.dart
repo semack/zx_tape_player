@@ -24,7 +24,6 @@ class ZxApiService implements BackendService {
   static const _contentBaseUrl = 'https://spectrumcomputing.co.uk';
   static const _tapeBaseUrl =
       "https://archive.org/download/zx-spectrum-tosec-set-v-2020-02-18-lady-eklipse/%s.zip%s";
-
   static const _termsUrl = '/suggest/%s';
   static const _itemsUrl = '/search?query=%s&mode=compact' +
       '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
