@@ -1,4 +1,4 @@
-class TermModel{
+class TermModel {
   final String text;
   final String type;
 

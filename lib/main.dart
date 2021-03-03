@@ -44,7 +44,9 @@ class ZxTapePlayer extends StatelessWidget {
           fontFamily: 'ZxSpectrum',
         ),
         home: SplashScreen(),
-        navigatorObservers: [routeObserver],
+        navigatorObservers: [
+          routeObserver
+        ],
         routes: {
           HomeScreen.routeName: (context) => HomeScreen(),
           SearchScreen.routeName: (context) => SearchScreen(),

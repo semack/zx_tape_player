@@ -10,7 +10,6 @@ import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
-import 'package:zx_tape_player/models/remote/items_dto.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';

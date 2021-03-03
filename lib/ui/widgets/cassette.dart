@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Cassette extends StatefulWidget {
@@ -64,17 +63,23 @@ class _CassetteState extends State<Cassette>
           shape: BoxShape.rectangle),
       child: Stack(children: [
         Positioned(
-          top: 55, left: 60,
+          top: 55,
+          left: 60,
           child: RotationTransition(
-            turns: Tween(begin: 0.0, end: _rotationRatio * _durationSec).animate(_rotationController),
+            turns: Tween(begin: 0.0, end: _rotationRatio * _durationSec)
+                .animate(_rotationController),
             child: Image.asset('assets/images/splash/spool.png'),
-          ),),
+          ),
+        ),
         Positioned(
-          top: 55, right: 60,
+          top: 55,
+          right: 60,
           child: RotationTransition(
-            turns: Tween(begin: 0.0, end: _rotationRatio * _durationSec).animate(_rotationController),
+            turns: Tween(begin: 0.0, end: _rotationRatio * _durationSec)
+                .animate(_rotationController),
             child: Image.asset('assets/images/splash/spool.png'),
-          ),),
+          ),
+        ),
       ]),
     );
   }
