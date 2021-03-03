@@ -18,12 +18,19 @@ class ItemDto {
   Source _source;
 
   String get index => _index;
+
   String get type => _type;
+
   String get id => _id;
+
   int get version => _version;
+
   int get seqNo => _seqNo;
+
   int get primaryTerm => _primaryTerm;
+
   bool get found => _found;
+
   Source get source => _source;
 
   ItemDto(
@@ -208,70 +215,135 @@ class Source {
   String _remarks;
 
   List<Controls> get controls => _controls;
+
   List<dynamic> get authoring => _authoring;
+
   List<dynamic> get duplicateOf => _duplicateOf;
+
   List<dynamic> get bookContents => _bookContents;
+
   String get language => _language;
+
   List<dynamic> get competition => _competition;
+
   List<dynamic> get editBy => _editBy;
+
   int get numberOfPlayers => _numberOfPlayers;
+
   List<dynamic> get modificationOf => _modificationOf;
+
   Score get score => _score;
+
   List<Features> get features => _features;
+
   List<AdditionalDownloads> get additionalDownloads => _additionalDownloads;
+
   List<dynamic> get bundledWith => _bundledWith;
+
   List<dynamic> get duplicatedBy => _duplicatedBy;
+
   List<MagazineReferences> get magazineReferences => _magazineReferences;
+
   List<Publishers> get publishers => _publishers;
+
   List<OtherSystems> get otherSystems => _otherSystems;
+
   String get contentType => _contentType;
+
   List<dynamic> get runsWith => _runsWith;
+
   String get originalPublication => _originalPublication;
+
   List<dynamic> get requiredByHardware => _requiredByHardware;
+
   List<RelatedSites> get relatedSites => _relatedSites;
+
   dynamic get originalDayOfRelease => _originalDayOfRelease;
+
   List<dynamic> get inspirationFor => _inspirationFor;
+
   List<dynamic> get requiredToRun => _requiredToRun;
+
   dynamic get knownErrors => _knownErrors;
+
   List<dynamic> get editorOf => _editorOf;
+
   List<dynamic> get originOf => _originOf;
+
   int get originalYearOfRelease => _originalYearOfRelease;
+
   List<dynamic> get addOnAvailable => _addOnAvailable;
+
   dynamic get hardwareBlurb => _hardwareBlurb;
+
   List<dynamic> get requiresHardware => _requiresHardware;
+
   List<Authors> get authors => _authors;
+
   OriginalPrice get originalPrice => _originalPrice;
+
   List<dynamic> get authoredWith => _authoredWith;
+
   dynamic get isbn => _isbn;
+
   String get availability => _availability;
+
   List<dynamic> get inspiredBy => _inspiredBy;
+
   String get title => _title;
+
   dynamic get originalMonthOfRelease => _originalMonthOfRelease;
+
   String get genreType => _genreType;
+
   List<dynamic> get addOnDependsOn => _addOnDependsOn;
+
   List<Screens> get screens => _screens;
+
   dynamic get multiplayerMode => _multiplayerMode;
+
   String get genre => _genre;
+
   List<dynamic> get derivedFrom => _derivedFrom;
+
   List<dynamic> get modifiedBy => _modifiedBy;
+
   List<YouTubeLinks> get youTubeLinks => _youTubeLinks;
+
   String get machineType => _machineType;
+
   List<Tosec> get tosec => _tosec;
+
   List<dynamic> get otherPlatform => _otherPlatform;
+
   List<dynamic> get bundleContent => _bundleContent;
+
   List<dynamic> get compilationContents => _compilationContents;
+
   String get zxinfoVersion => _zxinfoVersion;
+
   List<dynamic> get themedGroup => _themedGroup;
+
   List<dynamic> get unsortedGroup => _unsortedGroup;
+
   List<RelatedLinks> get relatedLinks => _relatedLinks;
+
   List<ReviewAwards> get reviewAwards => _reviewAwards;
+
   List<InCompilations> get inCompilations => _inCompilations;
+
   List<Releases> get releases => _releases;
+
   List<dynamic> get inBook => _inBook;
+
   List<Awards> get awards => _awards;
+
   List<dynamic> get series => _series;
+
   String get genreSubType => _genreSubType;
+
   dynamic get multiplayerType => _multiplayerType;
+
   String get remarks => _remarks;
 
   Source(
@@ -877,6 +949,7 @@ class Awards {
   String _text;
 
   String get section => _section;
+
   String get text => _text;
 
   Awards({String section, String text}) {
@@ -927,17 +1000,29 @@ class Releases {
   List<Files> _files;
 
   int get releaseSeq => _releaseSeq;
+
   List<Publishers> get publishers => _publishers;
+
   List<String> get releaseTitles => _releaseTitles;
+
   int get yearOfRelease => _yearOfRelease;
+
   String get releasePrice => _releasePrice;
+
   dynamic get budgetPrice => _budgetPrice;
+
   dynamic get microdrivePrice => _microdrivePrice;
+
   dynamic get diskPrice => _diskPrice;
+
   dynamic get cartridgePrice => _cartridgePrice;
+
   dynamic get code => _code;
+
   dynamic get barcode => _barcode;
+
   dynamic get dl => _dl;
+
   List<Files> get files => _files;
 
   Releases(
@@ -1036,10 +1121,15 @@ class Files {
   String _encodingScheme;
 
   String get path => _path;
+
   int get size => _size;
+
   String get type => _type;
+
   String get format => _format;
+
   dynamic get origin => _origin;
+
   String get encodingScheme => _encodingScheme;
 
   Files(
@@ -1090,8 +1180,11 @@ class Publishers {
   String _labelType;
 
   int get publisherSeq => _publisherSeq;
+
   String get name => _name;
+
   String get country => _country;
+
   String get labelType => _labelType;
 
   Publishers(
@@ -1133,9 +1226,13 @@ class InCompilations {
   String _type;
 
   int get entryId => _entryId;
+
   String get title => _title;
+
   List<Publishers> get publishers => _publishers;
+
   String get machineType => _machineType;
+
   String get type => _type;
 
   InCompilations(
@@ -1235,12 +1332,19 @@ class ReviewAwards {
   int _number;
 
   String get awardName => _awardName;
+
   String get magazineName => _magazineName;
+
   int get page => _page;
+
   int get issueId => _issueId;
+
   int get dateYear => _dateYear;
+
   int get dateMonth => _dateMonth;
+
   dynamic get volume => _volume;
+
   int get number => _number;
 
   ReviewAwards(
@@ -1295,6 +1399,7 @@ class RelatedLinks {
   String _url;
 
   String get siteName => _siteName;
+
   String get url => _url;
 
   RelatedLinks({String siteName, String url}) {
@@ -1345,6 +1450,7 @@ class YouTubeLinks {
   String _url;
 
   String get siteName => _siteName;
+
   String get url => _url;
 
   YouTubeLinks({String siteName, String url}) {
@@ -1381,10 +1487,15 @@ class Screens {
   String _title;
 
   String get filename => _filename;
+
   String get url => _url;
+
   int get size => _size;
+
   String get type => _type;
+
   String get format => _format;
+
   String get title => _title;
 
   Screens(
@@ -1431,6 +1542,7 @@ class OriginalPrice {
   String _currency;
 
   String get amount => _amount;
+
   String get currency => _currency;
 
   OriginalPrice({String amount, String currency}) {
@@ -1475,14 +1587,23 @@ class Authors {
   List<dynamic> _notes;
 
   String get type => _type;
+
   int get authorSeq => _authorSeq;
+
   String get name => _name;
+
   String get country => _country;
+
   String get labelType => _labelType;
+
   List<dynamic> get roles => _roles;
+
   dynamic get groupName => _groupName;
+
   dynamic get groupCountry => _groupCountry;
+
   dynamic get groupType => _groupType;
+
   List<dynamic> get notes => _notes;
 
   Authors(
@@ -1559,6 +1680,7 @@ class RelatedSites {
   String _url;
 
   String get siteName => _siteName;
+
   String get url => _url;
 
   RelatedSites({String siteName, String url}) {
@@ -1587,6 +1709,7 @@ class OtherSystems {
   String _url;
 
   String get name => _name;
+
   String get url => _url;
 
   OtherSystems({String name, String url}) {
@@ -1676,7 +1799,9 @@ class Notes {
   String _noteType;
 
   String get text => _text;
+
   String get section => _section;
+
   String get noteType => _noteType;
 
   Notes({String text, String section, String noteType}) {
@@ -1724,14 +1849,23 @@ class MagazineReferences {
   dynamic _score;
 
   String get type => _type;
+
   dynamic get featureName => _featureName;
+
   String get magazineName => _magazineName;
+
   int get page => _page;
+
   int get issueId => _issueId;
+
   int get dateYear => _dateYear;
+
   int get dateMonth => _dateMonth;
+
   dynamic get volume => _volume;
+
   int get number => _number;
+
   dynamic get score => _score;
 
   MagazineReferences(
@@ -1800,9 +1934,13 @@ class AdditionalDownloads {
   dynamic _language;
 
   String get path => _path;
+
   int get size => _size;
+
   String get type => _type;
+
   String get format => _format;
+
   dynamic get language => _language;
 
   AdditionalDownloads(
@@ -1863,6 +2001,7 @@ class Score {
   int _votes;
 
   double get score => _score;
+
   int get votes => _votes;
 
   Score({double score, int votes}) {

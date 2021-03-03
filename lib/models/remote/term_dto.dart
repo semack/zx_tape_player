@@ -10,8 +10,11 @@ class TermDto {
   String _entryId;
 
   String get text => _text;
+
   String get labeltype => _labeltype;
+
   String get type => _type;
+
   String get entryId => _entryId;
 
   TermDto({String text, String labeltype, String type, String entryId}) {

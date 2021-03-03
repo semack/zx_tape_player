@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:zx_tape_player/enums/file_location.dart';
+import 'package:zx_tape_player/models/enums/file_location.dart';
 
 class SoftwareModel {
   final bool isRemote;

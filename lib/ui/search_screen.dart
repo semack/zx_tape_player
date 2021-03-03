@@ -8,16 +8,15 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:zx_tape_player/enums/file_location.dart';
+import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
+import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
-import 'package:zx_tape_player/services/zxapi_backend_service.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
+import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
-import 'package:zx_tape_player/main.dart';
-import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key key}) : super(key: key);

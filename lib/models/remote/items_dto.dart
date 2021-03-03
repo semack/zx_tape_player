@@ -10,8 +10,11 @@ class ItemsDto {
   Hits _hits;
 
   int get took => _took;
+
   bool get timedOut => _timedOut;
+
   Shards get shards => _shards;
+
   Hits get hits => _hits;
 
   ItemsDto({int took, bool timedOut, Shards shards, Hits hits}) {
@@ -54,9 +57,13 @@ class Hits {
   Source _source;
 
   Total get total => _total;
+
   dynamic get maxScore => _maxScore;
+
   List<Hits> get hits => _hits;
+
   dynamic get id => _id;
+
   Source get source => _source;
 
   Hits(
@@ -132,19 +139,33 @@ class Source {
   List<Authors> _authors;
 
   dynamic get originalDayOfRelease => _originalDayOfRelease;
+
   String get availability => _availability;
+
   String get title => _title;
+
   List<Releases> get releases => _releases;
+
   dynamic get originalMonthOfRelease => _originalMonthOfRelease;
+
   Score get score => _score;
+
   String get genreType => _genreType;
+
   List<AdditionalDownloads> get additionalDownloads => _additionalDownloads;
+
   List<Screens> get screens => _screens;
+
   int get originalYearOfRelease => _originalYearOfRelease;
+
   String get genre => _genre;
+
   List<Publishers> get publishers => _publishers;
+
   String get genreSubType => _genreSubType;
+
   String get machineType => _machineType;
+
   List<Authors> get authors => _authors;
 
   Source(
@@ -281,14 +302,23 @@ class Authors {
   String _type;
 
   String get country => _country;
+
   dynamic get groupName => _groupName;
+
   dynamic get groupType => _groupType;
+
   List<dynamic> get notes => _notes;
+
   dynamic get groupCountry => _groupCountry;
+
   int get authorSeq => _authorSeq;
+
   List<dynamic> get roles => _roles;
+
   String get name => _name;
+
   String get labelType => _labelType;
+
   String get type => _type;
 
   Authors(
@@ -371,9 +401,13 @@ class Publishers {
   int _publisherSeq;
 
   String get country => _country;
+
   List<dynamic> get notes => _notes;
+
   String get name => _name;
+
   String get labelType => _labelType;
+
   int get publisherSeq => _publisherSeq;
 
   Publishers(
@@ -431,10 +465,15 @@ class Screens {
   String _url;
 
   String get filename => _filename;
+
   int get size => _size;
+
   String get format => _format;
+
   String get type => _type;
+
   dynamic get title => _title;
+
   String get url => _url;
 
   Screens(
@@ -487,9 +526,13 @@ class AdditionalDownloads {
   String _type;
 
   String get path => _path;
+
   int get size => _size;
+
   String get format => _format;
+
   dynamic get language => _language;
+
   String get type => _type;
 
   AdditionalDownloads(
@@ -528,6 +571,7 @@ class Score {
   int _votes;
 
   double get score => _score;
+
   int get votes => _votes;
 
   Score({double score, int votes}) {
@@ -585,6 +629,7 @@ class Total {
   String _relation;
 
   int get value => _value;
+
   String get relation => _relation;
 
   Total({int value, String relation}) {
@@ -617,8 +662,11 @@ class Shards {
   int _failed;
 
   int get total => _total;
+
   int get successful => _successful;
+
   int get skipped => _skipped;
+
   int get failed => _failed;
 
   Shards({int total, int successful, int skipped, int failed}) {
