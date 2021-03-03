@@ -81,8 +81,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
             Expanded(
                 child: Container(
               width: MediaQuery.of(context).size.width,
-              child:
-                  _isNewSearch ? LoadingProgress() : _buildSearchList(context),
+              child: _isNewSearch
+                  ? LoadingProgress(loadingText: tr("loading"))
+                  : _buildSearchList(context),
             ))
           ],
         ),
@@ -163,7 +164,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
             ),
           );
         },
-        loadingBuilder: (BuildContext context) => LoadingProgress(),
+        loadingBuilder: (BuildContext context) => LoadingProgress(
+              loadingText: tr("loading"),
+            ),
         itemBuilder: (context, suggestion) {
           var text = suggestion.text;
           if (suggestion.type == Definitions.letterType)
@@ -363,7 +366,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
     try {
       var items = await BackendService.getHits(
           _textController.text, Definitions.pageSize,
-          offset: _page * Definitions.pageSize);
+          offset: _page);
       _hits.addAll(items);
       if (items.length > 0) {
         _page++;

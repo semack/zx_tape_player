@@ -16,9 +16,14 @@ import 'package:zx_tape_player/models/remote/items_dto.dart';
 import 'package:zx_tape_player/models/remote/term_dto.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
-import 'package:zx_tape_player/utils/user_agent_client.dart';
 
 class BackendService {
+  static const _baseUrl = 'https://api.zxinfo.dk/v3';
+  static const _contentBaseUrl2 = 'https://zxinfo.dk/media';
+  static const _contentBaseUrl = 'https://spectrumcomputing.co.uk';
+  static const _tapeBaseUrl =
+      "https://archive.org/download/zx-spectrum-tosec-set-v-2020-02-18-lady-eklipse/%s.zip%s";
+
   static const _termsUrl = '/suggest/%s';
   static const _itemsUrl = '/search?query=%s&mode=compact' +
       '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
@@ -26,6 +31,8 @@ class BackendService {
       '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _itemUrl = '/games/%s?mode=full';
   static const _fileCheckUrl = '/filecheck/%s';
+  static const _contentType = 'SOFTWARE';
+  static const _userAgent = 'ZX Tape Player/1.0';
 
   static Future<List<TermModel>> getSuggestions(String query) async {
     var result = new List<TermModel>();
@@ -38,13 +45,12 @@ class BackendService {
         return result;
       }
     }
-    var url = (Definitions.baseUrl + _termsUrl).format([query]);
-    var response =
-        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    var url = (_baseUrl + _termsUrl).format([query]);
+    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) {
       result = (json.decode(response.body) as List)
           .map((e) => TermDto.fromJson(e))
-          .where((element) => element.type == Definitions.contentType)
+          .where((element) => element.type == _contentType)
           .map((e) => TermModel(e.text, e.type))
           .toList();
     }
@@ -55,15 +61,14 @@ class BackendService {
       {int offset = 0}) async {
     var result = <HitModel>[];
     if (query.isEmpty) return result;
-    var url = Definitions.baseUrl;
+    var url = _baseUrl;
     if (query.length == 1) {
       var letter = await _tryGetLetter(query);
       if (letter != null && letter.isNotEmpty) url += _letterUrl;
     }
-    if (url == Definitions.baseUrl) url += _itemsUrl;
+    if (url == _baseUrl) url += _itemsUrl;
     url = url.format([query, size, offset]);
-    var response =
-        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) {
       var data = ItemsDto.fromJson(json.decode(response.body)).hits.hits;
       if (data != null && data.length > 0)
@@ -89,9 +94,8 @@ class BackendService {
 
   static Future<ItemModel> getItem(String id) async {
     ItemModel result;
-    var url = Definitions.baseUrl + _itemUrl.format([id]);
-    var response =
-        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    var url = _baseUrl + _itemUrl.format([id]);
+    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) {
       var list = <ItemDto>[];
       list.add(ItemDto.fromJson(json.decode(response.body)));
@@ -125,10 +129,10 @@ class BackendService {
   static Future<ItemModel> recognizeTape(String filePath) async {
     ItemModel result;
     var md5 = await _calculateMD5Sum(filePath);
-    var fileCheckUrl = Definitions.baseUrl + _fileCheckUrl.format([md5]);
-    var response = await UserAgentClient(Definitions.userAgent, http.Client())
-        .get(fileCheckUrl);
-    if (response.statusCode != 200) {
+    var fileCheckUrl = _baseUrl + _fileCheckUrl.format([md5]);
+    var response =
+        await UserAgentClient(_userAgent, http.Client()).get(fileCheckUrl);
+    if (response.statusCode == 200) {
       var fileCheck = FileCheckDto.fromJson(json.decode(response.body));
       result = await getItem(fileCheck.entryId);
     } else {
@@ -138,8 +142,7 @@ class BackendService {
   }
 
   static Future<Uint8List> downloadTape(String url) async {
-    var response =
-        await UserAgentClient(Definitions.userAgent, http.Client()).get(url);
+    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) return response.bodyBytes;
     return null;
   }
@@ -153,13 +156,13 @@ class BackendService {
   }
 
   static String _fixScreenShotUrl(String url) {
-    if (url.startsWith('/zxscreens')) return Definitions.contentBaseUrl2 + url;
-    return Definitions.contentBaseUrl + url;
+    if (url.startsWith('/zxscreens')) return _contentBaseUrl2 + url;
+    return _contentBaseUrl + url;
   }
 
   static String _fixToSecUrl(String url) {
     var prefix = url.split('/')[1];
-    url = Definitions.tapeBaseUrl.format([prefix, url]);
+    url = _tapeBaseUrl.format([prefix, url]);
     return url;
   }
 
@@ -172,5 +175,17 @@ class BackendService {
       result = digest.toString();
     }
     return result;
+  }
+}
+
+class UserAgentClient extends http.BaseClient {
+  final String userAgent;
+  final http.Client _inner;
+
+  UserAgentClient(this.userAgent, this._inner);
+
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    request.headers['user-agent'] = userAgent;
+    return _inner.send(request);
   }
 }

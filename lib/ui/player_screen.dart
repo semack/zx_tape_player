@@ -87,7 +87,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
               backgroundColor: Colour('#28384C'),
             ),
       body: _isLoading
-          ? LoadingProgress()
+          ? LoadingProgress(
+              loadingText: tr("loading"),
+            )
           : Column(
               children: <Widget>[
                 _buildInfoWidget(context),

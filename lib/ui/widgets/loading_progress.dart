@@ -1,11 +1,12 @@
 import 'package:colour/colour.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 
 class LoadingProgress extends StatelessWidget {
-  LoadingProgress({Key key}) : super(key: key);
+  final String loadingText;
+
+  LoadingProgress({Key key, @required this.loadingText}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class LoadingProgress extends StatelessWidget {
             height: 5.0,
           ),
           Text(
-            tr("loading"),
+            loadingText,
             style: TextStyle(color: Colour('#AFB6BB'), fontSize: 12.0),
           ),
         ]));

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Cassette extends StatefulWidget {
-  bool _animated;
-  int _durationSec;
+  final bool animated;
+  final int durationSec;
 
-  Cassette({Key key, bool animated = true, int durationSec = 3})
-      : super(key: key) {
-    _animated = animated;
-    _durationSec = durationSec;
-  }
+  Cassette({Key key, this.animated = true, this.durationSec = 3})
+      : super(key: key);
 
   @override
   _CassetteState createState() {
@@ -20,18 +17,19 @@ class _CassetteState extends State<Cassette>
     with SingleTickerProviderStateMixin {
   AnimationController _rotationController;
 
-  bool get _animated => widget._animated;
-  int get _durationSec => widget._durationSec;
+  bool get _animated => widget.animated;
+
+  int get _durationSec => widget.durationSec;
   final double _rotationRatio = 0.63;
 
   @override
   void initState() {
     _rotationController = AnimationController(
-      duration: Duration(seconds: widget._durationSec),
+      duration: Duration(seconds: _durationSec),
       vsync: this,
     );
     super.initState();
-    if (widget._animated) _rotationController.forward();
+    if (_animated) _rotationController.forward();
   }
 
   @override
