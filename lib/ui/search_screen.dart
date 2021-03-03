@@ -11,7 +11,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
-import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/services/abstract/backend_service.dart';
+import 'package:zx_tape_player/services/zxapi_backend_service.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
@@ -145,7 +146,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
           ),
         ),
         suggestionsCallback: (pattern) async {
-          return await BackendService.getSuggestions(pattern);
+          return await getIt<BackendService>().getSuggestions(pattern);
         },
         suggestionsBoxDecoration: SuggestionsBoxDecoration(
           hasScrollbar: false,
@@ -364,7 +365,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       });
     }
     try {
-      var items = await BackendService.getHits(
+      var items = await getIt<BackendService>().getHits(
           _textController.text, Definitions.pageSize,
           offset: _page);
       _hits.addAll(items);

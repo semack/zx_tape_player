@@ -7,9 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/main.dart';
-import 'package:zx_tape_player/models/application/item_model.dart';
+import 'package:zx_tape_player/models/application/software_model.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
-import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/services/abstract/backend_service.dart';
+import 'package:zx_tape_player/services/zxapi_backend_service.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player.dart';
@@ -26,7 +27,7 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  ItemModel _item;
+  SoftwareModel _item;
   bool _isLoading = true;
   String _title = tr('local_file');
 
@@ -50,11 +51,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Future _loadData(PlayerArgs args) async {
     switch (args.location) {
       case FileLocation.remote:
-        _item = await BackendService.getItem(args.id);
+        _item = await getIt<BackendService>().getItem(args.id);
         _title = _item.title;
         break;
       case FileLocation.file:
-        _item = await BackendService.recognizeTape(args.id);
+        _item = await getIt<BackendService>().recognizeTape(args.id);
         break;
     }
     setState(() {

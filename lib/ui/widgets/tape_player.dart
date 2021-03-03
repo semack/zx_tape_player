@@ -11,10 +11,13 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/enums/file_location.dart';
-import 'package:zx_tape_player/models/application/item_model.dart';
-import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/models/application/software_model.dart';
+import 'package:zx_tape_player/services/abstract/backend_service.dart';
+import 'package:zx_tape_player/services/zxapi_backend_service.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
+
+import '../../main.dart';
 
 class TapePlayer extends StatefulWidget {
   final List<FileModel> files;
@@ -380,7 +383,7 @@ class _ControlButtonsState extends State<ControlButtons> {
                       try {
                         Uint8List bytes;
                         if (_file.location == FileLocation.remote)
-                          bytes = await BackendService.downloadTape(_file.url);
+                          bytes = await getIt<BackendService>().downloadTape(_file.url);
                         else if (_file.location == FileLocation.file)
                           bytes = await File(_file.url).readAsBytes();
                         else

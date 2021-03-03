@@ -8,16 +8,17 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:zx_tape_player/enums/file_location.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
-import 'package:zx_tape_player/models/application/item_model.dart';
+import 'package:zx_tape_player/models/application/software_model.dart';
 import 'package:zx_tape_player/models/application/term_model.dart';
 import 'package:zx_tape_player/models/remote/file_check_dto.dart';
 import 'package:zx_tape_player/models/remote/item_dto.dart';
 import 'package:zx_tape_player/models/remote/items_dto.dart';
 import 'package:zx_tape_player/models/remote/term_dto.dart';
+import 'package:zx_tape_player/services/abstract/backend_service.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
-class BackendService {
+class ZxApiBackendService implements BackendService {
   static const _baseUrl = 'https://api.zxinfo.dk/v3';
   static const _contentBaseUrl2 = 'https://zxinfo.dk/media';
   static const _contentBaseUrl = 'https://spectrumcomputing.co.uk';
@@ -34,7 +35,7 @@ class BackendService {
   static const _contentType = 'SOFTWARE';
   static const _userAgent = 'ZX Tape Player/1.0';
 
-  static Future<List<TermModel>> getSuggestions(String query) async {
+  Future<List<TermModel>> getSuggestions(String query) async {
     var result = new List<TermModel>();
     if (query.isEmpty) return result;
     if (query.length == 1) {
@@ -57,7 +58,7 @@ class BackendService {
     return result;
   }
 
-  static Future<List<HitModel>> getHits(String query, int size,
+  Future<List<HitModel>> getHits(String query, int size,
       {int offset = 0}) async {
     var result = <HitModel>[];
     if (query.isEmpty) return result;
@@ -92,15 +93,15 @@ class BackendService {
     return result;
   }
 
-  static Future<ItemModel> getItem(String id) async {
-    ItemModel result;
+  Future<SoftwareModel> getItem(String id) async {
+    SoftwareModel result;
     var url = _baseUrl + _itemUrl.format([id]);
     var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) {
       var list = <ItemDto>[];
       list.add(ItemDto.fromJson(json.decode(response.body)));
       result = list
-          .map((e) => ItemModel(
+          .map((e) => SoftwareModel(
               true,
               e.source.title,
               e.source.originalYearOfRelease?.toString(),
@@ -126,8 +127,8 @@ class BackendService {
     return result;
   }
 
-  static Future<ItemModel> recognizeTape(String filePath) async {
-    ItemModel result;
+  Future<SoftwareModel> recognizeTape(String filePath) async {
+    SoftwareModel result;
     var md5 = await _calculateMD5Sum(filePath);
     var fileCheckUrl = _baseUrl + _fileCheckUrl.format([md5]);
     var response =
@@ -136,12 +137,12 @@ class BackendService {
       var fileCheck = FileCheckDto.fromJson(json.decode(response.body));
       result = await getItem(fileCheck.entryId);
     } else {
-      result = await ItemModel.createFromFile(filePath);
+      result = await SoftwareModel.createFromFile(filePath);
     }
     return result;
   }
 
-  static Future<Uint8List> downloadTape(String url) async {
+  Future<Uint8List> downloadTape(String url) async {
     var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) return response.bodyBytes;
     return null;

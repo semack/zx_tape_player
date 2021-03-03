@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:zx_tape_player/enums/file_location.dart';
 
-class ItemModel {
+class SoftwareModel {
   final bool isRemote;
   final String title;
   final String year;
@@ -16,7 +16,7 @@ class ItemModel {
   final Iterable<ScreenShotModel> screenShotUrls;
   final Iterable<FileModel> tapeFiles;
 
-  ItemModel(
+  SoftwareModel(
       this.isRemote,
       this.title,
       this.year,
@@ -29,10 +29,10 @@ class ItemModel {
       this.screenShotUrls,
       this.tapeFiles);
 
-  static Future<ItemModel> createFromFile(String filePath) async {
+  static Future<SoftwareModel> createFromFile(String filePath) async {
     var file = File(filePath);
     if (await file.exists()) {
-      return ItemModel(
+      return SoftwareModel(
           false,
           basenameWithoutExtension(filePath),
           null,
