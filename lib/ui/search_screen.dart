@@ -223,6 +223,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                 {
                   switch (snapshot.data)
                   {
+                    case LoadStatus.loading:
+                    case LoadStatus.canLoading:
+                      break;
                     case LoadStatus.idle:
                       _refreshController.loadComplete();
                       break;
