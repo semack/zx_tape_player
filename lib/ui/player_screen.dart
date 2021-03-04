@@ -5,6 +5,7 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee_widget/marquee_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/application/software_model.dart';
@@ -95,12 +96,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         })
                     : SizedBox.shrink()
               ],
-              title: Text(
-                _title,
-                overflow: TextOverflow.fade,
-                style: TextStyle(color: Colors.white, letterSpacing: 0.1),
+              title: Marquee(
+                child: Text(_title,
+                    style: TextStyle(color: Colors.white, letterSpacing: 0.1)),
               ),
-              // centerTitle: true,
               titleSpacing: 0.0,
               toolbarHeight: 60.0,
               backgroundColor: Colour('#28384C'),

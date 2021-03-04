@@ -46,6 +46,7 @@ dependencies:
   crypto: ^2.1.5
   get_it: ^5.0.6
   url_launcher: ^5.7.10
+  marquee_widget: ^1.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

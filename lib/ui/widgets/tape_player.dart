@@ -10,13 +10,12 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/application/software_model.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
-
-import '../../main.dart';
 
 class TapePlayer extends StatefulWidget {
   final List<FileModel> files;
