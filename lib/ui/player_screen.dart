@@ -5,10 +5,11 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:zx_tape_player/models/enums/file_location.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/application/software_model.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
+import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
@@ -77,12 +78,29 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
+              actions: [
+                _item.isRemote
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.open_in_new_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        onPressed: () async {
+                          var url = await getIt<BackendService>()
+                              .getExternalUrl(_item.id);
+                          await canLaunch(url)
+                              ? await launch(url)
+                              : throw 'Could not launch $url';
+                        })
+                    : SizedBox.shrink()
+              ],
               title: Text(
                 _title,
                 overflow: TextOverflow.fade,
                 style: TextStyle(color: Colors.white, letterSpacing: 0.1),
               ),
-              centerTitle: true,
+              // centerTitle: true,
               titleSpacing: 0.0,
               toolbarHeight: 60.0,
               backgroundColor: Colour('#28384C'),
@@ -194,9 +212,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ),
                               SizedBox(width: 2),
                               Text(
-                                _item.price != null && _item.price.isNotEmpty
-                                    ? _item.price
-                                    : tr('na'),
+                                _item.price.isNullOrEmpty()
+                                    ? tr('na')
+                                    : _item.price,
                                 style: TextStyle(
                                     color: Colors.white,
                                     letterSpacing: 0.3,
@@ -205,41 +223,44 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ),
                             ],
                           ),
-                          _item.remarks != null
+                          _item.remarks.isNullOrEmpty()
+                              ? SizedBox.shrink()
+                              : SizedBox(height: 24.0),
+                          _item.remarks.isNullOrEmpty()
+                              ? SizedBox.shrink()
+                              : Row(children: [
+                                  Expanded(
+                                      child: Text(
+                                    _item.remarks.removeAllHtmlTags(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        letterSpacing: 0.3,
+                                        height: 1.4,
+                                        fontSize: 14.0),
+                                    maxLines: 256,
+                                  ))
+                                ]),
+                          _item.authors.length > 0
                               ? SizedBox(height: 24.0)
                               : SizedBox.shrink(),
-                          Row(children: [
-                            Expanded(
-                                child: _item.remarks != null
-                                    ? Text(
-                                        _item.remarks.removeAllHtmlTags(),
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            letterSpacing: 0.3,
-                                            height: 1.4,
-                                            fontSize: 14.0),
-                                        maxLines: 256,
-                                      )
-                                    : SizedBox.shrink())
-                          ]),
-                          SizedBox(height: 24.0),
-                          Row(children: [
-                            Expanded(
-                              child: Text(
-                                _item.authors
-                                    .where(
-                                        (a) => a.name != null && a.role != null)
-                                    .map((a) => '· ' + a.name + ' - ' + a.role)
-                                    .join('\r\n'),
-                                style: TextStyle(
-                                    color: Colour('#B1B8C1'),
-                                    letterSpacing: 0.3,
-                                    height: 1.6,
-                                    fontSize: 12.0),
-                                overflow: TextOverflow.clip,
-                              ),
-                            )
-                          ]),
+                          _item.authors.length > 0
+                              ? Row(children: [
+                                  Expanded(
+                                    child: Text(
+                                      _item.authors
+                                          .map((a) =>
+                                              '· ' + a.name + ' - ' + a.role)
+                                          .join('\r\n'),
+                                      style: TextStyle(
+                                          color: Colour('#B1B8C1'),
+                                          letterSpacing: 0.3,
+                                          height: 1.6,
+                                          fontSize: 12.0),
+                                      overflow: TextOverflow.clip,
+                                    ),
+                                  )
+                                ])
+                              : SizedBox.shrink(),
                           SizedBox(height: 24.0),
                           Column(
                               children: _item.screenShotUrls

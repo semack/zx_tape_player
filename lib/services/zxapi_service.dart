@@ -69,7 +69,9 @@ class ZxApiService implements BackendService {
     }
     if (url == _baseUrl) url += _itemsUrl;
     url = url.format([query, size, offset]);
-    url += Definitions.supportedTapeExtensions.map((e) => "&tosectype=%s".format([e])).join();
+    url += Definitions.supportedTapeExtensions
+        .map((e) => "&tosectype=%s".format([e]))
+        .join();
     var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) {
       var data = ItemsDto.fromJson(json.decode(response.body)).hits.hits;
@@ -116,7 +118,10 @@ class ZxApiService implements BackendService {
                           .replaceAll('/', '')
                           .replaceAll('NA', '')),
               e.source.remarks,
-              e.source.authors?.map((a) => AuthorModel(a.name, a.type)),
+              e.source.authors
+                  .where((a) =>
+                      !(a.name.isNullOrEmpty() || a.type.isNullOrEmpty()))
+                  .map((a) => AuthorModel(a.name, a.type)),
               e.source.screens.map(
                   (s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url))),
               e.source.tosec
