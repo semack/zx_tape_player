@@ -38,16 +38,17 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       SuggestionsBoxController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  static int _page = 0;
   var _initialized = false;
-  var _isNewSearch = false;
-  var _hits = <HitModel>[];
-  var _searchBloc;
+
+  // var _isNewSearch = false;
+  // var _hits = <HitModel>[];
+
+  SearchBlock _searchBloc;
 
   @override
   void initState() {
     super.initState();
-    _searchBloc = _SearchBlock();
+    _searchBloc = SearchBlock();
   }
 
   @override
@@ -64,13 +65,13 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
 
   @override
   void didPopNext() {
-    _searchBloc.dispose();
     audioPlayer.stop();
     audioPlayer.setFilePath('');
   }
 
   @override
   void dispose() {
+    _searchBloc.dispose();
     routeObserver.unsubscribe(this);
     _refreshController.dispose();
     _textController.dispose();
@@ -81,17 +82,27 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Column(
-          children: <Widget>[
+          children: [
             Padding(
                 padding: EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 4.0),
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: _isNewSearch
-                  ? LoadingProgress(loadingText: tr("loading"))
-                  : _buildSearchList(context),
-            ))
+                    width: MediaQuery.of(context).size.width,
+                    child: StreamBuilder<ApiResponse<List<HitModel>>>(
+                        stream: _searchBloc.hitsListStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            switch (snapshot.data.status) {
+                              case Status.LOADING:
+                                return LoadingProgress(
+                                    loadingText: tr("loading"));
+                              case Status.COMPLETED:
+                                return _buildSearchList(context, snapshot.data);
+                            }
+                          }
+                          return SizedBox.shrink();
+                        })))
           ],
         ),
         resizeToAvoidBottomPadding: false);
@@ -104,7 +115,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
           controller: _textController,
           onSubmitted: (text) async {
             _textController.text = text;
-            await _onLoading();
+            await _searchBloc.fetchHitsList(text); // _onLoading();
           },
           style: TextStyle(
               color: Colors.white, fontSize: 18.0, letterSpacing: -0.5),
@@ -129,7 +140,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                 icon: Icon(Icons.search, color: Colour("#68AD56")),
                 onPressed: () async {
                   _suggestionsBoxController.close();
-                  await _onLoading();
+                  await _searchBloc.fetchHitsList(_textController.text);
                 }),
             hintText: tr('search_hint'),
             filled: true,
@@ -191,56 +202,77 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
         },
         onSuggestionSelected: (suggestion) async {
           _textController.text = suggestion.text;
-          await _onLoading();
+          await _searchBloc.fetchHitsList(_textController.text);
         });
   }
 
-  Widget _buildSearchList(BuildContext context) {
+  Widget _buildSearchList(
+      BuildContext context, ApiResponse<List<HitModel>> response) {
     return SmartRefresher(
         enablePullDown: false,
         enablePullUp: true,
         controller: _refreshController,
-        onLoading: () async => _onLoading(adding: true),
-        footer: CustomFooter(
-          builder: (BuildContext context, LoadStatus mode) {
-            var hint = '';
-            switch (mode) {
-              case LoadStatus.loading:
-                return Container(
-                    height: 55.0,
-                    child: Center(
-                      child: Loading(
-                          indicator: BallPulseIndicator(),
-                          size: 30.0,
-                          color: Colour('#AFB6BB')),
-                    ));
-              case LoadStatus.failed:
-                return Container(
-                  height: 55.0,
-                  child: Center(
-                      child: Text(tr('load_failed_retry'),
-                          style: TextStyle(
-                              fontSize: 11, color: Colour('#B1B8C1')))),
-                );
-              //break;
-              // case LoadStatus.canLoading:
-              //   hint = tr('release_load_more');
-              //   break;
-              // case LoadStatus.noMore:
-              //   hint = tr('no_more_data');
-              //   break;
-            }
-            return SizedBox(
-              height: 0.0,
-            );
-          },
-        ),
+        onLoading: () async =>
+            await _searchBloc.fetchHitsList(_textController.text, isNew: false),
+        footer: StreamBuilder<LoadStatus>(
+            stream: _searchBloc.hitsLoadStatusStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData)
+                {
+                  switch (snapshot.data)
+                  {
+                    case LoadStatus.idle:
+                      _refreshController.loadComplete();
+                      break;
+                    case LoadStatus.noMore:
+                      _refreshController.loadNoData();
+                      break;
+                    case LoadStatus.failed:
+                      _refreshController.loadFailed();
+                      break;
+                  }
+                }
+
+              return CustomFooter(
+                builder: (BuildContext context, LoadStatus mode) {
+                  switch (mode) {
+                    case LoadStatus.loading:
+                      return Container(
+                          height: 55.0,
+                          child: Center(
+                            child: Loading(
+                                indicator: BallPulseIndicator(),
+                                size: 30.0,
+                                color: Colour('#AFB6BB')),
+                          ));
+                    case LoadStatus.failed:
+                      return Container(
+                        height: 55.0,
+                        child: Center(
+                            child: Text(tr('load_failed_retry'),
+                                style: TextStyle(
+                                    fontSize: 11, color: Colour('#B1B8C1')))),
+                      );
+                    //break;
+                    // case LoadStatus.canLoading:
+                    //   hint = tr('release_load_more');
+                    //   break;
+                    // case LoadStatus.noMore:
+                    //   hint = tr('no_more_data');
+                    //   break;
+                  }
+                  return SizedBox(
+                    height: 0.0,
+                  );
+                },
+              );
+            }),
         child: ListView.builder(
             // itemExtent: 102.0,
             //padding: EdgeInsets.symmetric(vertical: 8.0),
             itemBuilder: (BuildContext context, int index) {
-          if (index >= _hits.length) return null;
-          var item = _hits[index];
+          if (index >= response.data.length) return null;
+          var item = response.data[index];
           var textAvatar = AbcAvatar(
             item.title,
             isRectangle: true,
@@ -357,64 +389,49 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                       ]))));
         }));
   }
-
-  Future _onLoading({bool adding = false}) async {
-    if (!adding) {
-      setState(() {
-        _hits.clear();
-        _page = 0;
-        _isNewSearch = true;
-      });
-    }
-    try {
-      var items = await getIt<BackendService>().fetchHitsList(
-          _textController.text, Definitions.pageSize,
-          offset: _page);
-      _hits.addAll(items);
-      if (items.length > 0) {
-        _page++;
-        _refreshController.loadComplete();
-      } else
-        _refreshController.loadNoData();
-    } catch (e) {
-      _refreshController.loadFailed();
-      await AppCenter.trackEventAsync('error', e);
-    }
-    setState(() {
-      _isNewSearch = false;
-    });
-  }
 }
 
-class _SearchBlock {
+class SearchBlock {
   final _hits = <HitModel>[];
   final _backendService = getIt<BackendService>();
   var _pageNum = 0;
   StreamController _hitsListController =
       StreamController<ApiResponse<List<HitModel>>>();
 
+  StreamController _hitsLoadStatusController = StreamController<LoadStatus>();
+
   StreamSink<ApiResponse<List<HitModel>>> get hitsListSink =>
       _hitsListController.sink;
 
-  Stream<ApiResponse<List<TermModel>>> get hitsListStream =>
+  Stream<ApiResponse<List<HitModel>>> get hitsListStream =>
       _hitsListController.stream;
+
+  StreamSink<LoadStatus> get hitsLoadStatusSink =>
+      _hitsLoadStatusController.sink;
+
+  Stream<LoadStatus> get hitsLoadStatusStream =>
+      _hitsLoadStatusController.stream;
 
   Future fetchHitsList(String query, {bool isNew = true}) async {
     if (isNew) {
       _hits.clear();
       _pageNum = 0;
+      hitsListSink.add(ApiResponse.loading('Fetching hits'));
     }
-    hitsListSink.add(ApiResponse.loading('Fetching terms'));
+    hitsLoadStatusSink.add(LoadStatus.loading);
     try {
       var items = await _backendService
           .fetchHitsList(query, Definitions.pageSize, offset: _pageNum);
       if (items.length > 0) {
         _pageNum++;
         _hits.addAll(items);
-      }
+        hitsLoadStatusSink.add(LoadStatus.idle);
+      } else
+        hitsLoadStatusSink.add(LoadStatus.noMore);
       hitsListSink.add(ApiResponse.completed(_hits));
     } catch (e) {
       hitsListSink.add(ApiResponse.error(e.toString()));
+      hitsLoadStatusSink.add(LoadStatus.failed);
       await AppCenter.trackEventAsync('error', e);
     }
   }
@@ -424,6 +441,7 @@ class _SearchBlock {
   }
 
   dispose() {
+    _hitsLoadStatusController?.close();
     _hitsListController?.close();
   }
 }
