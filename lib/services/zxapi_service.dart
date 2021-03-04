@@ -31,7 +31,7 @@ class ZxApiService implements BackendService {
       '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _itemUrl = '/games/%s?mode=full';
   static const _fileCheckUrl = '/filecheck/%s';
-  static const _externalUrl = 'https://zxinfo.dk/details/%s';
+  static const _externalUrl = 'https://zxinfo.dk/details/%s?source=zxtapeplayer';
   static const _contentType = 'SOFTWARE';
   static const _userAgent = 'ZX Tape Player/1.0';
 
