@@ -1,8 +1,8 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "app_title": "ZX Tape Player",
-  "copyright" : "© 2021 Andriy S'omak & ZXINFO.DK\r\nAll rights reserved\r\n",
-  "version": "version %s.%s",
+  "copyright" : "© 2021 Copyright by\r\nAndriy S'omak, Mobile development\r\nThomas Heckmann, ZxInfo API development\r\nPavlo Hladkov, UI/UX design\r\nAll rights reserved.\r\n",
+  "version": "Version %s.%s",
   "find_tape": "Find the desired tape",
   "search_hint": "Type a search text here",
   "select_file": "or select from file",
@@ -18,6 +18,5 @@
   "no_tapes": "No compatible tapes found. :(",
   "local_file": "Local file",
   "adjust_speed": "Adjust speed",
-  "adjust_volume": "Adjust volume",
-  "read_more": "Read more.."
+  "adjust_volume": "Adjust volume"
 }
