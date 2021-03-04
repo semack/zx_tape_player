@@ -38,28 +38,23 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       SuggestionsBoxController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  var _initialized = false;
-
-  // var _isNewSearch = false;
-  // var _hits = <HitModel>[];
 
   SearchBlock _searchBloc;
 
   @override
   void initState() {
     super.initState();
-    _searchBloc = SearchBlock();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     routeObserver.subscribe(this, ModalRoute.of(this.context));
-    if (!_initialized) {
+    if (_searchBloc == null) {
       _textController.text = ModalRoute.of(context).settings.arguments;
       _textController.selection = TextSelection.fromPosition(
           TextPosition(offset: _textController.text.length));
-      _initialized = true;
+      _searchBloc = SearchBlock();
     }
   }
 
@@ -71,7 +66,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
 
   @override
   void dispose() {
-    _searchBloc.dispose();
+    _searchBloc?.dispose();
     routeObserver.unsubscribe(this);
     _refreshController.dispose();
     _textController.dispose();
