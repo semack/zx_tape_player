@@ -15,6 +15,7 @@ import 'package:zx_tape_player/models/remote/item_dto.dart';
 import 'package:zx_tape_player/models/remote/items_dto.dart';
 import 'package:zx_tape_player/models/remote/term_dto.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
+import 'package:zx_tape_player/services/helpers/api_base_helper.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
@@ -31,11 +32,14 @@ class ZxApiService implements BackendService {
       '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _itemUrl = '/games/%s?mode=full';
   static const _fileCheckUrl = '/filecheck/%s';
-  static const _externalUrl = 'https://zxinfo.dk/details/%s?source=zxtapeplayer';
+  static const _externalUrl =
+      'https://zxinfo.dk/details/%s?source=zxtapeplayer';
   static const _contentType = 'SOFTWARE';
   static const _userAgent = 'ZX Tape Player/1.0';
 
-  Future<List<TermModel>> getSuggestions(String query) async {
+  final _helper = ApiBaseHelper(_baseUrl, _userAgent);
+
+  Future<List<TermModel>> fetchTermsList(String query) async {
     var result = new List<TermModel>();
     if (query.isEmpty) return result;
     if (query.length == 1) {
@@ -46,53 +50,48 @@ class ZxApiService implements BackendService {
         return result;
       }
     }
-    var url = (_baseUrl + _termsUrl).format([query]);
-    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
-    if (response.statusCode == 200) {
-      result = (json.decode(response.body) as List)
-          .map((e) => TermDto.fromJson(e))
-          .where((element) => element.type == _contentType)
-          .map((e) => TermModel(e.text, e.type))
-          .toList();
-    }
+    var jsonResponse = await _helper.get(_termsUrl.format([query]));
+    result = (jsonResponse as List)
+        .map((e) => TermDto.fromJson(e))
+        .where((element) => element.type == _contentType)
+        .map((e) => TermModel(e.text, e.type))
+        .toList();
     return result;
   }
 
-  Future<List<HitModel>> getHits(String query, int size,
+  Future<List<HitModel>> fetchHitsList(String query, int size,
       {int offset = 0}) async {
     var result = <HitModel>[];
     if (query.isEmpty) return result;
-    var url = _baseUrl;
+    var url = '';
     if (query.length == 1) {
       var letter = await _tryGetLetter(query);
       if (letter != null && letter.isNotEmpty) url += _letterUrl;
     }
-    if (url == _baseUrl) url += _itemsUrl;
+    if (url.isEmpty) url += _itemsUrl;
     url = url.format([query, size, offset]);
     url += Definitions.supportedTapeExtensions
         .map((e) => "&tosectype=%s".format([e]))
         .join();
-    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
-    if (response.statusCode == 200) {
-      var data = ItemsDto.fromJson(json.decode(response.body)).hits.hits;
-      if (data != null && data.length > 0)
-        result = data
-            .where((element) =>
-                element.source != null &&
-                element.source.title != null &&
-                element.source.title.isNotEmpty)
-            .map((e) => HitModel(
-                e.id,
-                e.source.screens.length > 0
-                    ? _fixScreenShotUrl(e.source?.screens[0].url)
-                    : '',
-                e.source.title,
-                e.source.originalYearOfRelease?.toString(),
-                e.source.genreType,
-                e.source.score?.votes,
-                e.source.score.score))
-            .toList();
-    }
+    var jsonResponse = await _helper.get(url);
+    var data = ItemsDto.fromJson(jsonResponse).hits.hits;
+    if (data != null && data.length > 0)
+      result = data
+          .where((element) =>
+              element.source != null &&
+              element.source.title != null &&
+              element.source.title.isNotEmpty)
+          .map((e) => HitModel(
+              e.id,
+              e.source.screens.length > 0
+                  ? _fixScreenShotUrl(e.source?.screens[0].url)
+                  : '',
+              e.source.title,
+              e.source.originalYearOfRelease?.toString(),
+              e.source.genreType,
+              e.source.score?.votes,
+              e.source.score.score))
+          .toList();
     return result;
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:avatar_abc/AbcAvatar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
@@ -10,9 +12,11 @@ import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/application/hit_model.dart';
+import 'package:zx_tape_player/models/application/term_model.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
+import 'package:zx_tape_player/services/responses/api_response.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
@@ -38,10 +42,12 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   var _initialized = false;
   var _isNewSearch = false;
   var _hits = <HitModel>[];
+  var _searchBloc;
 
   @override
   void initState() {
     super.initState();
+    _searchBloc = _SearchBlock();
   }
 
   @override
@@ -58,8 +64,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
 
   @override
   void didPopNext() {
-    audioPlayer.setFilePath('');
+    _searchBloc.dispose();
     audioPlayer.stop();
+    audioPlayer.setFilePath('');
   }
 
   @override
@@ -144,9 +151,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
             ),
           ),
         ),
-        suggestionsCallback: (pattern) async {
-          return await getIt<BackendService>().getSuggestions(pattern);
-        },
+        suggestionsCallback: (query) async =>
+            await _searchBloc.fetchTermsList(query),
         suggestionsBoxDecoration: SuggestionsBoxDecoration(
           hasScrollbar: false,
           elevation: 0,
@@ -199,9 +205,6 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
           builder: (BuildContext context, LoadStatus mode) {
             var hint = '';
             switch (mode) {
-              // case LoadStatus.idle:
-              //   hint = tr('pull_up_to_load');
-              //   break;
               case LoadStatus.loading:
                 return Container(
                     height: 55.0,
@@ -364,8 +367,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       });
     }
     try {
-      var items = await getIt<BackendService>()
-          .getHits(_textController.text, Definitions.pageSize, offset: _page);
+      var items = await getIt<BackendService>().fetchHitsList(
+          _textController.text, Definitions.pageSize,
+          offset: _page);
       _hits.addAll(items);
       if (items.length > 0) {
         _page++;
@@ -379,5 +383,47 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
     setState(() {
       _isNewSearch = false;
     });
+  }
+}
+
+class _SearchBlock {
+  final _hits = <HitModel>[];
+  final _backendService = getIt<BackendService>();
+  var _pageNum = 0;
+  StreamController _hitsListController =
+      StreamController<ApiResponse<List<HitModel>>>();
+
+  StreamSink<ApiResponse<List<HitModel>>> get hitsListSink =>
+      _hitsListController.sink;
+
+  Stream<ApiResponse<List<TermModel>>> get hitsListStream =>
+      _hitsListController.stream;
+
+  Future fetchHitsList(String query, {bool isNew = true}) async {
+    if (isNew) {
+      _hits.clear();
+      _pageNum = 0;
+    }
+    hitsListSink.add(ApiResponse.loading('Fetching terms'));
+    try {
+      var items = await _backendService
+          .fetchHitsList(query, Definitions.pageSize, offset: _pageNum);
+      if (items.length > 0) {
+        _pageNum++;
+        _hits.addAll(items);
+      }
+      hitsListSink.add(ApiResponse.completed(_hits));
+    } catch (e) {
+      hitsListSink.add(ApiResponse.error(e.toString()));
+      await AppCenter.trackEventAsync('error', e);
+    }
+  }
+
+  Future<List<TermModel>> fetchTermsList(String query) async {
+    return await _backendService.fetchTermsList(query);
+  }
+
+  dispose() {
+    _hitsListController?.close();
   }
 }

@@ -5,9 +5,9 @@ import 'package:zx_tape_player/models/application/software_model.dart';
 import 'package:zx_tape_player/models/application/term_model.dart';
 
 abstract class BackendService {
-  Future<List<TermModel>> getSuggestions(String query);
+  Future<List<TermModel>> fetchTermsList(String query);
 
-  Future<List<HitModel>> getHits(String query, int size, {int offset = 0});
+  Future<List<HitModel>> fetchHitsList(String query, int size, {int offset = 0});
 
   Future<SoftwareModel> getItem(String id);
 
