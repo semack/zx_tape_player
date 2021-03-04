@@ -99,6 +99,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                                     loadingText: tr("loading"));
                               case Status.COMPLETED:
                                 return _buildSearchList(context, snapshot.data);
+                              case Status.ERROR:
+                                break; // TODO: add error screen
                             }
                           }
                           return SizedBox.shrink();
@@ -253,13 +255,6 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                                 style: TextStyle(
                                     fontSize: 11, color: Colour('#B1B8C1')))),
                       );
-                    //break;
-                    // case LoadStatus.canLoading:
-                    //   hint = tr('release_load_more');
-                    //   break;
-                    // case LoadStatus.noMore:
-                    //   hint = tr('no_more_data');
-                    //   break;
                   }
                   return SizedBox(
                     height: 0.0,
