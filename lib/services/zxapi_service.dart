@@ -25,12 +25,13 @@ class ZxApiService implements BackendService {
   static const _tapeBaseUrl =
       "https://archive.org/download/zx-spectrum-tosec-set-v-2020-02-18-lady-eklipse/%s.zip%s";
   static const _termsUrl = '/suggest/%s';
-  static const _itemsUrl = '/search?query=%s&mode=compact' +
+  static const _itemsUrl = '/search?query=%s&mode=tiny' +
       '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
-  static const _letterUrl = '/games/byletter/%s?mode=compact' +
+  static const _letterUrl = '/games/byletter/%s?mode=tiny' +
       '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _itemUrl = '/games/%s?mode=full';
   static const _fileCheckUrl = '/filecheck/%s';
+  static const _externalUrl = 'https://zxinfo.dk/details/%s';
   static const _contentType = 'SOFTWARE';
   static const _userAgent = 'ZX Tape Player/1.0';
 
@@ -68,6 +69,7 @@ class ZxApiService implements BackendService {
     }
     if (url == _baseUrl) url += _itemsUrl;
     url = url.format([query, size, offset]);
+    url += Definitions.supportedTapeExtensions.map((e) => "&tosectype=%s".format([e])).join();
     var response = await UserAgentClient(_userAgent, http.Client()).get(url);
     if (response.statusCode == 200) {
       var data = ItemsDto.fromJson(json.decode(response.body)).hits.hits;
@@ -101,6 +103,7 @@ class ZxApiService implements BackendService {
       list.add(ItemDto.fromJson(json.decode(response.body)));
       result = list
           .map((e) => SoftwareModel(
+              e.id,
               true,
               e.source.title,
               e.source.originalYearOfRelease?.toString(),
@@ -175,6 +178,10 @@ class ZxApiService implements BackendService {
       result = digest.toString();
     }
     return result;
+  }
+
+  Future<String> getExternalUrl(String id) async {
+    return _externalUrl.format([id]);
   }
 }
 

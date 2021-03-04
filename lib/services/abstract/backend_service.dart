@@ -14,4 +14,6 @@ abstract class BackendService {
   Future<SoftwareModel> recognizeTape(String filePath);
 
   Future<Uint8List> downloadTape(String url);
+
+  Future<String> getExternalUrl(String id);
 }

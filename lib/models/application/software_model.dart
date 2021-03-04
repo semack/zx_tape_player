@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 
 class SoftwareModel {
+  final String id;
   final bool isRemote;
   final String title;
   final String year;
@@ -17,6 +18,7 @@ class SoftwareModel {
   final Iterable<FileModel> tapeFiles;
 
   SoftwareModel(
+      this.id,
       this.isRemote,
       this.title,
       this.year,
@@ -33,6 +35,7 @@ class SoftwareModel {
     var file = File(filePath);
     if (await file.exists()) {
       return SoftwareModel(
+          null,
           false,
           basenameWithoutExtension(filePath),
           null,
