@@ -28,7 +28,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   SoftwareModel _item;
   bool _isLoading = true;
-  String _title = tr('local_file');
+  String _title;
 
   @override
   void initState() {
@@ -55,6 +55,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         break;
       case FileLocation.file:
         _item = await getIt<BackendService>().recognizeTape(args.id);
+        _title = _item.title ?? tr('local_file');
         break;
     }
     setState(() {
