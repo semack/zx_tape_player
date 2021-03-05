@@ -269,7 +269,7 @@ Widget _buildInfoWidget(
                                   (e) => Center(
                                       child: Padding(
                                           padding:
-                                              EdgeInsets.fromLTRB(0, 0, 0, 16),
+                                              EdgeInsets.fromLTRB(0, 0, 0, 24),
                                           child: Column(children: [
                                             CachedNetworkImage(
                                               imageUrl: e.url,
@@ -279,7 +279,7 @@ Widget _buildInfoWidget(
                                               },
                                             ),
                                             SizedBox(
-                                              height: 4.0,
+                                              height: 8.0,
                                             ),
                                             Text(
                                               e.type,

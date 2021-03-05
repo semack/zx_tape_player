@@ -393,7 +393,7 @@ class SearchBloc {
   StreamController _hitsListController =
       StreamController<ApiResponse<List<HitModel>>>();
 
-  StreamController _hitsLoadStatusController = StreamController<LoadStatus>();
+  StreamController _hitsLoadStatusController = StreamController<LoadStatus>.broadcast();
 
   StreamSink<ApiResponse<List<HitModel>>> get hitsListSink =>
       _hitsListController.sink;
@@ -412,8 +412,8 @@ class SearchBloc {
       _hits.clear();
       _pageNum = 0;
       hitsListSink.add(ApiResponse.loading('Fetching hits'));
-    }
-    hitsLoadStatusSink.add(LoadStatus.loading);
+    } else
+      hitsLoadStatusSink.add(LoadStatus.loading);
     try {
       var items = await _backendService
           .fetchHitsList(query, Definitions.pageSize, offset: _pageNum);
@@ -425,8 +425,10 @@ class SearchBloc {
         hitsLoadStatusSink.add(LoadStatus.noMore);
       hitsListSink.add(ApiResponse.completed(_hits));
     } catch (e) {
-      hitsListSink.add(ApiResponse.error(e.toString()));
-      hitsLoadStatusSink.add(LoadStatus.failed);
+      if (isNew)
+        hitsListSink.add(ApiResponse.error(e.toString()));
+      else
+        hitsLoadStatusSink.add(LoadStatus.failed);
       await AppCenter.trackEventAsync('error', e);
     }
   }
