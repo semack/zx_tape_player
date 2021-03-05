@@ -18,7 +18,7 @@ import 'package:zx_tape_player/services/responses/api_response.dart';
 import 'package:zx_tape_player/ui/widgets/app_error.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
-import 'package:zx_tape_player/ui/widgets/tape_player.dart';
+import 'package:zx_tape_player/ui/widgets/tape_player/tape_player.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
 class PlayerScreen extends StatefulWidget {
