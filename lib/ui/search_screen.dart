@@ -107,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                         })))
           ],
         ),
-        resizeToAvoidBottomPadding: false);
+        resizeToAvoidBottomInset: false);
   }
 
   Widget _buildSearchField(BuildContext context) {
