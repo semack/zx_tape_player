@@ -31,13 +31,13 @@ class SoftwareModel {
       this.screenShotUrls,
       this.tapeFiles);
 
-  static Future<SoftwareModel> createFromFile(String filePath) async {
+  static Future<SoftwareModel> createFromFile(String filePath, String title) async {
     var file = File(filePath);
     if (await file.exists()) {
       return SoftwareModel(
           null,
           false,
-          basenameWithoutExtension(filePath),
+          title,
           null,
           null,
           null,

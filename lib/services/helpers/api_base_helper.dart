@@ -8,7 +8,7 @@ class ApiBaseHelper {
   ApiBaseHelper(this._baseUrl, this._userAgent);
 
   final String _userAgent;
-  final String _baseUrl; // = "http://api.themoviedb.org/3/";
+  final String _baseUrl;
 
   Future<dynamic> get(String url) async {
     var responseJson;

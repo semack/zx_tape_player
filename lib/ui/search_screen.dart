@@ -39,7 +39,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  SearchBlock _searchBloc;
+  SearchBloc _bloc;
 
   @override
   void initState() {
@@ -50,23 +50,22 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   void didChangeDependencies() {
     super.didChangeDependencies();
     routeObserver.subscribe(this, ModalRoute.of(this.context));
-    if (_searchBloc == null) {
+    if (_bloc == null) {
       _textController.text = ModalRoute.of(context).settings.arguments;
       _textController.selection = TextSelection.fromPosition(
           TextPosition(offset: _textController.text.length));
-      _searchBloc = SearchBlock();
+      _bloc = SearchBloc();
     }
   }
 
   @override
   void didPopNext() {
-    audioPlayer.stop();
-    audioPlayer.setFilePath('');
+    // audioPlayer.setFilePath(null);
   }
 
   @override
   void dispose() {
-    _searchBloc?.dispose();
+    _bloc?.dispose();
     routeObserver.unsubscribe(this);
     _refreshController.dispose();
     _textController.dispose();
@@ -85,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                 child: Container(
                     width: MediaQuery.of(context).size.width,
                     child: StreamBuilder<ApiResponse<List<HitModel>>>(
-                        stream: _searchBloc.hitsListStream,
+                        stream: _bloc.hitsListStream,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             switch (snapshot.data.status) {
@@ -112,7 +111,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
           controller: _textController,
           onSubmitted: (text) async {
             _textController.text = text;
-            await _searchBloc.fetchHitsList(text); // _onLoading();
+            await _bloc.fetchHitsList(text); // _onLoading();
           },
           style: TextStyle(
               color: Colors.white, fontSize: 18.0, letterSpacing: -0.5),
@@ -137,7 +136,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                 icon: Icon(Icons.search, color: Colour("#68AD56")),
                 onPressed: () async {
                   _suggestionsBoxController.close();
-                  await _searchBloc.fetchHitsList(_textController.text);
+                  await _bloc.fetchHitsList(_textController.text);
                 }),
             hintText: tr('search_hint'),
             filled: true,
@@ -160,7 +159,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
           ),
         ),
         suggestionsCallback: (query) async =>
-            await _searchBloc.fetchTermsList(query),
+            await _bloc.fetchTermsList(query),
         suggestionsBoxDecoration: SuggestionsBoxDecoration(
           hasScrollbar: false,
           elevation: 0,
@@ -199,7 +198,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
         },
         onSuggestionSelected: (suggestion) async {
           _textController.text = suggestion.text;
-          await _searchBloc.fetchHitsList(_textController.text);
+          await _bloc.fetchHitsList(_textController.text);
         });
   }
 
@@ -210,9 +209,9 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
         enablePullUp: true,
         controller: _refreshController,
         onLoading: () async =>
-            await _searchBloc.fetchHitsList(_textController.text, isNew: false),
+            await _bloc.fetchHitsList(_textController.text, isNew: false),
         footer: StreamBuilder<LoadStatus>(
-            stream: _searchBloc.hitsLoadStatusStream,
+            stream: _bloc.hitsLoadStatusStream,
             builder: (context, snapshot) {
               if (snapshot.hasData)
                 {
@@ -384,7 +383,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   }
 }
 
-class SearchBlock {
+class SearchBloc {
   final _hits = <HitModel>[];
   final _backendService = getIt<BackendService>();
   var _pageNum = 0;
