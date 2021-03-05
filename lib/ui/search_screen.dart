@@ -18,6 +18,7 @@ import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
 import 'package:zx_tape_player/services/responses/api_response.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
+import 'package:zx_tape_player/ui/widgets/app_error.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
@@ -94,7 +95,12 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                               case Status.COMPLETED:
                                 return _buildSearchList(context, snapshot.data);
                               case Status.ERROR:
-                                break; // TODO: add error screen
+                                return AppError(
+                                  text: tr('data_retrieving_error'),
+                                  buttonText: tr('retry'),
+                                  action: () =>
+                                      _bloc.fetchHitsList(_textController.text),
+                                );
                             }
                           }
                           return SizedBox.shrink();
@@ -158,8 +164,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
             ),
           ),
         ),
-        suggestionsCallback: (query) async =>
-            await _bloc.fetchTermsList(query),
+        suggestionsCallback: (query) async => await _bloc.fetchTermsList(query),
         suggestionsBoxDecoration: SuggestionsBoxDecoration(
           hasScrollbar: false,
           elevation: 0,
@@ -213,24 +218,22 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
         footer: StreamBuilder<LoadStatus>(
             stream: _bloc.hitsLoadStatusStream,
             builder: (context, snapshot) {
-              if (snapshot.hasData)
-                {
-                  switch (snapshot.data)
-                  {
-                    case LoadStatus.loading:
-                    case LoadStatus.canLoading:
-                      break;
-                    case LoadStatus.idle:
-                      _refreshController.loadComplete();
-                      break;
-                    case LoadStatus.noMore:
-                      _refreshController.loadNoData();
-                      break;
-                    case LoadStatus.failed:
-                      _refreshController.loadFailed();
-                      break;
-                  }
+              if (snapshot.hasData) {
+                switch (snapshot.data) {
+                  case LoadStatus.loading:
+                  case LoadStatus.canLoading:
+                    break;
+                  case LoadStatus.idle:
+                    _refreshController.loadComplete();
+                    break;
+                  case LoadStatus.noMore:
+                    _refreshController.loadNoData();
+                    break;
+                  case LoadStatus.failed:
+                    _refreshController.loadFailed();
+                    break;
                 }
+              }
 
               return CustomFooter(
                 builder: (BuildContext context, LoadStatus mode) {

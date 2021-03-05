@@ -15,6 +15,7 @@ import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/services/abstract/backend_service.dart';
 import 'package:zx_tape_player/services/responses/api_response.dart';
+import 'package:zx_tape_player/ui/widgets/app_error.dart';
 import 'package:zx_tape_player/ui/widgets/cassette.dart';
 import 'package:zx_tape_player/ui/widgets/loading_progress.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player.dart';
@@ -45,7 +46,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   @override
-  void didChangeDependencies()  {
+  void didChangeDependencies() {
     super.didChangeDependencies();
     var args = ModalRoute.of(this.context).settings.arguments;
     _bloc = PlayerScreenBloc(args);
@@ -66,7 +67,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
               case Status.COMPLETED:
                 return _buildScreen(context, snapshot.data);
               case Status.ERROR:
-                break;
+                return AppError(
+                  text: tr('data_retrieving_error'),
+                  buttonText: tr('retry'),
+                  action: () => _bloc.refresh(),
+                );
             }
           }
           return SizedBox.shrink();
@@ -108,21 +113,23 @@ class _PlayerScreenState extends State<PlayerScreen> {
       body: Column(
         children: <Widget>[
           _buildInfoWidget(context, response),
-          model.tapeFiles.length == 0
+          model.tapeFiles.length > 0
               ? TapePlayer(
                   files: model.tapeFiles.toList(),
                   audioPlayer: audioPlayer,
                 )
               : Container(
-              color: Colour('#3B4E63'),
-              height: 50.0,
-              child: Center(
-                child: Text(
-                  tr('no_tapes'),
-                  style: TextStyle(
-                      fontSize: 14, color: Colour('#AFB6BB'), letterSpacing: -0.5),
-                ),
-              ))
+                  color: Colour('#3B4E63'),
+                  height: 50.0,
+                  child: Center(
+                    child: Text(
+                      tr('no_tapes'),
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colour('#AFB6BB'),
+                          letterSpacing: -0.5),
+                    ),
+                  ))
         ],
       ),
     );
@@ -288,11 +295,7 @@ Widget _buildInfoWidget(
 }
 
 class PlayerScreenBloc {
-
-  PlayerScreenBloc(PlayerArgs args)
-  {
-    _fetchData(args);
-  }
+  final PlayerArgs args;
 
   final _backendService = getIt<BackendService>();
   StreamController _softwareController =
@@ -304,12 +307,17 @@ class PlayerScreenBloc {
   Stream<ApiResponse<SoftwareModel>> get softwareStream =>
       _softwareController.stream;
 
-  Future openExternalUrl(String id) async
-  {
-      var url = await _backendService.getExternalUrl(id);
-      await canLaunch(url)
-          ? await launch(url)
-          : throw 'Could not launch $url';
+  PlayerScreenBloc(this.args) {
+    _fetchData(args);
+  }
+
+  Future openExternalUrl(String id) async {
+    var url = await _backendService.getExternalUrl(id);
+    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+  }
+
+  Future refresh() async {
+    await _fetchData(args);
   }
 
   Future _fetchData(PlayerArgs args) async {
