@@ -4,6 +4,7 @@ import 'package:colour/colour.dart';
 import 'package:flutter/material.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
+import 'custom_track_shape.dart';
 import 'hidden_thumb_component_shape.dart';
 
 class SeekBar extends StatefulWidget {
@@ -135,21 +136,4 @@ class _SeekBarState extends State<SeekBar> {
       : widget.position;
 
   Duration get _remaining => widget.duration - widget.position;
-}
-
-class CustomTrackShape extends RoundedRectSliderTrackShape {
-  Rect getPreferredRect({
-    @required RenderBox parentBox,
-    Offset offset = Offset.zero,
-    @required SliderThemeData sliderTheme,
-    bool isEnabled = false,
-    bool isDiscrete = false,
-  }) {
-    final double trackHeight = sliderTheme.trackHeight;
-    final double trackLeft = offset.dx;
-    final double trackTop =
-        offset.dy + (parentBox.size.height - trackHeight) / 2;
-    final double trackWidth = parentBox.size.width;
-    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
-  }
 }
