@@ -74,14 +74,18 @@ class ZxApiService implements BackendService {
         .map((e) => "&tosectype=%s".format([e]))
         .join();
     var jsonResponse = await _helper.get(url);
-    var data = ItemsDto.fromJson(jsonResponse).hits.hits;
+    var data = ItemsDto
+        .fromJson(jsonResponse)
+        .hits
+        .hits;
     if (data != null && data.length > 0)
       result = data
           .where((element) =>
-              element.source != null &&
-              element.source.title != null &&
-              element.source.title.isNotEmpty)
-          .map((e) => HitModel(
+      element.source != null &&
+          element.source.title != null &&
+          element.source.title.isNotEmpty)
+          .map((e) =>
+          HitModel(
               e.id,
               e.source.screens.length > 0
                   ? _fixScreenShotUrl(e.source?.screens[0].url)
@@ -103,7 +107,8 @@ class ZxApiService implements BackendService {
       var list = <ItemDto>[];
       list.add(ItemDto.fromJson(json.decode(response.body)));
       result = list
-          .map((e) => SoftwareModel(
+          .map((e) =>
+          SoftwareModel(
               e.id,
               true,
               e.source.title,
@@ -119,26 +124,28 @@ class ZxApiService implements BackendService {
               e.source.remarks,
               e.source.authors
                   .where((a) =>
-                      !(a.name.isNullOrEmpty() || a.type.isNullOrEmpty()))
+              !(a.name.isNullOrEmpty() || a.type.isNullOrEmpty()))
                   .map((a) => AuthorModel(a.name, a.type)),
               e.source.screens.map(
-                  (s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url))),
+                      (s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url))),
               e.source.tosec
-                  .where((t) => Definitions.supportedTapeExtensions
+                  .where((t) =>
+                  Definitions.supportedTapeExtensions
                       .contains(extension(t.path).replaceAll('.', '')))
                   .map((t) =>
-                      FileModel(FileLocation.remote, _fixToSecUrl(t.path)))))
+                  FileModel(FileLocation.remote, _fixToSecUrl(t.path)))))
           .first;
     }
     return result;
   }
 
-  Future<SoftwareModel> recognizeTape(String filePath, {String localTitle}) async {
+  Future<SoftwareModel> recognizeTape(String filePath,
+      {String localTitle}) async {
     SoftwareModel result;
     var md5 = await _calculateMD5Sum(filePath);
     var fileCheckUrl = _baseUrl + _fileCheckUrl.format([md5]);
     var response =
-        await UserAgentClient(_userAgent, http.Client()).get(fileCheckUrl);
+    await UserAgentClient(_userAgent, http.Client()).get(fileCheckUrl);
     if (response.statusCode == 200) {
       var fileCheck = FileCheckDto.fromJson(json.decode(response.body));
       result = await fetchSoftware(fileCheck.entryId);
