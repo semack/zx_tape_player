@@ -26,7 +26,9 @@ void main() async {
   runApp(EasyLocalization(
       supportedLocales: [
         Locale('en', 'US'),
-	      Locale('da', 'DK'),
+        Locale('da', 'DK'),
+        Locale('it', 'IT'),
+        Locale('nl', 'NL'),
         Locale('ru', 'RU'),
         Locale('uk', 'UA')
       ],
