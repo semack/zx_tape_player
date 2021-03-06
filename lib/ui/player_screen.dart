@@ -32,7 +32,7 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  PlayerScreenBloc _bloc;
+  _PlayerScreenBloc _bloc;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     var args = ModalRoute.of(this.context).settings.arguments;
-    _bloc = PlayerScreenBloc(args);
+    _bloc = _PlayerScreenBloc(args);
   }
 
   @override
@@ -294,7 +294,7 @@ Widget _buildInfoWidget(
                       ]))));
 }
 
-class PlayerScreenBloc {
+class _PlayerScreenBloc {
   final PlayerArgs args;
 
   final _backendService = getIt<BackendService>();
@@ -307,7 +307,7 @@ class PlayerScreenBloc {
   Stream<ApiResponse<SoftwareModel>> get softwareStream =>
       _softwareController.stream;
 
-  PlayerScreenBloc(this.args) {
+  _PlayerScreenBloc(this.args) {
     _fetchData(args);
   }
 

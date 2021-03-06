@@ -40,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  SearchBloc _bloc;
+  _SearchScreenBloc _bloc;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
       _textController.text = ModalRoute.of(context).settings.arguments;
       _textController.selection = TextSelection.fromPosition(
           TextPosition(offset: _textController.text.length));
-      _bloc = SearchBloc();
+      _bloc = _SearchScreenBloc();
     }
   }
 
@@ -386,7 +386,7 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   }
 }
 
-class SearchBloc {
+class _SearchScreenBloc {
   final _hits = <HitModel>[];
   final _backendService = getIt<BackendService>();
   var _pageNum = 0;
