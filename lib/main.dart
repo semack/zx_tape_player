@@ -34,7 +34,7 @@ void main() async {
       ],
       path: 'assets/translations',
       fallbackLocale: Locale('en', 'US'),
-      child: new ZxTapePlayer()));
+      child: ZxTapePlayer()));
 }
 
 class ZxTapePlayer extends StatelessWidget {
