@@ -11,11 +11,11 @@ import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/main.dart';
-import 'package:zx_tape_player/models/application/hit_model.dart';
-import 'package:zx_tape_player/models/application/term_model.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
-import 'package:zx_tape_player/services/abstract/backend_service.dart';
+import 'package:zx_tape_player/models/hit_model.dart';
+import 'package:zx_tape_player/models/term_model.dart';
+import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/services/responses/api_response.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/widgets/app_error.dart';
@@ -393,7 +393,8 @@ class _SearchScreenBloc {
   StreamController _hitsListController =
       StreamController<ApiResponse<List<HitModel>>>();
 
-  StreamController _hitsLoadStatusController = StreamController<LoadStatus>.broadcast();
+  StreamController _hitsLoadStatusController =
+      StreamController<LoadStatus>.broadcast();
 
   StreamSink<ApiResponse<List<HitModel>>> get hitsListSink =>
       _hitsListController.sink;

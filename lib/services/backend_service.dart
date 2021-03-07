@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:zx_tape_player/models/application/hit_model.dart';
-import 'package:zx_tape_player/models/application/software_model.dart';
-import 'package:zx_tape_player/models/application/term_model.dart';
+import 'package:zx_tape_player/models/hit_model.dart';
+import 'package:zx_tape_player/models/software_model.dart';
+import 'package:zx_tape_player/models/term_model.dart';
 
 abstract class BackendService {
   Future<List<TermModel>> fetchTermsList(String query);

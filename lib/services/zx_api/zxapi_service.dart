@@ -6,18 +6,19 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
-import 'package:zx_tape_player/models/application/hit_model.dart';
-import 'package:zx_tape_player/models/application/software_model.dart';
-import 'package:zx_tape_player/models/application/term_model.dart';
+import 'package:zx_tape_player/models/hit_model.dart';
+import 'package:zx_tape_player/models/software_model.dart';
+import 'package:zx_tape_player/models/term_model.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
-import 'package:zx_tape_player/models/remote/file_check_dto.dart';
-import 'package:zx_tape_player/models/remote/item_dto.dart';
-import 'package:zx_tape_player/models/remote/items_dto.dart';
-import 'package:zx_tape_player/models/remote/term_dto.dart';
-import 'package:zx_tape_player/services/abstract/backend_service.dart';
-import 'package:zx_tape_player/services/helpers/api_base_helper.dart';
+import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/utils/api_base_helper.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
+
+import 'models/file_check_dto.dart';
+import 'models/item_dto.dart';
+import 'models/items_dto.dart';
+import 'models/term_dto.dart';
 
 class ZxApiService implements BackendService {
   static const _baseUrl = 'https://api.zxinfo.dk/v3';
