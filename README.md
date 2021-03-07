@@ -9,5 +9,5 @@ Please see [LICENSE.md](https://github.com/semack/zx_tape_player/blob/master/LIC
 Contributions are welcome. Just open an Issue or submit a PR. 
 
 ## Contact
-You can reach me via my [email](mailto://semack@gmail.com)
+You can reach me via my [email](mailto://semack@gmail.com).
 
