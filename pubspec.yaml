@@ -28,7 +28,6 @@ dependencies:
   path: ^1.7.0
   flutter_typeahead: ^2.0.0
   zx_tape_to_wav: ^1.0.14
-  ocarina: ^0.0.5
   package_info: ^0.4.0+16
   sprintf: ^5.0.0
   http: ^0.12.2
