@@ -20,5 +20,6 @@
   "adjust_speed": "Регулировка скорости",
   "adjust_volume": "Регулировка громкости",
   "retry": "Повторить",
-  "data_retrieving_error": "Ошибка получения данных!"
+  "data_retrieving_error": "Ошибка получения данных!",
+  "error_converting_tape_file": "Error converting tape to the sound file"
 }

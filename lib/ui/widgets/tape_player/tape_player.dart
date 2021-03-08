@@ -115,10 +115,7 @@ class _TapePlayerState extends State<TapePlayer> {
                     ))),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children:
-                    // widget.files.length > 1
-                    //     ?
-                    widget.files.map((f) {
+                children: widget.files.map((f) {
                   int index = widget.files.indexOf(f);
                   return Container(
                     width: 8.0,
@@ -175,25 +172,42 @@ class _TapePlayerState extends State<TapePlayer> {
           _buildControlButtons(context),
         ],
       ),
-    )
-    );
+    ));
   }
 
   Widget _buildControlButtons(BuildContext context) {
-    return StreamBuilder<PreparationState>(
+    return StreamBuilder<PreparationModel>(
         stream: _bloc.preparationStream,
         builder: (context, snapshot) {
           var isLoading = false;
-          if (snapshot != null && snapshot.hasData)
-            isLoading =  snapshot.data != PreparationState.Error &&
-                snapshot.data != PreparationState.Ready;
+          if (snapshot != null && snapshot.hasData) {
+            if (snapshot.data.state == PreparationState.Error && _bloc.currentModel == snapshot.data.model) {
+              final snackBar = SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  tr('error_converting_tape_file'),
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              );
+              Future.delayed(const Duration(), () {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              });
+            } else{
+              isLoading = snapshot.data.state != PreparationState.Ready;
+              Future.delayed(const Duration(), () {
+                ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              });
+            }
+          }
           return StreamBuilder<PlayerState>(
             stream: _bloc.player.playerStateStream,
             builder: (context, snapshot) {
               final playerState = snapshot.data;
               final processingState = playerState?.processingState;
               final playing = playerState?.playing ?? false;
-              return Center(child:Row(
+              return Center(
+                  child: Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -213,14 +227,17 @@ class _TapePlayerState extends State<TapePlayer> {
                       );
                     },
                   ),
-                  SizedBox(width: 16.0),
-                  IconButton(
-                    color: Colors.white,
-                    disabledColor: Colour('#546B7F'),
-                    icon: Icon(Icons.replay_rounded),
-                    iconSize: 30.0,
-                    onPressed: playing || processingState == ProcessingState.completed ? _bloc.replay : null,
-                  ),
+                  SizedBox(width: 46.0),
+                  // IconButton(
+                  //   color: Colors.white,
+                  //   disabledColor: Colour('#546B7F'),
+                  //   icon: Icon(Icons.replay_rounded),
+                  //   iconSize: 30.0,
+                  //   onPressed:
+                  //       playing || processingState == ProcessingState.completed
+                  //           ? _bloc.replay
+                  //           : null,
+                  // ),
                   SizedBox(width: 16.0),
                   Container(
                     width: 60.0,
@@ -233,8 +250,8 @@ class _TapePlayerState extends State<TapePlayer> {
                     ),
                     child: FutureBuilder(builder: (context, snaphot) {
                       if (
-                      // processingState == ProcessingState.loading ||
-                      //     processingState == ProcessingState.buffering ||
+                          // processingState == ProcessingState.loading ||
+                          //     processingState == ProcessingState.buffering ||
                           isLoading) {
                         return Center(
                             child: SizedBox(
@@ -249,26 +266,23 @@ class _TapePlayerState extends State<TapePlayer> {
                       } else if (!playing) {
                         return IconButton(
                             color: Colors.white,
-                            icon: Icon(Icons.play_arrow),
+                            icon: Icon(Icons.play_arrow_rounded),
                             iconSize: 40.0,
                             onPressed: _bloc.play);
-                      } else
-                        // if (processingState != ProcessingState.completed)
-                        {
+                      } else if (processingState != ProcessingState.completed) {
                         return IconButton(
                           color: Colors.white,
-                          icon: Icon(Icons.pause),
+                          icon: Icon(Icons.pause_rounded),
                           iconSize: 40.0,
                           onPressed: _bloc.pause,
                         );
-                       } // else {
-                      //   return IconButton(
-                      //     color: Colors.white,
-                      //     icon: Icon(Icons.replay),
-                      //     iconSize: 40.0,
-                      //     onPressed: () => _bloc.replay(),
-                      //   );
-                      // }
+                      } else {
+                        return IconButton(
+                            color: Colors.white,
+                            icon: Icon(Icons.replay_rounded),
+                            iconSize: 40.0,
+                            onPressed: _bloc.replay);
+                      }
                     }),
                   ),
                   SizedBox(width: 16.0),
@@ -277,7 +291,7 @@ class _TapePlayerState extends State<TapePlayer> {
                     disabledColor: Colour('#546B7F'),
                     icon: Icon(Icons.stop_rounded),
                     iconSize: 40.0,
-                    onPressed: playing ?_bloc.stop : null,
+                    onPressed: playing ? _bloc.stop : null,
                   ),
                   SizedBox(width: 16.0),
                   StreamBuilder<double>(
@@ -300,6 +314,9 @@ class _TapePlayerState extends State<TapePlayer> {
                       },
                     ),
                   ),
+                  // FutureBuilder(builder: (context, snapshot) {
+                  //   return null;
+                  // }),
                 ],
               ));
             },
@@ -307,32 +324,6 @@ class _TapePlayerState extends State<TapePlayer> {
         });
   }
 }
-
-// IconButton(
-//   color: Colors.white,
-//   splashRadius: 32.0,
-//   icon: Icon(Icons.play_arrow),
-//   iconSize: 64.0,
-//   onPressed: () => _bloc.play()
-//   //     () async {
-//   //   try {
-//   //     var wavFilePath =
-//   //         await _bloc._getWavPath(_files[_currentFileIndex]);
-//   //     _player.setFilePath(wavFilePath);
-//   //     _player.play();
-//   //   } catch (error) {
-//   //     final snackBar = SnackBar(
-//   //       backgroundColor: Colors.red,
-//   //       content: Text(
-//   //         error.toString(),
-//   //         style: TextStyle(color: Colors.white),
-//   //         textAlign: TextAlign.center,
-//   //       ),
-//   //     );
-//   //     Scaffold.of(context).showSnackBar(snackBar);
-//   //   }
-//   // }
-//   );
 
 enum PreparationState { Downloading, Converting, Ready, Error }
 
@@ -343,28 +334,37 @@ class ProgressModel {
   ProgressModel(this.fileModel, this.percent);
 }
 
+class PreparationModel {
+  final PreparationState state;
+  final String message;
+  final FileModel model;
+  PreparationModel(this.state, this.model, {this.message});
+}
+
 class _TapePlayerBloc {
   final List<FileModel> files;
   int _currentFileIndex;
 
   int get currentFileIndex => _currentFileIndex;
+  FileModel get currentModel => files[_currentFileIndex];
 
   set currentFileIndex(int index) {
     _currentFileIndex = index;
-    _getWavFilePath(_currentFileIndex)
-        .then((wavFilePath) => _player.setFilePath(wavFilePath));// then((value) => _player.load());
+    _getWavFilePath(_currentFileIndex).then((wavFilePath) =>
+        _player.setFilePath(wavFilePath)); // then((value) => _player.load());
   }
 
   AudioPlayer get player => _player;
   AudioPlayer _player = AudioPlayer();
+  final _backendService = getIt<BackendService>();
 
   StreamController _preparationController =
-      StreamController<PreparationState>();
+      StreamController<PreparationModel>();
 
-  StreamSink<PreparationState> get preparationSink =>
+  StreamSink<PreparationModel> get preparationSink =>
       _preparationController.sink;
 
-  Stream<PreparationState> get preparationStream =>
+  Stream<PreparationModel> get preparationStream =>
       _preparationController.stream;
 
   StreamController _progressController = StreamController<ProgressModel>();
@@ -395,8 +395,8 @@ class _TapePlayerBloc {
   }
 
   Future<String> _getWavFilePath(int index) async {
+    var model = files[index];
     try {
-      var model = files[index];
       var tapePath =
           Definitions.tapeDir.format([(await getTemporaryDirectory()).path]);
       var dir = await new Directory(tapePath).create(recursive: true);
@@ -404,15 +404,17 @@ class _TapePlayerBloc {
           Definitions.wafFilePath.format([dir.path, basename(model.url)]);
       var file = File(wavFileName);
       if (!await file.exists()) {
-        _preparationController.sink.add(PreparationState.Downloading);
+        _preparationController.sink
+            .add(PreparationModel(PreparationState.Downloading, model));
         Uint8List bytes;
         if (model.location == FileLocation.remote)
-          bytes = await getIt<BackendService>().downloadTape(model.url);
+          bytes = await _backendService.downloadTape(model.url);
         else if (model.location == FileLocation.file)
           bytes = await File(model.url).readAsBytes();
         else
           throw ArgumentError('Unrecognized file location');
-        _preparationController.sink.add(PreparationState.Converting);
+        _preparationController.sink
+            .add(PreparationModel(PreparationState.Converting, model));
         await ZxTape.create(bytes)
             .then((tape) => tape.toWavBytes(
                 amplifySoundSignal: true,
@@ -421,13 +423,15 @@ class _TapePlayerBloc {
                   _progressController.sink.add(data);
                 }))
             .then((wav) => file.writeAsBytes(wav));
-        _preparationController.sink.add(PreparationState.Ready);
       }
+      _preparationController.sink
+          .add(PreparationModel(PreparationState.Ready, model));
       return wavFileName;
     } catch (e) {
-      _preparationController.sink.add(PreparationState.Error);
+      _preparationController.sink
+          .add(PreparationModel(PreparationState.Error, model, message: e.toString()));
       await AppCenter.trackEventAsync('error', e);
-      throw e;
+      // throw e;
     }
   }
 

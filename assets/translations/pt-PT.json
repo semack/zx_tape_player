@@ -20,5 +20,6 @@
   "adjust_speed": "Ajustar a velocidade",
   "adjust_volume": "Ajustar o volume",
   "retry": "Retentar",
-  "data_retrieving_error": "Erro na leitura!"
+  "data_retrieving_error": "Erro na leitura!",
+  "error_converting_tape_file": "Error converting tape to the sound file"
 }

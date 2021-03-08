@@ -20,5 +20,6 @@
   "adjust_speed": "Regola la velocità",
   "adjust_volume": "Regola il volume",
   "retry": "Riprova",
-  "data_retrieving_error": "Errore nel recupero dati!"
+  "data_retrieving_error": "Errore nel recupero dati!",
+  "error_converting_tape_file": "Error converting tape to the sound file"
 }
