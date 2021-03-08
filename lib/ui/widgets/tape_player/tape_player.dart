@@ -59,7 +59,8 @@ class _TapePlayerState extends State<TapePlayer> {
     return Center(
         child: Container(
       height: 292.0,
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: //EdgeInsets.fromLTRB(0, 16, 0, 0), //
+          EdgeInsets.symmetric(vertical: 16.0),
       width: MediaQuery.of(context).size.width,
       color: Colour('#3B4E63'),
       child: Column(
@@ -174,7 +175,8 @@ class _TapePlayerState extends State<TapePlayer> {
           _buildControlButtons(context),
         ],
       ),
-    ));
+    )
+    );
   }
 
   Widget _buildControlButtons(BuildContext context) {
@@ -182,18 +184,18 @@ class _TapePlayerState extends State<TapePlayer> {
         stream: _bloc.preparationStream,
         builder: (context, snapshot) {
           var isLoading = false;
-          if (snapshot.hasData)
-            isLoading = snapshot.data != PreparationState.Error &&
+          if (snapshot != null && snapshot.hasData)
+            isLoading =  snapshot.data != PreparationState.Error &&
                 snapshot.data != PreparationState.Ready;
           return StreamBuilder<PlayerState>(
             stream: _bloc.player.playerStateStream,
             builder: (context, snapshot) {
               final playerState = snapshot.data;
               final processingState = playerState?.processingState;
-              final playing = playerState?.playing;
-
-              return Row(
+              final playing = playerState?.playing ?? false;
+              return Center(child:Row(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
                     icon: Icon(Icons.volume_up_rounded),
@@ -211,7 +213,15 @@ class _TapePlayerState extends State<TapePlayer> {
                       );
                     },
                   ),
-                  SizedBox(width: 32.0),
+                  SizedBox(width: 16.0),
+                  IconButton(
+                    color: Colors.white,
+                    disabledColor: Colour('#546B7F'),
+                    icon: Icon(Icons.replay_rounded),
+                    iconSize: 30.0,
+                    onPressed: playing || processingState == ProcessingState.completed ? _bloc.replay : null,
+                  ),
+                  SizedBox(width: 16.0),
                   Container(
                     width: 60.0,
                     height: 60.0,
@@ -222,8 +232,9 @@ class _TapePlayerState extends State<TapePlayer> {
                       ),
                     ),
                     child: FutureBuilder(builder: (context, snaphot) {
-                      if (processingState == ProcessingState.loading ||
-                          processingState == ProcessingState.buffering ||
+                      if (
+                      // processingState == ProcessingState.loading ||
+                      //     processingState == ProcessingState.buffering ||
                           isLoading) {
                         return Center(
                             child: SizedBox(
@@ -240,25 +251,35 @@ class _TapePlayerState extends State<TapePlayer> {
                             color: Colors.white,
                             icon: Icon(Icons.play_arrow),
                             iconSize: 40.0,
-                            onPressed: () => _bloc.play());
-                      } else if (processingState != ProcessingState.completed) {
+                            onPressed: _bloc.play);
+                      } else
+                        // if (processingState != ProcessingState.completed)
+                        {
                         return IconButton(
                           color: Colors.white,
                           icon: Icon(Icons.pause),
                           iconSize: 40.0,
                           onPressed: _bloc.pause,
                         );
-                      } else {
-                        return IconButton(
-                          color: Colors.white,
-                          icon: Icon(Icons.replay),
-                          iconSize: 40.0,
-                          onPressed: () => _bloc.replay(),
-                        );
-                      }
+                       } // else {
+                      //   return IconButton(
+                      //     color: Colors.white,
+                      //     icon: Icon(Icons.replay),
+                      //     iconSize: 40.0,
+                      //     onPressed: () => _bloc.replay(),
+                      //   );
+                      // }
                     }),
                   ),
-                  SizedBox(width: 32.0),
+                  SizedBox(width: 16.0),
+                  IconButton(
+                    color: Colors.white,
+                    disabledColor: Colour('#546B7F'),
+                    icon: Icon(Icons.stop_rounded),
+                    iconSize: 40.0,
+                    onPressed: playing ?_bloc.stop : null,
+                  ),
+                  SizedBox(width: 16.0),
                   StreamBuilder<double>(
                     stream: _bloc.player.speedStream,
                     builder: (context, snapshot) => IconButton(
@@ -280,7 +301,7 @@ class _TapePlayerState extends State<TapePlayer> {
                     ),
                   ),
                 ],
-              );
+              ));
             },
           );
         });
@@ -331,7 +352,7 @@ class _TapePlayerBloc {
   set currentFileIndex(int index) {
     _currentFileIndex = index;
     _getWavFilePath(_currentFileIndex)
-        .then((wavFilePath) => _player.setFilePath(wavFilePath));
+        .then((wavFilePath) => _player.setFilePath(wavFilePath));// then((value) => _player.load());
   }
 
   AudioPlayer get player => _player;
@@ -362,6 +383,7 @@ class _TapePlayerBloc {
 
   Future stop() async {
     _player.stop();
+    currentFileIndex = _currentFileIndex;
   }
 
   Future pause() async {
