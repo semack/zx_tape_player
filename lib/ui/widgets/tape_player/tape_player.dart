@@ -34,7 +34,7 @@ class TapePlayer extends StatefulWidget {
 
 class _TapePlayerState extends State<TapePlayer> {
   _TapePlayerBloc _bloc;
-  int _currentFileIndex = 0;
+  // int _currentFileIndex = 0;
 
   @override
   void didChangeDependencies() {
@@ -73,38 +73,42 @@ class _TapePlayerState extends State<TapePlayer> {
                     color: Colour('#172434'),
                     borderRadius: BorderRadius.circular(3.5),
                   ),
-                  child: CarouselSlider(
-                    items: widget.files
-                        .map((file) => Container(
-                              padding: EdgeInsets.all(12.0),
-                              child: Center(
-                                  child: Text(
-                                basename(file.url),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12.0),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
-                              )),
-                            ))
-                        .toList(),
-                    options: CarouselOptions(
-                        scrollPhysics:
-                            // widget.files.length < 2 ||
-                            _bloc.player.playing
-                                ? const NeverScrollableScrollPhysics()
-                                : const AlwaysScrollableScrollPhysics(),
-                        autoPlay: false,
-                        enlargeCenterPage: false,
-                        aspectRatio: 2.0,
-                        viewportFraction: 1.0,
-                        onPageChanged: (index, reason) async {
-                          setState(() {
-                            _currentFileIndex = index;
-                          });
-                          _bloc.getWavFilePath(index);
-                        }),
-                  ),
+                  child: StreamBuilder<PlayerState>(
+                    stream: _bloc.player.playerStateStream,
+                    builder: (context, snapshot ){
+                      final playerState = snapshot.data;
+                    return CarouselSlider(
+                      items: widget.files
+                          .map((file) => Container(
+                        padding: EdgeInsets.all(12.0),
+                        child: Center(
+                            child: Text(
+                              basename(file.url),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 12.0),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                            )),
+                      ))
+                          .toList(),
+                      options: CarouselOptions(
+                          scrollPhysics:
+                          // widget.files.length < 2 ||
+                          playerState != null && playerState.playing
+                              ? const NeverScrollableScrollPhysics()
+                              : const AlwaysScrollableScrollPhysics(),
+                          autoPlay: false,
+                          enlargeCenterPage: false,
+                          aspectRatio: 2.0,
+                          viewportFraction: 1.0,
+                          onPageChanged: (index, reason) async {
+                             _bloc.currentFileIndex = index;
+                             setState(() {
+                             });
+                          }),
+                    );
+                  },)
                 )),
             Container(
               color: Colors.red,
@@ -124,7 +128,7 @@ class _TapePlayerState extends State<TapePlayer> {
                         EdgeInsets.symmetric(vertical: 16.0, horizontal: 2.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _currentFileIndex == index
+                      color: _bloc.currentFileIndex == index
                           ? Colour('#D8DCE0')
                           : Colour('#546B7F'),
                     ),
@@ -230,7 +234,7 @@ class _TapePlayerState extends State<TapePlayer> {
                         splashRadius: 32.0,
                         icon: Icon(Icons.play_arrow),
                         iconSize: 64.0,
-                        onPressed: () => _bloc.play(_currentFileIndex)
+                        onPressed: () => _bloc.play()
                         //     () async {
                         //   try {
                         //     var wavFilePath =
@@ -402,6 +406,12 @@ class ProgressModel {
 
 class _TapePlayerBloc {
   final List<FileModel> files;
+  int _currentFileIndex = 0;
+  int get currentFileIndex => _currentFileIndex;
+  set currentFileIndex(int index)  {
+    _currentFileIndex = index;
+    _getWavFilePath(_currentFileIndex);
+  }
 
   AudioPlayer get player => _player;
   AudioPlayer _player = AudioPlayer();
@@ -422,11 +432,11 @@ class _TapePlayerBloc {
   Stream<ProgressModel> get progressStream => _progressController.stream;
 
   _TapePlayerBloc(this.files) {
-    if (files.length > 0) getWavFilePath(0);
+    if (files.length > 0) _getWavFilePath(_currentFileIndex);
   }
 
-  Future play(int index) async {
-    var wavFilePath = await getWavFilePath(index);
+  Future play() async {
+    var wavFilePath = await _getWavFilePath(_currentFileIndex);
     _player.setFilePath(wavFilePath);
     _player.play();
   }
@@ -444,7 +454,7 @@ class _TapePlayerBloc {
     _player.play();
   }
 
-  Future<String> getWavFilePath(int index) async {
+  Future<String> _getWavFilePath(int index) async {
     try {
       var model = files[index];
       var tapePath =
