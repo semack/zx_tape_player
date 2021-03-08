@@ -21,5 +21,5 @@
   "adjust_volume": "Регулировка громкости",
   "retry": "Повторить",
   "data_retrieving_error": "Ошибка получения данных!",
-  "error_converting_tape_file": "Error converting tape to the sound file"
+  "error_converting_tape_file": "Ошибка конвертирования ленты в звуковой файл."
 }

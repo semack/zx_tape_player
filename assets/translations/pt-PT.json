@@ -21,5 +21,5 @@
   "adjust_volume": "Ajustar o volume",
   "retry": "Retentar",
   "data_retrieving_error": "Erro na leitura!",
-  "error_converting_tape_file": "Error converting tape to the sound file"
+  "error_converting_tape_file": "Erro ao converter fita em arquivo de som."
 }
