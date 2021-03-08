@@ -115,8 +115,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           _buildInfoWidget(context, response),
           model.tapeFiles.length > 0
               ? TapePlayer(
-                  files: model.tapeFiles.toList(),
-                  audioPlayer: audioPlayer,
+                  files: model.tapeFiles.toList()
                 )
               : Container(
                   color: Colour('#3B4E63'),
@@ -321,7 +320,7 @@ class _PlayerScreenBloc {
   }
 
   Future _fetchData(PlayerArgs args) async {
-    softwareSink.add(ApiResponse.loading('Fetching software'));
+    softwareSink.add(ApiResponse.loading(''));
     try {
       SoftwareModel model;
       switch (args.location) {

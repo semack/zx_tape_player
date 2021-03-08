@@ -13,7 +13,6 @@ import 'package:zx_tape_player/utils/app_center_initializer.dart';
 import 'ui/search_screen.dart';
 import 'ui/splash_screen.dart';
 
-final AudioPlayer audioPlayer = AudioPlayer();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final GetIt getIt = GetIt.instance;
 
