@@ -291,7 +291,7 @@ class _TapePlayerState extends State<TapePlayer> {
                     disabledColor: Colour('#546B7F'),
                     icon: Icon(Icons.stop_rounded),
                     iconSize: 40.0,
-                    onPressed: playing ? _bloc.stop : null,
+                    onPressed: (playing || (_bloc.player.position != null && _bloc.player.position.inMilliseconds > 0)) ? _bloc.stop : null,
                   ),
                   SizedBox(width: 16.0),
                   StreamBuilder<double>(
