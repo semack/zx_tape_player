@@ -417,7 +417,8 @@ class _TapePlayerBloc {
             .add(PreparationModel(PreparationState.Converting, model));
         await ZxTape.create(bytes)
             .then((tape) => tape.toWavBytes(
-                amplifySoundSignal: true,
+                frequency: 22050,
+                amplifySignal: true,
                 progress: (percent) {
                   var data = ProgressModel(model, percent);
                   _progressController.sink.add(data);
