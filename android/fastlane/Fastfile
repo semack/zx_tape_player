@@ -6,7 +6,6 @@ platform :android do
   lane :beta do
     appcenter_upload(
       file: "../build/app/outputs/flutter-apk/app-release.apk",
-      notify_testers: true
     )
   end
 end
