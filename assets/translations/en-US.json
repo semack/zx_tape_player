@@ -1,10 +1,10 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "app_title": "ZX Tape Player",
-  "copyright" : "© 2021 Copyright by\r\nAndriy S'omak, Mobile development\r\nThomas Heckmann, ZxInfo API development\r\nPavlo Hladkov, UI/UX design\r\nAll rights reserved.\r\n",
+  "copyright" : "© 2021 Copyright by\r\nAndriy S'omak, Mobile development\r\nThomas Heckmann, ZXInfo API development\r\nPavlo Hladkov, UI/UX design\r\nAll rights reserved.\r\n",
   "version": "Version %s.%s",
   "find_tape": "Find the desired tape",
-  "search_hint": "Type a search text here",
+  "search_hint": "Type text to search for here",
   "select_file": "or select from file",
   "select_from_files": "SELECT FROM FILES",
   "loading": "Loading...",
@@ -15,10 +15,11 @@
   "release_load_more": "Please release to load more",
   "no_more_data": "No more data available",
   "na": "-",
-  "no_tapes": "No compatible tapes found. :(",
+  "no_tapes": "No compatible tapes found :(",
   "local_file": "Local file",
   "adjust_speed": "Adjust speed",
   "adjust_volume": "Adjust volume",
   "retry": "Retry",
-  "data_retrieving_error": "Data retrieving error!"
+  "data_retrieving_error": "Data retrieving error!",
+  "error_converting_tape_file": "Error converting tape to the sound file."
 }

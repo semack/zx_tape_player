@@ -20,5 +20,6 @@
   "adjust_speed": "Juster hastighed",
   "adjust_volume": "Juster lydstyrke",
   "retry": "Prøv igen",
-  "data_retrieving_error": "Fejl ved hentning af data!"
+  "data_retrieving_error": "Fejl ved hentning af data!",
+  "error_converting_tape_file": "Fejl ved konvertering af bånd til lydfilen."
 }

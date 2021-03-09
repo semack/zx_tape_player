@@ -34,7 +34,12 @@ platform :ios do
 
     register_devices(
       api_key: api_key,
-      devices_file: "./devices.txt"
+        devices: {
+          "zx-thomas" => "00008030-000E05E10E51802E",
+          "zx-adam" => "fcaead3c40b81555b2e1729ca43cccf3fa8bdbfc",
+          "zx-polak" => "00008101-000D58D60C28001E",
+          "zx-alan" => "a074b4386bbecb39c5c97a7d9bf2cbd10fa9f837"
+        }
     )
 
     sync_code_signing(

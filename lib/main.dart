@@ -13,7 +13,6 @@ import 'package:zx_tape_player/utils/app_center_initializer.dart';
 import 'ui/search_screen.dart';
 import 'ui/splash_screen.dart';
 
-final AudioPlayer audioPlayer = AudioPlayer();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final GetIt getIt = GetIt.instance;
 
@@ -27,14 +26,16 @@ void main() async {
       supportedLocales: [
         Locale('en', 'US'),
         Locale('da', 'DK'),
+        Locale('es', 'ES'),
         Locale('it', 'IT'),
         Locale('nl', 'NL'),
+        Locale('pt', 'PT'),
         Locale('ru', 'RU'),
         Locale('uk', 'UA')
       ],
       path: 'assets/translations',
       fallbackLocale: Locale('en', 'US'),
-      child: new ZxTapePlayer()));
+      child: ZxTapePlayer()));
 }
 
 class ZxTapePlayer extends StatelessWidget {

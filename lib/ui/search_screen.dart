@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:avatar_abc/AbcAvatar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
@@ -61,7 +63,12 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
 
   @override
   void didPopNext() {
-    // audioPlayer.setFilePath(null);
+    getTemporaryDirectory().then((dir) {
+      var tapePath = Definitions.tapeDir.format([dir.path]);
+      return Directory(tapePath);
+    }).then((dir) async {
+      if (await dir.exists()) await dir.delete(recursive: true);
+    });
   }
 
   @override

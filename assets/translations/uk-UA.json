@@ -20,5 +20,6 @@
   "adjust_speed": "Регулювання швидкості",
   "adjust_volume": "Регулювання гучності",
   "retry": "Повторити спробу",
-  "data_retrieving_error": "Помилка отримання даних!"
+  "data_retrieving_error": "Помилка отримання даних!",
+  "error_converting_tape_file": "Помилка конвертації стрічки у звуковий файл."
 }

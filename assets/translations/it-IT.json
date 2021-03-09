@@ -10,7 +10,7 @@
   "loading": "Caricamento...",
   "no_items_found": "Non ci sono suggerimenti :(",
   "all_tapes_by_letter": "Tutti i file nastri che iniziano per \"%s\"",
-  "pull_up_to_load": "Spingi in alto per caricare",
+  "pull_up_to_load": "Trascina verso l'alto per caricare",
   "load_failed_retry": "Caricamento fallito, premi per riprovare...",
   "release_load_more": "Rilascia per caricare altro",
   "no_more_data": "Nessun altro dato disponibile",
@@ -20,5 +20,6 @@
   "adjust_speed": "Regola la velocità",
   "adjust_volume": "Regola il volume",
   "retry": "Riprova",
-  "data_retrieving_error": "Errore nel recupero dati!"
+  "data_retrieving_error": "Errore nel recupero dati!",
+  "error_converting_tape_file": "Errore durante la conversione del nastro nel file audio."
 }

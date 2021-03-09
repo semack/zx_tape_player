@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -5,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,15 +17,14 @@ import 'package:zx_tape_player/models/position_data.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/seek_bar.dart';
+import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class TapePlayer extends StatefulWidget {
   final List<FileModel> files;
-  final AudioPlayer audioPlayer;
 
-  TapePlayer({Key key, @required this.files, @required this.audioPlayer})
-      : super(key: key);
+  TapePlayer({Key key, @required this.files}) : super(key: key);
 
   @override
   _TapePlayerState createState() {
@@ -32,12 +33,9 @@ class TapePlayer extends StatefulWidget {
 }
 
 class _TapePlayerState extends State<TapePlayer> {
-  _TapePlayerBloc _bloc = _TapePlayerBloc();
-  int _currentFileIndex = 0;
+  _TapePlayerBloc _bloc;
 
-  AudioPlayer get _player => widget.audioPlayer;
-
-  List<FileModel> get _files => widget.files;
+  // int _currentFileIndex = 0;
 
   @override
   void didChangeDependencies() {
@@ -46,6 +44,7 @@ class _TapePlayerState extends State<TapePlayer> {
 
   @override
   void initState() {
+    _bloc = _TapePlayerBloc(widget.files);
     super.initState();
   }
 
@@ -60,7 +59,8 @@ class _TapePlayerState extends State<TapePlayer> {
     return Center(
         child: Container(
       height: 292.0,
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: //EdgeInsets.fromLTRB(0, 16, 0, 0), //
+          EdgeInsets.symmetric(vertical: 16.0),
       width: MediaQuery.of(context).size.width,
       color: Colour('#3B4E63'),
       child: Column(
@@ -71,48 +71,51 @@ class _TapePlayerState extends State<TapePlayer> {
                 width: double.infinity,
                 height: 80.0,
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: Colour('#172434'),
-                    borderRadius: BorderRadius.circular(3.5),
-                  ),
-                  child: CarouselSlider(
-                    items: widget.files
-                        .map((file) => Container(
-                              padding: EdgeInsets.all(12.0),
-                              child: Center(
-                                  child: Text(
-                                basename(file.url),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12.0),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
-                              )),
-                            ))
-                        .toList(),
-                    options: CarouselOptions(
-                        scrollPhysics:
-                            // widget.files.length < 2 ||
-                            widget.audioPlayer.playing
-                                ? const NeverScrollableScrollPhysics()
-                                : const AlwaysScrollableScrollPhysics(),
-                        autoPlay: false,
-                        enlargeCenterPage: false,
-                        aspectRatio: 2.0,
-                        viewportFraction: 1.0,
-                        onPageChanged: (index, reason) async {
-                          setState(() {
-                            _currentFileIndex = index;
-                          });
-                        }),
-                  ),
-                )),
+                    decoration: BoxDecoration(
+                      color: Colour('#172434'),
+                      borderRadius: BorderRadius.circular(3.5),
+                    ),
+                    child: StreamBuilder<PlayerState>(
+                      stream: _bloc.player.playerStateStream,
+                      builder: (context, snapshot) {
+                        final playerState = snapshot.data;
+                        return CarouselSlider(
+                          items: widget.files
+                              .map((file) => Container(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: Center(
+                                        child: Text(
+                                      basename(file.url),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12.0),
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                    )),
+                                  ))
+                              .toList(),
+                          options: CarouselOptions(
+                              scrollPhysics: (playerState != null &&
+                                          playerState.playing &&
+                                          playerState.processingState !=
+                                              ProcessingState.completed) ||
+                                      widget.files.length == 1
+                                  ? const NeverScrollableScrollPhysics()
+                                  : const AlwaysScrollableScrollPhysics(),
+                              autoPlay: false,
+                              enlargeCenterPage: false,
+                              aspectRatio: 2.0,
+                              viewportFraction: 1.0,
+                              onPageChanged: (index, reason) async {
+                                _bloc.currentFileIndex = index;
+                                setState(() {});
+                              }),
+                        );
+                      },
+                    ))),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children:
-                    // widget.files.length > 1
-                    //     ?
-                    widget.files.map((f) {
+                children: widget.files.map((f) {
                   int index = widget.files.indexOf(f);
                   return Container(
                     width: 8.0,
@@ -121,32 +124,24 @@ class _TapePlayerState extends State<TapePlayer> {
                         EdgeInsets.symmetric(vertical: 16.0, horizontal: 2.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _currentFileIndex == index
+                      color: _bloc.currentFileIndex == index
                           ? Colour('#D8DCE0')
-                          : Colour('546B7F'),
+                          : Colour('#546B7F'),
                     ),
                   );
-                }).toList()
-                // : [
-                //     Container(
-                //       height: 8.0,
-                //       margin: EdgeInsets.symmetric(
-                //           vertical: 16.0, horizontal: 2.0),
-                //     )
-                //   ]
-                ),
+                }).toList()),
           ]),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             // vertical: 8.0),
             child: StreamBuilder<Duration>(
-              stream: _player.durationStream,
+              stream: _bloc.player.durationStream,
               builder: (context, snapshot) {
                 final duration = snapshot.data ?? Duration.zero;
                 return StreamBuilder<PositionData>(
                   stream: Rx.combineLatest2<Duration, Duration, PositionData>(
-                      _player.positionStream,
-                      _player.bufferedPositionStream,
+                      _bloc.player.positionStream,
+                      _bloc.player.bufferedPositionStream,
                       (position, bufferedPosition) =>
                           PositionData(position, bufferedPosition)),
                   builder: (context, snapshot) {
@@ -166,7 +161,7 @@ class _TapePlayerState extends State<TapePlayer> {
                       position: position,
                       bufferedPosition: bufferedPosition,
                       onChangeEnd: (newPosition) {
-                        _player.seek(newPosition);
+                        _bloc.player.seek(newPosition);
                       },
                     );
                   },
@@ -180,224 +175,272 @@ class _TapePlayerState extends State<TapePlayer> {
     ));
   }
 
-  @override
   Widget _buildControlButtons(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(Icons.volume_up),
-          onPressed: () {
-            _showSliderDialog(
-              context: context,
-              title: tr("adjust_volume"),
-              valueSuffix: "",
-              divisions: 20,
-              min: 0,
-              max: 1,
-              stream: _player.volumeStream,
-              onChanged: _player.setVolume,
-            );
-          },
-        ),
-        StreamBuilder<PlayerState>(
-          stream: _player.playerStateStream,
-          builder: (context, snapshot) {
-            final playerState = snapshot.data;
-            final processingState = playerState?.processingState;
-            final playing = playerState?.playing;
-            if (processingState == ProcessingState.loading ||
-                processingState == ProcessingState.buffering) {
-              return Container(
-                margin: EdgeInsets.all(8.0),
-                width: 64.0,
-                height: 64.0,
-                child: CircularProgressIndicator(),
+    return StreamBuilder<PreparationModel>(
+        stream: _bloc.preparationStream,
+        builder: (context, snapshot) {
+          var isLoading = false;
+          if (snapshot != null && snapshot.hasData) {
+            if (snapshot.data.state == PreparationState.Error && _bloc.currentModel == snapshot.data.model) {
+              final snackBar = SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  tr('error_converting_tape_file'),
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
               );
-            } else if (playing != true) {
-              return IconButton(
-                  icon: Icon(Icons.play_arrow),
-                  iconSize: 64.0,
-                  onPressed: () async {
-                    try {
-                      var wavFilePath =
-                          await _bloc._getWavPath(_files[_currentFileIndex]);
-                      _player.setFilePath(wavFilePath);
-                      _player.play();
-                    } catch (error) {
-                      final snackBar = SnackBar(
-                        backgroundColor: Colors.red,
-                        content: Text(
-                          error.toString(),
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                      Scaffold.of(context).showSnackBar(snackBar);
-                    }
-                  });
-            } else if (processingState != ProcessingState.completed) {
-              return IconButton(
-                icon: Icon(Icons.pause),
-                iconSize: 64.0,
-                onPressed: _player.pause,
-              );
-            } else {
-              return IconButton(
-                icon: Icon(Icons.replay),
-                iconSize: 64.0,
-                onPressed: () => _player.seek(Duration.zero,
-                    index: _player.effectiveIndices.first),
-              );
+              Future.delayed(const Duration(), () {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              });
+            } else{
+              isLoading = snapshot.data.state != PreparationState.Ready;
+              Future.delayed(const Duration(), () {
+                ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              });
             }
-          },
-        ),
-        StreamBuilder<double>(
-          stream: _player.speedStream,
-          builder: (context, snapshot) => IconButton(
-            icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            onPressed: () {
-              _showSliderDialog(
-                context: context,
-                title: tr("adjust_speed"),
-                valueSuffix: "x",
-                divisions: 6,
-                min: 1,
-                max: 4,
-                stream: _player.speedStream,
-                onChanged: _player.setSpeed,
-              );
+          }
+          return StreamBuilder<PlayerState>(
+            stream: _bloc.player.playerStateStream,
+            builder: (context, snapshot) {
+              final playerState = snapshot.data;
+              final processingState = playerState?.processingState;
+              final playing = playerState?.playing ?? false;
+              return Center(
+                  child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.volume_up_rounded),
+                    color: Colors.white,
+                    onPressed: () {
+                      _showSliderDialog(
+                        context: context,
+                        title: tr("adjust_volume"),
+                        valueSuffix: "",
+                        divisions: 20,
+                        min: 0,
+                        max: 1,
+                        stream: _bloc.player.volumeStream,
+                        onChanged: _bloc.player.setVolume,
+                      );
+                    },
+                  ),
+                  SizedBox(width: 46.0),
+                  // IconButton(
+                  //   color: Colors.white,
+                  //   disabledColor: Colour('#546B7F'),
+                  //   icon: Icon(Icons.replay_rounded),
+                  //   iconSize: 30.0,
+                  //   onPressed:
+                  //       playing || processingState == ProcessingState.completed
+                  //           ? _bloc.replay
+                  //           : null,
+                  // ),
+                  SizedBox(width: 16.0),
+                  Container(
+                    width: 60.0,
+                    height: 60.0,
+                    decoration: BoxDecoration(
+                      color: Colour('#28384C'),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(30),
+                      ),
+                    ),
+                    child: FutureBuilder(builder: (context, snaphot) {
+                      if (
+                          // processingState == ProcessingState.loading ||
+                          //     processingState == ProcessingState.buffering ||
+                          isLoading) {
+                        return Center(
+                            child: SizedBox(
+                          height: 40.0,
+                          width: 40.0,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2.0,
+                              backgroundColor: Colors.transparent,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white)),
+                        ));
+                      } else if (!playing) {
+                        return IconButton(
+                            color: Colors.white,
+                            icon: Icon(Icons.play_arrow_rounded),
+                            iconSize: 40.0,
+                            onPressed: _bloc.play);
+                      } else if (processingState != ProcessingState.completed) {
+                        return IconButton(
+                          color: Colors.white,
+                          icon: Icon(Icons.pause_rounded),
+                          iconSize: 40.0,
+                          onPressed: _bloc.pause,
+                        );
+                      } else {
+                        return IconButton(
+                            color: Colors.white,
+                            icon: Icon(Icons.replay_rounded),
+                            iconSize: 40.0,
+                            onPressed: _bloc.replay);
+                      }
+                    }),
+                  ),
+                  SizedBox(width: 16.0),
+                  IconButton(
+                    color: Colors.white,
+                    disabledColor: Colour('#546B7F'),
+                    icon: Icon(Icons.stop_rounded),
+                    iconSize: 40.0,
+                    onPressed: (playing || (_bloc.player.position != null && _bloc.player.position.inMilliseconds > 0)) ? _bloc.stop : null,
+                  ),
+                  SizedBox(width: 16.0),
+                  StreamBuilder<double>(
+                    stream: _bloc.player.speedStream,
+                    builder: (context, snapshot) => IconButton(
+                      color: Colors.white,
+                      icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
+                          style: TextStyle(color: Colors.white)),
+                      onPressed: () {
+                        _showSliderDialog(
+                          context: context,
+                          title: tr("adjust_speed"),
+                          valueSuffix: "x",
+                          divisions: 6,
+                          min: 1,
+                          max: 4,
+                          stream: _bloc.player.speedStream,
+                          onChanged: _bloc.player.setSpeed,
+                        );
+                      },
+                    ),
+                  ),
+                  // FutureBuilder(builder: (context, snapshot) {
+                  //   return null;
+                  // }),
+                ],
+              ));
             },
-          ),
-        ),
-      ],
-    );
+          );
+        });
   }
 }
 
-// Row(
-//   mainAxisAlignment: MainAxisAlignment.center,
-//   children: [
-//     FlatButton(
-//       onPressed: () {
-//         _paused = false;
-//         widget.audioPlayer.stop();
-//         widget.audioPlayer.play();
-//         setState(() {});
-//       },
-//       color: Colors.transparent,
-//       child: Icon(
-//         Icons.refresh_rounded,
-//         color: widget.audioPlayer.playing || _paused
-//             ? Colors.white
-//             : Colour('#546B7F'),
-//         size: 40.0,
-//       ),
-//       padding: EdgeInsets.all(10.0),
-//       shape: CircleBorder(),
-//     ),
-//     Container(
-//       width: 90.0,
-//       child: Center(
-//         child: _isPreparation
-//             ? Container(
-//                 width: 60.0,
-//                 height: 60.0,
-//                 decoration: BoxDecoration(
-//                   color: Colour('#28384C'),
-//                   borderRadius: BorderRadius.all(
-//                     Radius.circular(30),
-//                   ),
-//                 ),
-//                 child: Center(
-//                     child: SizedBox(
-//                   height: 40.0,
-//                   width: 40.0,
-//                   child: CircularProgressIndicator(
-//                       strokeWidth: 2.0,
-//                       backgroundColor: Colors.transparent,
-//                       valueColor: AlwaysStoppedAnimation<Color>(
-//                           Colors.white)),
-//                 )))
-//             : FlatButton(
-//                 materialTapTargetSize:
-//                     MaterialTapTargetSize.shrinkWrap,
-//                 onPressed: () => _play(),
-//                 color: Colour('#28384C'),
-//                 child: Icon(
-//                   widget.audioPlayer.playing
-//                       ? Icons.pause_rounded
-//                       : Icons.play_arrow_rounded,
-//                   color: Colors.white,
-//                   size: 50.0,
-//                 ),
-//                 shape: CircleBorder(),
-//                 padding: EdgeInsets.all(5.0),
-//               ),
-//       ),
-//     ),
-//     FlatButton(
-//       onPressed: () {
-//         _paused = false;
-//         widget.audioPlayer.stop();
-//         setState(() {});
-//       },
-//       //elevation: 0,
-//       color: Colors.transparent,
-//       child: Icon(
-//         Icons.stop_rounded,
-//         color: widget.audioPlayer.playing || _paused
-//             ? Colors.white
-//             : Colour('#546B7F'),
-//         size: 40.0,
-//       ),
-//       padding: EdgeInsets.all(10.0),
-//       shape: CircleBorder(),
-//     ),
-//     StreamBuilder<double>(
-//       stream: _player.speedStream,
-//       builder: (context, snapshot) => IconButton(
-//         icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-//             style: TextStyle(fontWeight: FontWeight.bold)),
-//         onPressed: () {
-//           _showSliderDialog(
-//             context: context,
-//             title: tr('adjust_speed'),
-//             divisions: 12,
-//             min: 1,
-//             max: 4,
-//             stream: _player.speedStream,
-//             onChanged: _player.setSpeed,
-//           );
-//         },
-//       ),
-//     ),
-//   ],
-// ),
+enum PreparationState { Downloading, Converting, Ready, Error }
+
+class ProgressModel {
+  final double percent;
+  final FileModel fileModel;
+
+  ProgressModel(this.fileModel, this.percent);
+}
+
+class PreparationModel {
+  final PreparationState state;
+  final String message;
+  final FileModel model;
+  PreparationModel(this.state, this.model, {this.message});
+}
 
 class _TapePlayerBloc {
-  Future<String> _getWavPath(FileModel model) async {
-    var wavFileName = '%s/%s.wav'.format([
-      (await getTemporaryDirectory()).path,
-      new DateTime.now().millisecondsSinceEpoch
-    ]);
-    var file = File(wavFileName);
-    Uint8List bytes;
-    if (model.location == FileLocation.remote)
-      bytes = await getIt<BackendService>().downloadTape(model.url);
-    else if (model.location == FileLocation.file)
-      bytes = await File(model.url).readAsBytes();
-    else
-      throw ArgumentError('Unrecognized file location');
+  final List<FileModel> files;
+  int _currentFileIndex;
 
-    await ZxTape.create(bytes)
-        .then((tape) => tape.toWavBytes(amplifySoundSignal: true))
-        .then((wav) => file.writeAsBytes(wav));
-    return wavFileName;
+  int get currentFileIndex => _currentFileIndex;
+  FileModel get currentModel => files[_currentFileIndex];
+
+  set currentFileIndex(int index) {
+    _currentFileIndex = index;
+    _getWavFilePath(_currentFileIndex).then((wavFilePath) =>
+        _player.setFilePath(wavFilePath)); // then((value) => _player.load());
   }
 
-  dispose() {}
+  AudioPlayer get player => _player;
+  AudioPlayer _player = AudioPlayer();
+  final _backendService = getIt<BackendService>();
+
+  StreamController _preparationController =
+      StreamController<PreparationModel>();
+
+  StreamSink<PreparationModel> get preparationSink =>
+      _preparationController.sink;
+
+  Stream<PreparationModel> get preparationStream =>
+      _preparationController.stream;
+
+  StreamController _progressController = StreamController<ProgressModel>();
+
+  StreamSink<ProgressModel> get progressSink => _progressController.sink;
+
+  Stream<ProgressModel> get progressStream => _progressController.stream;
+
+  _TapePlayerBloc(this.files) {
+    if (files.length > 0) currentFileIndex = 0;
+  }
+
+  Future play() async {
+    _player.play();
+  }
+
+  Future stop() async {
+    _player.stop();
+    currentFileIndex = _currentFileIndex;
+  }
+
+  Future pause() async {
+    _player.pause();
+  }
+
+  Future replay() async {
+    _player.seek(Duration.zero, index: _player.effectiveIndices.first);
+  }
+
+  Future<String> _getWavFilePath(int index) async {
+    var model = files[index];
+    try {
+      var tapePath =
+          Definitions.tapeDir.format([(await getTemporaryDirectory()).path]);
+      var dir = await new Directory(tapePath).create(recursive: true);
+      var wavFileName =
+          Definitions.wafFilePath.format([dir.path, basename(model.url)]);
+      var file = File(wavFileName);
+      if (!await file.exists()) {
+        _preparationController.sink
+            .add(PreparationModel(PreparationState.Downloading, model));
+        Uint8List bytes;
+        if (model.location == FileLocation.remote)
+          bytes = await _backendService.downloadTape(model.url);
+        else if (model.location == FileLocation.file)
+          bytes = await File(model.url).readAsBytes();
+        else
+          throw ArgumentError('Unrecognized file location');
+        _preparationController.sink
+            .add(PreparationModel(PreparationState.Converting, model));
+        await ZxTape.create(bytes)
+            .then((tape) => tape.toWavBytes(
+                frequency: 22050,
+                amplifySignal: true,
+                progress: (percent) {
+                  var data = ProgressModel(model, percent);
+                  _progressController.sink.add(data);
+                }))
+            .then((wav) => file.writeAsBytes(wav));
+      }
+      _preparationController.sink
+          .add(PreparationModel(PreparationState.Ready, model));
+      return wavFileName;
+    } catch (e) {
+      _preparationController.sink
+          .add(PreparationModel(PreparationState.Error, model, message: e.toString()));
+      await AppCenter.trackEventAsync('error', e);
+      // throw e;
+    }
+  }
+
+  void dispose() {
+    _player?.dispose();
+    _progressController?.close();
+    _preparationController?.close();
+  }
 }
 
 _showSliderDialog({
