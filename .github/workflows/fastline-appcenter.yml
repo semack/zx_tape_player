@@ -37,35 +37,35 @@ jobs:
         run: | 
           flutter pub get
           flutter pub run flutter_launcher_icons:main
-#      - name: Build iOS
-#        run: flutter build ios --release --no-pub --no-codesign --build-number=$BUILD_NUMBER
+      - name: Build iOS
+        run: flutter build ios --release --no-pub --no-codesign --build-number=$BUILD_NUMBER
       - name: Build Android
         run: flutter build apk --release --no-pub --build-number=$BUILD_NUMBER --no-shrink
-#      - name: Publish iOS
-#        uses: maierj/fastlane-action@v2.0.1
-#        with:
-#          lane: 'beta'
-#          subdirectory: 'ios'
-#          bundle-install-path: 'vendor/bundle'
-#        env:
-#          APP_STORE_CONNECT_TEAM_ID: '${{ secrets.APP_STORE_CONNECT_TEAM_ID }}'
-#          DEVELOPER_APP_ID: '${{ secrets.DEVELOPER_APP_ID }}'
-#          DEVELOPER_APP_IDENTIFIER: '${{ secrets.DEVELOPER_APP_IDENTIFIER }}'
-#          DEVELOPER_PORTAL_TEAM_ID: '${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}'
-#          FASTLANE_APPLE_ID: '${{ secrets.FASTLANE_APPLE_ID }}'
-#          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: '${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}'
-#          MATCH_PASSWORD: '${{ secrets.MATCH_PASSWORD }}'
-#          MATCH_GIT_BASIC_AUTHORIZATION: '${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}'
-#          MATCH_KEYCHAIN_NAME: '${{ secrets.MATCH_KEYCHAIN_NAME }}'
-#          MATCH_KEYCHAIN_PASSWORD: '${{ secrets.MATCH_KEYCHAIN_PASSWORD }}'
-#          APP_STORE_CONNECT_API_KEY_ISSUER_ID: '${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}'
-#          APP_STORE_CONNECT_API_KEY_KEY: '${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}'
-#          APP_STORE_CONNECT_API_KEY_KEY_ID: '${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}'
-#          APPCENTER_API_TOKEN: '${{ secrets.APPCENTER_API_TOKEN }}' 
-#          APPCENTER_OWNER_NAME: '${{ secrets.APPCENTER_OWNER_NAME }}'
-#          APPCENTER_OWNER_TYPE: '${{ secrets.APPCENTER_OWNER_TYPE }}'
-#          APPCENTER_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
-#          APPCENTER_DISTRIBUTE_DESTINATIONS: '${{ secrets.APPCENTER_DISTRIBUTE_DESTINATIONS }}'
+      - name: Publish iOS
+        uses: maierj/fastlane-action@v2.0.1
+        with:
+          lane: 'beta'
+          subdirectory: 'ios'
+          bundle-install-path: 'vendor/bundle'
+        env:
+          APP_STORE_CONNECT_TEAM_ID: '${{ secrets.APP_STORE_CONNECT_TEAM_ID }}'
+          DEVELOPER_APP_ID: '${{ secrets.DEVELOPER_APP_ID }}'
+          DEVELOPER_APP_IDENTIFIER: '${{ secrets.DEVELOPER_APP_IDENTIFIER }}'
+          DEVELOPER_PORTAL_TEAM_ID: '${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}'
+          FASTLANE_APPLE_ID: '${{ secrets.FASTLANE_APPLE_ID }}'
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: '${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}'
+          MATCH_PASSWORD: '${{ secrets.MATCH_PASSWORD }}'
+          MATCH_GIT_BASIC_AUTHORIZATION: '${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}'
+          MATCH_KEYCHAIN_NAME: '${{ secrets.MATCH_KEYCHAIN_NAME }}'
+          MATCH_KEYCHAIN_PASSWORD: '${{ secrets.MATCH_KEYCHAIN_PASSWORD }}'
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: '${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}'
+          APP_STORE_CONNECT_API_KEY_KEY: '${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}'
+          APP_STORE_CONNECT_API_KEY_KEY_ID: '${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}'
+          APPCENTER_API_TOKEN: '${{ secrets.APPCENTER_API_TOKEN }}' 
+          APPCENTER_OWNER_NAME: '${{ secrets.APPCENTER_OWNER_NAME }}'
+          APPCENTER_OWNER_TYPE: '${{ secrets.APPCENTER_OWNER_TYPE }}'
+          APPCENTER_APP_NAME: '${{ secrets.APPCENTER_IOS_APP_NAME }}'
+          APPCENTER_DISTRIBUTE_DESTINATIONS: '${{ secrets.APPCENTER_DISTRIBUTE_DESTINATIONS }}'
           
       
       - name: Publish Android
