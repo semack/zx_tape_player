@@ -175,8 +175,7 @@ class _TapePlayerState extends State<TapePlayer> {
           _buildControlButtons(context),
         ],
       ),
-    )
-    );
+    ));
   }
 
   Widget _buildControlButtons(BuildContext context) {
@@ -185,7 +184,7 @@ class _TapePlayerState extends State<TapePlayer> {
         builder: (context, snapshot) {
           var isLoading = false;
           if (snapshot != null && snapshot.hasData)
-            isLoading =  snapshot.data != PreparationState.Error &&
+            isLoading = snapshot.data != PreparationState.Error &&
                 snapshot.data != PreparationState.Ready;
           return StreamBuilder<PlayerState>(
             stream: _bloc.player.playerStateStream,
@@ -193,7 +192,8 @@ class _TapePlayerState extends State<TapePlayer> {
               final playerState = snapshot.data;
               final processingState = playerState?.processingState;
               final playing = playerState?.playing ?? false;
-              return Center(child:Row(
+              return Center(
+                  child: Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -219,7 +219,10 @@ class _TapePlayerState extends State<TapePlayer> {
                     disabledColor: Colour('#546B7F'),
                     icon: Icon(Icons.replay_rounded),
                     iconSize: 30.0,
-                    onPressed: playing || processingState == ProcessingState.completed ? _bloc.replay : null,
+                    onPressed:
+                        playing || processingState == ProcessingState.completed
+                            ? _bloc.replay
+                            : null,
                   ),
                   SizedBox(width: 16.0),
                   Container(
@@ -233,8 +236,8 @@ class _TapePlayerState extends State<TapePlayer> {
                     ),
                     child: FutureBuilder(builder: (context, snaphot) {
                       if (
-                      // processingState == ProcessingState.loading ||
-                      //     processingState == ProcessingState.buffering ||
+                          // processingState == ProcessingState.loading ||
+                          //     processingState == ProcessingState.buffering ||
                           isLoading) {
                         return Center(
                             child: SizedBox(
@@ -253,15 +256,15 @@ class _TapePlayerState extends State<TapePlayer> {
                             iconSize: 40.0,
                             onPressed: _bloc.play);
                       } else
-                        // if (processingState != ProcessingState.completed)
-                        {
+                      // if (processingState != ProcessingState.completed)
+                      {
                         return IconButton(
                           color: Colors.white,
                           icon: Icon(Icons.pause),
                           iconSize: 40.0,
                           onPressed: _bloc.pause,
                         );
-                       } // else {
+                      } // else {
                       //   return IconButton(
                       //     color: Colors.white,
                       //     icon: Icon(Icons.replay),
@@ -277,7 +280,7 @@ class _TapePlayerState extends State<TapePlayer> {
                     disabledColor: Colour('#546B7F'),
                     icon: Icon(Icons.stop_rounded),
                     iconSize: 40.0,
-                    onPressed: playing ?_bloc.stop : null,
+                    onPressed: playing ? _bloc.stop : null,
                   ),
                   SizedBox(width: 16.0),
                   StreamBuilder<double>(
@@ -351,8 +354,8 @@ class _TapePlayerBloc {
 
   set currentFileIndex(int index) {
     _currentFileIndex = index;
-    _getWavFilePath(_currentFileIndex)
-        .then((wavFilePath) => _player.setFilePath(wavFilePath));// then((value) => _player.load());
+    _getWavFilePath(_currentFileIndex).then((wavFilePath) =>
+        _player.setFilePath(wavFilePath)); // then((value) => _player.load());
   }
 
   AudioPlayer get player => _player;
@@ -415,6 +418,8 @@ class _TapePlayerBloc {
         _preparationController.sink.add(PreparationState.Converting);
         await ZxTape.create(bytes)
             .then((tape) => tape.toWavBytes(
+                frequency: 22050,
+                amplifySignal: true,
                 progress: (percent) {
                   var data = ProgressModel(model, percent);
                   _progressController.sink.add(data);
