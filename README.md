@@ -5,7 +5,7 @@ Another tape player has written in Flutter for iOS and Android. The application 
 ## Screenshots
 <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-01.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-02.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-03.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-04.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-05.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-06.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-07.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-08.jpg?raw=true" width="23%"></img>
 
-## LICENSE
+## License
 Please see [LICENSE.md](https://github.com/semack/zx_tape_player/blob/master/LICENSE.md) for details.
 
 ## Contribute
