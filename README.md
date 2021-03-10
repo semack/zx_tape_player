@@ -7,11 +7,11 @@ Public beta is provided by [Appcenter](https://appcenter.ms). Beta build are ava
 
 Android users can download test builds using following [link](https://install.appcenter.ms/users/semack-owd8/apps/zxtapeplayer.android/distribution_groups/testershttps://install.appcenter.ms/users/semack-owd8/apps/zxtapeplayer.android/distribution_groups/testers).
 
-## Screenshots
-<img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-01.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-02.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-03.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-04.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-05.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-06.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-07.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-08.jpg?raw=true" width="23%"></img>
-
 ## Contribute
 Contributions are welcome! Just open an Issue or submit a PR. 
+
+## Screenshots
+<img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-01.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-02.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-03.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-04.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-05.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-06.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-07.jpg?raw=true" width="23%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/assets/publishing/screenshots/screen-08.jpg?raw=true" width="23%"></img>
 
 ## License
 Please see [LICENSE.md](https://github.com/semack/zx_tape_player/blob/master/LICENSE.md) for details.
