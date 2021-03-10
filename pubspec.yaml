@@ -27,12 +27,12 @@ dependencies:
   path_provider: ^1.6.27
   path: ^1.7.0
   flutter_typeahead: ^2.0.0
-  zx_tape_to_wav: ^2.0.3
+  zx_tape_to_wav: ^2.0.4
   package_info: ^0.4.0+16
   sprintf: ^5.0.0
   http: ^0.12.2
   easy_localization: ^2.3.3
-  flutter_document_picker: ^4.0.1
+  file_picker: ^2.1.7
   flutter_appcenter_bundle: ^3.2.0+2
   avatar_abc: ^1.0.4
   cached_network_image: ^2.5.0
@@ -44,7 +44,7 @@ dependencies:
   rxdart: ^0.25.0
   crypto: ^2.1.5
   get_it: ^5.0.6
-  url_launcher: ^5.7.10
+  url_launcher: ^6.0.2
   marquee_widget: ^1.0.0
 
 
