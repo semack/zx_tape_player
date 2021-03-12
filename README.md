@@ -5,7 +5,7 @@ Just another tape player has written in [Flutter](https://flutter.dev/) for iOS 
 ## Public Beta 
 Public beta is provided by [Appcenter](https://appcenter.ms). Beta builds are available for Android users only and **not available for Apple users yet** regarding the complication of making the iOS AdHoc builds for new testers. 
 
-Android users can download test builds using following [link](https://install.appcenter.ms/users/semack-owd8/apps/zxtapeplayer.android/distribution_groups/testershttps://install.appcenter.ms/users/semack-owd8/apps/zxtapeplayer.android/distribution_groups/testers).
+Android users can download test builds using the following [link](https://install.appcenter.ms/users/semack-owd8/apps/zxtapeplayer.android/distribution_groups/testershttps://install.appcenter.ms/users/semack-owd8/apps/zxtapeplayer.android/distribution_groups/testers).
 
 ## Contribute
 Contributions are welcome! Just open an Issue or submit a PR. 
