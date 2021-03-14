@@ -6,7 +6,6 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zx_tape_player/main.dart';
@@ -335,7 +334,7 @@ class _PlayerScreenBloc {
       softwareSink.add(ApiResponse.completed(model));
     } catch (e) {
       softwareSink.add(ApiResponse.error(e.toString()));
-      await AppCenter.trackEventAsync('error', e);
+      //await AppCenter.trackEventAsync('error', e);
     }
   }
 
