@@ -40,7 +40,7 @@ jobs:
 #      - name: Build iOS
 #        run: flutter build ios --release --no-pub --no-codesign --build-number=$BUILD_NUMBER
       - name: Build Android
-        run: flutter build apk --release --no-pub --build-number=$BUILD_NUMBER --no-shrink
+        run: flutter build apk --release --no-pub --build-number=$BUILD_NUMBER
 #      - name: Publish iOS
 #        uses: maierj/fastlane-action@v2.0.1
 #        with:
