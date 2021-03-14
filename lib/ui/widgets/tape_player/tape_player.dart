@@ -6,7 +6,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -418,7 +417,6 @@ class _TapePlayerBloc {
         await ZxTape.create(bytes)
             .then((tape) => tape.toWavBytes(
                 frequency: 44100,
-                amplifySignal: true,
                 progress: (percent) {
                   var data = ProgressModel(model, percent);
                   _progressController.sink.add(data);
@@ -431,7 +429,7 @@ class _TapePlayerBloc {
     } catch (e) {
       _preparationController.sink
           .add(PreparationModel(PreparationState.Error, model, message: e.toString()));
-      await AppCenter.trackEventAsync('error', e);
+      //await AppCenter.trackEventAsync('error', e);
       // throw e;
     }
   }

@@ -6,7 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
@@ -437,7 +436,7 @@ class _SearchScreenBloc {
         hitsListSink.add(ApiResponse.error(e.toString()));
       else
         hitsLoadStatusSink.add(LoadStatus.failed);
-      await AppCenter.trackEventAsync('error', e);
+      // await AppCenter.trackEventAsync('error', e);
     }
   }
 

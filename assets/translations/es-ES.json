@@ -1,7 +1,7 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "app_title": "ZX Tape Player",
-  "copyright" : "© 2021 Copyright by\r\nAndriy S'omak, versión móvil\r\nThomas Heckmann, ZXInfo API\r\nPavlo Hladkov, diseño UI/UX\r\nTodos los derechos reservados.\r\n",
+  "copyright" : "© 2021 Copyright by\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nTodos los derechos reservados.\n",
   "version": "Versión %s.%s",
   "find_tape": "Busca un cassette",
   "search_hint": "Ingresa tu búsqueda aquí",

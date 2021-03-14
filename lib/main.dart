@@ -19,7 +19,7 @@ final GetIt getIt = GetIt.instance;
 void main() async {
   getIt.registerLazySingleton<BackendService>(() => ZxApiService());
   WidgetsFlutterBinding.ensureInitialized();
-  await AppCenterInitializer.initialize();
+  //await AppCenterInitializer.initialize();
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(EasyLocalization(
