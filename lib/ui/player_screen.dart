@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -334,7 +335,7 @@ class _PlayerScreenBloc {
       softwareSink.add(ApiResponse.completed(model));
     } catch (e) {
       softwareSink.add(ApiResponse.error(e.toString()));
-      //await AppCenter.trackEventAsync('error', e);
+      await AppCenter.trackEventAsync('error', e);
     }
   }
 

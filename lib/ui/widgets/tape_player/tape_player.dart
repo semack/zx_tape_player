@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -77,7 +78,7 @@ class _TapePlayerState extends State<TapePlayer> {
                     child: StreamBuilder<PlayerState>(
                       stream: _bloc.player.playerStateStream,
                       builder: (context, snapshot) {
-                        final playerState = snapshot.data;
+                        // final playerState = snapshot.data;
                         return CarouselSlider(
                           items: widget.files
                               .map((file) => Container(
@@ -94,20 +95,20 @@ class _TapePlayerState extends State<TapePlayer> {
                                   ))
                               .toList(),
                           options: CarouselOptions(
-                              scrollPhysics: (playerState != null &&
-                                          playerState.playing &&
-                                          playerState.processingState !=
-                                              ProcessingState.completed) ||
-                                      widget.files.length == 1
-                                  ? const NeverScrollableScrollPhysics()
-                                  : const AlwaysScrollableScrollPhysics(),
+                              scrollPhysics:
+                                  // (playerState != null &&
+                                  //             playerState.playing &&
+                                  //             playerState.processingState !=
+                                  //                 ProcessingState.completed) ||
+                                  widget.files.length == 1
+                                      ? const NeverScrollableScrollPhysics()
+                                      : const AlwaysScrollableScrollPhysics(),
                               autoPlay: false,
                               enlargeCenterPage: false,
                               aspectRatio: 2.0,
                               viewportFraction: 1.0,
                               onPageChanged: (index, reason) async {
                                 _bloc.currentFileIndex = index;
-                                setState(() {});
                               }),
                         );
                       },
@@ -180,7 +181,8 @@ class _TapePlayerState extends State<TapePlayer> {
         builder: (context, snapshot) {
           var isLoading = false;
           if (snapshot != null && snapshot.hasData) {
-            if (snapshot.data.state == PreparationState.Error && _bloc.currentModel == snapshot.data.model) {
+            if (snapshot.data.state == PreparationState.Error &&
+                _bloc.currentModel == snapshot.data.model) {
               final snackBar = SnackBar(
                 backgroundColor: Colors.red,
                 content: Text(
@@ -192,7 +194,7 @@ class _TapePlayerState extends State<TapePlayer> {
               Future.delayed(const Duration(), () {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               });
-            } else{
+            } else {
               isLoading = snapshot.data.state != PreparationState.Ready;
               Future.delayed(const Duration(), () {
                 ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -290,7 +292,11 @@ class _TapePlayerState extends State<TapePlayer> {
                     disabledColor: Colour('#546B7F'),
                     icon: Icon(Icons.stop_rounded),
                     iconSize: 40.0,
-                    onPressed: (playing || (_bloc.player.position != null && _bloc.player.position.inMilliseconds > 0)) ? _bloc.stop : null,
+                    onPressed: (playing ||
+                            (_bloc.player.position != null &&
+                                _bloc.player.position.inMilliseconds > 0))
+                        ? _bloc.stop
+                        : null,
                   ),
                   SizedBox(width: 16.0),
                   StreamBuilder<double>(
@@ -337,6 +343,7 @@ class PreparationModel {
   final PreparationState state;
   final String message;
   final FileModel model;
+
   PreparationModel(this.state, this.model, {this.message});
 }
 
@@ -345,12 +352,18 @@ class _TapePlayerBloc {
   int _currentFileIndex;
 
   int get currentFileIndex => _currentFileIndex;
+
   FileModel get currentModel => files[_currentFileIndex];
 
   set currentFileIndex(int index) {
-    _currentFileIndex = index;
-    _getWavFilePath(_currentFileIndex).then((wavFilePath) =>
-        _player.setFilePath(wavFilePath)); // then((value) => _player.load());
+    if (_currentFileIndex != index) {
+      var oldPlayer = _player;
+      _player = AudioPlayer();
+      _currentFileIndex = index;
+      _getWavFilePath(_currentFileIndex)
+          .then((wavFilePath) => _player.setFilePath(wavFilePath));
+      oldPlayer.dispose();
+    }
   }
 
   AudioPlayer get player => _player;
@@ -427,11 +440,12 @@ class _TapePlayerBloc {
           .add(PreparationModel(PreparationState.Ready, model));
       return wavFileName;
     } catch (e) {
-      _preparationController.sink
-          .add(PreparationModel(PreparationState.Error, model, message: e.toString()));
-      //await AppCenter.trackEventAsync('error', e);
-      // throw e;
+      _preparationController.sink.add(PreparationModel(
+          PreparationState.Error, model,
+          message: e.toString()));
+      await AppCenter.trackEventAsync('error', e);
     }
+    return '';
   }
 
   void dispose() {

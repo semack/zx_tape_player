@@ -32,7 +32,7 @@ dependencies:
   http: ^0.12.2
   easy_localization: ^2.3.3
   file_picker: ^2.1.7
-  #flutter_appcenter_bundle: ^3.3.1+1
+  app_center_bundle_sdk: ^0.0.2
   avatar_abc: ^1.0.4
   cached_network_image: ^2.5.0
   pull_to_refresh: ^1.6.4

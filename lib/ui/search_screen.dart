@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:avatar_abc/AbcAvatar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
@@ -436,7 +437,7 @@ class _SearchScreenBloc {
         hitsListSink.add(ApiResponse.error(e.toString()));
       else
         hitsLoadStatusSink.add(LoadStatus.failed);
-      // await AppCenter.trackEventAsync('error', e);
+      await AppCenter.trackEventAsync('error', e);
     }
   }
 
