@@ -3,12 +3,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/services/zx_api/zxapi_service.dart';
 import 'package:zx_tape_player/ui/home_screen.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/app_center_initializer.dart';
+import 'package:zx_tape_player/utils/definitions.dart';
 
 import 'ui/search_screen.dart';
 import 'ui/splash_screen.dart';
@@ -19,8 +19,8 @@ final GetIt getIt = GetIt.instance;
 void main() async {
   getIt.registerLazySingleton<BackendService>(() => ZxApiService());
   WidgetsFlutterBinding.ensureInitialized();
-  await EasyLocalization.ensureInitialized();
   await AppCenterInitializer.initialize();
+  await EasyLocalization.ensureInitialized();
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(EasyLocalization(
@@ -46,7 +46,7 @@ class ZxTapePlayer extends StatelessWidget {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        title: tr('app_title'),
+        title: Definitions.appTitle,
         theme: ThemeData(
           primaryColor: Colors.white,
           scaffoldBackgroundColor: Colour('#546B7F'),
