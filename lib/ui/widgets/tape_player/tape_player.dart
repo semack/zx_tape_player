@@ -12,6 +12,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/position_data.dart';
@@ -324,8 +325,6 @@ class _TapePlayerBloc {
   int _currentFileIndex;
 
   int get currentFileIndex => _currentFileIndex;
-  RingerMode _ringerMode;
-  bool _isAccessGranted;
 
   FileModel get currentModel => files[_currentFileIndex];
 
@@ -354,33 +353,38 @@ class _TapePlayerBloc {
 
   set currentFileIndex(int index) {
     if (_currentFileIndex != index) {
-      _unMute();
       var oldPlayer = _player;
       _player = AudioPlayer();
+      if (oldPlayer.playing) {
+        oldPlayer.stop();
+        _unMute();
+      }
+      oldPlayer.dispose();
       _currentFileIndex = index;
       _getWavFilePath(_currentFileIndex)
           .then((wavFilePath) => _player.setFilePath(wavFilePath));
-      oldPlayer.dispose();
     }
   }
 
-  Future _mute() async
-  {
+  RingerMode _ringerMode;
+
+  Future _mute() async {
     var isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
-    if (!isAccessGranted) {
-      await FlutterMute.openNotificationPolicySettings();
-      isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
-    }
     if (isAccessGranted) {
       _ringerMode = await FlutterMute.getRingerMode();
       await FlutterMute.setRingerMode(RingerMode.Silent);
+    } else {
+      var prefs = await SharedPreferences.getInstance();
+      var initialized = prefs.getBool('dndAccessInitialized');
+      if (initialized == null || !initialized) {
+        prefs.setBool('dndAccessInitialized', true);
+        await FlutterMute.openNotificationPolicySettings();
+      }
     }
   }
 
-  Future _unMute() async
-  {
-    if (_ringerMode != null)
-      await FlutterMute.setRingerMode(_ringerMode);
+  Future _unMute() async {
+    if (_ringerMode != null) await FlutterMute.setRingerMode(_ringerMode);
   }
 
   Future play() async {
