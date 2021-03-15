@@ -186,7 +186,7 @@ class _TapePlayerState extends State<TapePlayer> {
             if (snapshot.data.state == PreparationState.Error &&
                 _bloc.currentModel == snapshot.data.model) {
               final snackBar = SnackBar(
-                backgroundColor: Colors.red,
+                backgroundColor: Colour('#D9512D'),
                 content: Text(
                   tr('error_converting_tape_file'),
                   style: TextStyle(color: Colors.white),

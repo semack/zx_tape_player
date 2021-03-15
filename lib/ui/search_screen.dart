@@ -160,6 +160,12 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
               color: Colour('546B7F'),
               letterSpacing: -0.5,
             ),
+            errorStyle: TextStyle(
+              fontSize: 14.0,
+              color: Colour('#D9512D'),
+              letterSpacing: -0.5,
+            ),
+            errorText: tr('data_retrieving_error'),
             contentPadding: EdgeInsets.symmetric(vertical: 16.0),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent, width: 0.0),
