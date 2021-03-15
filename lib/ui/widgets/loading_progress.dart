@@ -1,7 +1,6 @@
 import 'package:colour/colour.dart';
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingProgress extends StatelessWidget {
   final String loadingText;
@@ -15,16 +14,14 @@ class LoadingProgress extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-          Loading(
-              indicator: BallPulseIndicator(),
-              size: 30.0,
-              color: Colour('#AFB6BB')),
+              SpinKitThreeBounce(size: 16.0,
+                  color: Colour('#AFB6BB')),
           SizedBox(
-            height: 5.0,
+            height: 16.0,
           ),
           Text(
             loadingText,
-            style: TextStyle(color: Colour('#AFB6BB'), fontSize: 12.0),
+            style: TextStyle(color: Colour('#AFB6BB'), fontSize: 14.0),
           ),
         ]));
   }

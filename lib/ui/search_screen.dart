@@ -7,9 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/main.dart';
@@ -253,10 +252,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
                       return Container(
                           height: 55.0,
                           child: Center(
-                            child: Loading(
-                                indicator: BallPulseIndicator(),
-                                size: 30.0,
-                                color: Colour('#AFB6BB')),
+                            child: SpinKitThreeBounce(
+                                size: 16.0, color: Colour('#AFB6BB')),
                           ));
                     case LoadStatus.failed:
                       return Container(

@@ -21,6 +21,6 @@
   "adjust_volume": "Nastavení hlasitosti",
   "retry": "Opakovat",
   "data_retrieving_error": "Chyba načítání dat!",
-  "error_converting_tape_file": "Error converting tape to the sound file.",
-  "invalid_file_format": "Invalid file format. The app supports %s files only."
+  "error_converting_tape_file": "Chyba při převodu pásky na zvukový soubor.",
+  "invalid_file_format": "Neplatný formát souboru. Aplikace podporuje pouze soubory %s"
 }

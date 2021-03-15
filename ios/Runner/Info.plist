@@ -51,6 +51,8 @@
     	<string>pt</string>
     	<string>ru</string>
     	<string>uk</string>
+    	<string>sk</string>
+        <string>cz</string>
     </array>
     <key>UIBackgroundModes</key>
     <array>

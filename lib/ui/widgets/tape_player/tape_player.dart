@@ -369,6 +369,7 @@ class _TapePlayerBloc {
   RingerMode _ringerMode;
 
   Future _mute() async {
+    if (!Platform.isAndroid) return;
     var isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
     if (isAccessGranted) {
       _ringerMode = await FlutterMute.getRingerMode();
@@ -384,6 +385,7 @@ class _TapePlayerBloc {
   }
 
   Future _unMute() async {
+    if (!Platform.isAndroid) return;
     if (_ringerMode != null) await FlutterMute.setRingerMode(_ringerMode);
   }
 
