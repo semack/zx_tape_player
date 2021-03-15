@@ -107,18 +107,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     textColor: Theme.of(context).primaryColor,
                     padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
                     onPressed: () async {
-
+                      FilePicker.platform.clearTemporaryFiles();
                       final result = await FilePicker.platform.pickFiles(
                         type: FileType.any,
                         allowCompression: false,
                         allowMultiple: false,
-                        //allowedExtensions: ['.tap', '.tzx']
-                          );
-                      if (result != null ) {
+                        //allowedExtensions: Definitions.supportedTapeExtensions
+                      );
+                      if (result != null) {
                         PlatformFile file = result.files.first;
-                        Navigator.pushNamed(context, PlayerScreen.routeName,
-                            arguments: PlayerArgs(
-                                file.path, FileLocation.file));
+                        if (Definitions.supportedTapeExtensions.any((element) =>
+                            element.toLowerCase() ==
+                            file.extension.toLowerCase()))
+                          Navigator.pushNamed(context, PlayerScreen.routeName,
+                              arguments:
+                                  PlayerArgs(file.path, FileLocation.file));
                       }
                     },
                     child: Text(
