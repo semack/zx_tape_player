@@ -14,8 +14,7 @@ class LoadingProgress extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SpinKitThreeBounce(size: 16.0,
-                  color: Colour('#AFB6BB')),
+          SpinKitThreeBounce(size: 16.0, color: Colour('#AFB6BB')),
           SizedBox(
             height: 16.0,
           ),

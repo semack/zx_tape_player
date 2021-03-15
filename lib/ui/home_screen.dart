@@ -129,7 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             content: Text(
                               tr('invalid_file_format').format([
                                 Definitions.supportedTapeExtensions
-                                    .map((e) => '.'+e.toUpperCase()).join(', ')
+                                    .map((e) => '.' + e.toUpperCase())
+                                    .join(', ')
                               ]),
                               style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
