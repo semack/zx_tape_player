@@ -21,5 +21,6 @@
   "adjust_volume": "Ajustar volumen",
   "retry": "Reintentar",
   "data_retrieving_error": "Error al recuperar los datos!",
-  "error_converting_tape_file": "Error al convertir la cinta al archivo de sonido."
+  "error_converting_tape_file": "Error al convertir la cinta al archivo de sonido.",
+  "invalid_file_format": "Formato de archivo inválido. La aplicación solo admite archivos %s"
 }

@@ -21,5 +21,6 @@
   "adjust_volume": "Juster lydstyrke",
   "retry": "Prøv igen",
   "data_retrieving_error": "Fejl ved hentning af data!",
-  "error_converting_tape_file": "Fejl ved konvertering af bånd til lydfilen."
+  "error_converting_tape_file": "Fejl ved konvertering af bånd til lydfilen.",
+  "invalid_file_format": "Ugyldigt filformat. Appen understøtter kun %s filer."
 }

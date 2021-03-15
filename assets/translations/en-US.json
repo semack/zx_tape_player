@@ -21,5 +21,6 @@
   "adjust_volume": "Adjust volume",
   "retry": "Retry",
   "data_retrieving_error": "Data retrieving error!",
-  "error_converting_tape_file": "Error converting tape to the sound file."
+  "error_converting_tape_file": "Error converting tape to the sound file.",
+  "invalid_file_format": "Invalid file format. The app supports %s files only."
 }

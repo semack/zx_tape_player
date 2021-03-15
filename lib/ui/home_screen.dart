@@ -7,6 +7,7 @@ import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -118,10 +119,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         PlatformFile file = result.files.first;
                         if (Definitions.supportedTapeExtensions.any((element) =>
                             element.toLowerCase() ==
-                            file.extension.toLowerCase()))
+                            file.extension.toLowerCase())) {
                           Navigator.pushNamed(context, PlayerScreen.routeName,
                               arguments:
                                   PlayerArgs(file.path, FileLocation.file));
+                        } else {
+                          final snackBar = SnackBar(
+                            backgroundColor: Colour('#D9512D'),
+                            content: Text(
+                              tr('invalid_file_format').format([
+                                Definitions.supportedTapeExtensions
+                                    .map((e) => '.'+e.toUpperCase()).join(', ')
+                              ]),
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                          Future.delayed(const Duration(), () {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          });
+                        }
                       }
                     },
                     child: Text(
