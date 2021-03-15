@@ -13,8 +13,9 @@ class ApiBaseHelper {
   Future<dynamic> get(String url) async {
     var responseJson;
     try {
+      var uri = _baseUrl + url;
       final response =
-          await UserAgentClient(_userAgent, http.Client()).get(_baseUrl + url);
+          await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(uri));
       responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');

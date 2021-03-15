@@ -24,32 +24,33 @@ dependencies:
   flutter:
     sdk: flutter
   colour: ^1.0.4
-  path_provider: ^1.6.27
-  path: ^1.7.0
-  flutter_typeahead: ^2.0.0
-  package_info: ^0.4.0+16
-  sprintf: ^5.0.0
-  http: ^0.12.2
-  easy_localization: ^2.3.3
-  file_picker: ^2.1.7
+  path_provider: ^2.0.1
+  path: ^1.8.0
+  flutter_typeahead: ^3.0.0-nullsafety.0
+  package_info: ^2.0.0
+  sprintf: ^6.0.0
+  http: ^0.13.0
+  easy_localization: ^3.0.0
+  file_picker: ^3.0.0
   app_center_bundle_sdk: ^0.0.2
-  avatar_abc: ^1.0.4
-  cached_network_image: ^2.5.0
+  avatar_abc: ^1.0.6
+  cached_network_image: ^3.0.0-nullsafety
   pull_to_refresh: ^1.6.4
   carousel_slider: ^3.0.0
-  just_audio: ^0.6.13
+  just_audio: ^0.7.1
   loading: ^1.0.2
-  progress_indicator_button: ^0.0.3
-  rxdart: ^0.25.0
-  crypto: ^2.1.5
-  get_it: ^5.0.6
+  rxdart: ^0.26.0
+  crypto: ^3.0.0
+  get_it: ^6.0.0
   url_launcher: ^6.0.2
   marquee_widget: ^1.0.0
   zx_tape_to_wav: ^2.1.16
+  flutter_mute: ^0.0.1
+  shared_preferences: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
+  #cupertino_icons: ^1.0.0
 #dependency_overrides:
 #  zx_tape_to_wav:
 #    path: ../zx_tape_to_wav
@@ -57,11 +58,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.8.0
-  flutter_launcher_name: ^0.0.1
-
-flutter_launcher_name:
-    name: "ZX Tape Player"
+  flutter_launcher_icons: ^0.9.0
 
 # Run command to update icons: flutter pub pub run flutter_launcher_icons:main
 flutter_icons:

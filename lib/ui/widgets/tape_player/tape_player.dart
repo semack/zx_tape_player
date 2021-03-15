@@ -7,6 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mute/flutter_mute.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -354,19 +355,10 @@ class _TapePlayerBloc {
   int _currentFileIndex;
 
   int get currentFileIndex => _currentFileIndex;
+  RingerMode _ringerMode;
+  bool _isAccessGranted;
 
   FileModel get currentModel => files[_currentFileIndex];
-
-  set currentFileIndex(int index) {
-    if (_currentFileIndex != index) {
-      var oldPlayer = _player;
-      _player = AudioPlayer();
-      _currentFileIndex = index;
-      _getWavFilePath(_currentFileIndex)
-          .then((wavFilePath) => _player.setFilePath(wavFilePath));
-      oldPlayer.dispose();
-    }
-  }
 
   AudioPlayer get player => _player;
   AudioPlayer _player = AudioPlayer();
@@ -391,13 +383,46 @@ class _TapePlayerBloc {
     if (files.length > 0) currentFileIndex = 0;
   }
 
+  set currentFileIndex(int index) {
+    if (_currentFileIndex != index) {
+      _unMute();
+      var oldPlayer = _player;
+      _player = AudioPlayer();
+      _currentFileIndex = index;
+      _getWavFilePath(_currentFileIndex)
+          .then((wavFilePath) => _player.setFilePath(wavFilePath));
+      oldPlayer.dispose();
+    }
+  }
+
+  Future _mute() async
+  {
+    var isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
+    if (!isAccessGranted) {
+      await FlutterMute.openNotificationPolicySettings();
+      isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
+    }
+    if (isAccessGranted) {
+      _ringerMode = await FlutterMute.getRingerMode();
+      await FlutterMute.setRingerMode(RingerMode.Silent);
+    }
+  }
+
+  Future _unMute() async
+  {
+    if (_ringerMode != null)
+      await FlutterMute.setRingerMode(_ringerMode);
+  }
+
   Future play() async {
+    await _mute();
     _player.play();
   }
 
   Future stop() async {
     _player.stop();
-    currentFileIndex = _currentFileIndex;
+    await _unMute();
+    //currentFileIndex = _currentFileIndex;
   }
 
   Future pause() async {

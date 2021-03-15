@@ -103,7 +103,7 @@ class ZxApiService implements BackendService {
   Future<SoftwareModel> fetchSoftware(String id) async {
     SoftwareModel result;
     var url = _baseUrl + _itemUrl.format([id]);
-    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
+    var response = await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(url));
     if (response.statusCode == 200) {
       var list = <ItemDto>[];
       list.add(ItemDto.fromJson(json.decode(response.body)));
@@ -146,7 +146,7 @@ class ZxApiService implements BackendService {
     var md5 = await _calculateMD5Sum(filePath);
     var fileCheckUrl = _baseUrl + _fileCheckUrl.format([md5]);
     var response =
-    await UserAgentClient(_userAgent, http.Client()).get(fileCheckUrl);
+    await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(fileCheckUrl));
     if (response.statusCode == 200) {
       var fileCheck = FileCheckDto.fromJson(json.decode(response.body));
       result = await fetchSoftware(fileCheck.entryId);
@@ -157,7 +157,7 @@ class ZxApiService implements BackendService {
   }
 
   Future<Uint8List> downloadTape(String url) async {
-    var response = await UserAgentClient(_userAgent, http.Client()).get(url);
+    var response = await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(url));
     if (response.statusCode == 200) return response.bodyBytes;
     return null;
   }
