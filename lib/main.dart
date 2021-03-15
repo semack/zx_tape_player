@@ -33,6 +33,7 @@ void main() async {
         Locale('nl', 'NL'),
         Locale('pt', 'PT'),
         Locale('ru', 'RU'),
+        Locale('sk', 'SK'),
         Locale('uk', 'UA')
       ],
       path: 'assets/translations',
