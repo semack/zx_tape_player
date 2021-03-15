@@ -215,34 +215,27 @@ class _TapePlayerState extends State<TapePlayer> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.volume_up_rounded),
-                    color: Colors.white,
-                    onPressed: () {
-                      _showSliderDialog(
-                        context: context,
-                        title: tr("adjust_volume"),
-                        valueSuffix: "",
-                        divisions: 20,
-                        min: 0,
-                        max: 1,
-                        stream: _bloc.player.volumeStream,
-                        onChanged: _bloc.player.setVolume,
-                      );
-                    },
+                  StreamBuilder<double>(
+                    stream: _bloc.player.speedStream,
+                    builder: (context, snapshot) => IconButton(
+                      color: Colors.white,
+                      icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
+                          style: TextStyle(color: Colors.white)),
+                      onPressed: () {
+                        _showSliderDialog(
+                          context: context,
+                          title: tr("adjust_speed"),
+                          valueSuffix: "x",
+                          divisions: 6,
+                          min: 1,
+                          max: 4,
+                          stream: _bloc.player.speedStream,
+                          onChanged: _bloc.player.setSpeed,
+                        );
+                      },
+                    ),
                   ),
-                  SizedBox(width: 46.0),
-                  // IconButton(
-                  //   color: Colors.white,
-                  //   disabledColor: Colour('#546B7F'),
-                  //   icon: Icon(Icons.replay_rounded),
-                  //   iconSize: 30.0,
-                  //   onPressed:
-                  //       playing || processingState == ProcessingState.completed
-                  //           ? _bloc.replay
-                  //           : null,
-                  // ),
-                  SizedBox(width: 16.0),
+                  SizedBox(width: 24.0),
                   Container(
                     width: 60.0,
                     height: 60.0,
@@ -289,7 +282,7 @@ class _TapePlayerState extends State<TapePlayer> {
                       }
                     }),
                   ),
-                  SizedBox(width: 16.0),
+                  SizedBox(width: 24.0),
                   IconButton(
                     color: Colors.white,
                     disabledColor: Colour('#546B7F'),
@@ -301,30 +294,6 @@ class _TapePlayerState extends State<TapePlayer> {
                         ? _bloc.stop
                         : null,
                   ),
-                  SizedBox(width: 16.0),
-                  StreamBuilder<double>(
-                    stream: _bloc.player.speedStream,
-                    builder: (context, snapshot) => IconButton(
-                      color: Colors.white,
-                      icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                          style: TextStyle(color: Colors.white)),
-                      onPressed: () {
-                        _showSliderDialog(
-                          context: context,
-                          title: tr("adjust_speed"),
-                          valueSuffix: "x",
-                          divisions: 6,
-                          min: 1,
-                          max: 4,
-                          stream: _bloc.player.speedStream,
-                          onChanged: _bloc.player.setSpeed,
-                        );
-                      },
-                    ),
-                  ),
-                  // FutureBuilder(builder: (context, snapshot) {
-                  //   return null;
-                  // }),
                 ],
               ));
             },
