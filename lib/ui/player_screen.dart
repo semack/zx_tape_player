@@ -67,11 +67,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
               case Status.COMPLETED:
                 return _buildScreen(context, snapshot.data);
               case Status.ERROR:
-                return AppError(
+                return Scaffold(
+                    body: AppError(
                   text: tr('data_retrieving_error'),
                   buttonText: tr('retry'),
                   action: () => _bloc.refresh(),
-                );
+                ));
             }
           }
           return SizedBox.shrink();
@@ -114,9 +115,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         children: <Widget>[
           _buildInfoWidget(context, response),
           model.tapeFiles.length > 0
-              ? TapePlayer(
-                  files: model.tapeFiles.toList()
-                )
+              ? TapePlayer(files: model.tapeFiles.toList())
               : Container(
                   color: Colour('#3B4E63'),
                   height: 50.0,

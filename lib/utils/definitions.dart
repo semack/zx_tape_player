@@ -6,4 +6,5 @@ class Definitions {
   static const supportedTapeExtensions = <String>['tap', 'tzx'];
   static const tapeDir = '%s/tapes';
   static const wafFilePath = '%s/%s.wav';
+  static const wavFrequency = 44100;
 }

@@ -108,7 +108,9 @@ class _TapePlayerState extends State<TapePlayer> {
                               aspectRatio: 2.0,
                               viewportFraction: 1.0,
                               onPageChanged: (index, reason) async {
-                                _bloc.currentFileIndex = index;
+                                setState(() {
+                                  _bloc.currentFileIndex = index;
+                                });
                               }),
                         );
                       },
@@ -429,7 +431,7 @@ class _TapePlayerBloc {
             .add(PreparationModel(PreparationState.Converting, model));
         await ZxTape.create(bytes)
             .then((tape) => tape.toWavBytes(
-                frequency: 44100,
+                frequency: Definitions.wavFrequency,
                 progress: (percent) {
                   var data = ProgressModel(model, percent);
                   _progressController.sink.add(data);
