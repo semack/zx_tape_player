@@ -17,6 +17,7 @@ import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/hit_model.dart';
 import 'package:zx_tape_player/models/term_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/services/mute_control_service.dart';
 import 'package:zx_tape_player/services/responses/api_response.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/widgets/app_error.dart';
@@ -62,6 +63,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
 
   @override
   void didPopNext() {
+    getIt.get<MuteControlService>().unmute();
+
     getTemporaryDirectory().then((dir) {
       var tapePath = Definitions.tapeDir.format([dir.path]);
       return Directory(tapePath);

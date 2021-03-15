@@ -7,17 +7,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mute/flutter_mute.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/position_data.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/services/mute_control_service.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/seek_bar.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
@@ -211,6 +210,7 @@ class _TapePlayerState extends State<TapePlayer> {
               final playerState = snapshot.data;
               final processingState = playerState?.processingState;
               final playing = playerState?.playing ?? false;
+              //print(playerState?.toString());
               return Center(
                   child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -289,9 +289,7 @@ class _TapePlayerState extends State<TapePlayer> {
                     disabledColor: Colour('#546B7F'),
                     icon: Icon(Icons.stop_rounded),
                     iconSize: 40.0,
-                    onPressed: (playing ||
-                            (_bloc.player.position != null &&
-                                _bloc.player.position.inMilliseconds > 0))
+                    onPressed: _bloc.player.position != Duration.zero
                         ? _bloc.stop
                         : null,
                   ),
@@ -331,6 +329,7 @@ class _TapePlayerBloc {
   AudioPlayer get player => _player;
   AudioPlayer _player = AudioPlayer();
   final _backendService = getIt<BackendService>();
+  final _muteControlService = getIt<MuteControlService>();
 
   StreamController _preparationController =
       StreamController<PreparationModel>();
@@ -352,60 +351,34 @@ class _TapePlayerBloc {
   }
 
   set currentFileIndex(int index) {
-    if (_currentFileIndex != index) {
-      var oldPlayer = _player;
-      _player = AudioPlayer();
-      if (oldPlayer.playing) {
-        oldPlayer.stop();
-        _unMute();
-      }
-      oldPlayer.dispose();
-      _currentFileIndex = index;
-      _getWavFilePath(_currentFileIndex)
-          .then((wavFilePath) => _player.setFilePath(wavFilePath));
-    }
+    _currentFileIndex = index;
+    _reloadPlayer(_currentFileIndex);
   }
 
-  RingerMode _ringerMode;
-
-  Future _mute() async {
-    if (!Platform.isAndroid) return;
-    var isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
-    if (isAccessGranted) {
-      _ringerMode = await FlutterMute.getRingerMode();
-      await FlutterMute.setRingerMode(RingerMode.Silent);
-    } else {
-      var prefs = await SharedPreferences.getInstance();
-      var initialized = prefs.getBool('dndAccessInitialized');
-      if (initialized == null || !initialized) {
-        prefs.setBool('dndAccessInitialized', true);
-        await FlutterMute.openNotificationPolicySettings();
-      }
-    }
-  }
-
-  Future _unMute() async {
-    if (!Platform.isAndroid) return;
-    if (_ringerMode != null) await FlutterMute.setRingerMode(_ringerMode);
+  Future _reloadPlayer(int index) async {
+    var oldPlayer = _player;
+    _player = AudioPlayer();
+    await _muteControlService.unmute();
+    await oldPlayer.dispose();
+    await _getWavFilePath(index)
+        .then((wavFilePath) => _player.setFilePath(wavFilePath));
   }
 
   Future play() async {
-    await _mute();
-    _player.play();
+    await _muteControlService.mute();
+    await _player.play();
   }
 
   Future stop() async {
-    _player.stop();
-    await _unMute();
-    //currentFileIndex = _currentFileIndex;
+    await _reloadPlayer(_currentFileIndex);
   }
 
   Future pause() async {
-    _player.pause();
+    await _player.pause();
   }
 
   Future replay() async {
-    _player.seek(Duration.zero, index: _player.effectiveIndices.first);
+    await _player.seek(Duration.zero, index: _player.effectiveIndices.first);
   }
 
   Future<String> _getWavFilePath(int index) async {

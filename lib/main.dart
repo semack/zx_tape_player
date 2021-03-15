@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
+import 'package:zx_tape_player/services/mute_control_service.dart';
 import 'package:zx_tape_player/services/zx_api/zxapi_service.dart';
+import 'package:zx_tape_player/services/zx_mute/zx_mute_control_service.dart';
 import 'package:zx_tape_player/ui/home_screen.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/app_center_initializer.dart';
@@ -18,6 +20,7 @@ final GetIt getIt = GetIt.instance;
 
 void main() async {
   getIt.registerLazySingleton<BackendService>(() => ZxApiService());
+  getIt.registerLazySingleton<MuteControlService>(() => ZxMuteControlService());
   WidgetsFlutterBinding.ensureInitialized();
   await AppCenterInitializer.initialize();
   await EasyLocalization.ensureInitialized();
