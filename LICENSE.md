@@ -632,7 +632,7 @@ state the exclusion of warranty; and each file should have at least
 the "copyright" line and a pointer to where the full notice is found.
 
     ZX Tape Player - just another ZX Tape Player
-    Copyright (C) 20121 Andriy S'omak
+    Copyright (C) 2021 Andriy S'omak
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
