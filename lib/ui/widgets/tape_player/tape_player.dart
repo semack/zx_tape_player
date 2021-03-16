@@ -6,6 +6,7 @@ import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
@@ -318,6 +319,19 @@ class PreparationModel {
   PreparationModel(this.state, this.model, {this.message});
 }
 
+
+class SaveBytesModel
+{
+  final File file;
+  final Uint8List bytes;
+  SaveBytesModel(this.file, this.bytes);
+}
+
+Future _saveBytes(SaveBytesModel model) async
+{
+  await model.file.writeAsBytes(model.bytes);
+}
+
 class _TapePlayerBloc {
   final List<FileModel> files;
   int _currentFileIndex;
@@ -398,14 +412,13 @@ class _TapePlayerBloc {
           throw ArgumentError('Unrecognized file location');
         _preparationController.sink
             .add(PreparationModel(PreparationState.Converting, model));
-        await ZxTape.create(bytes)
-            .then((tape) => tape.toWavBytes(
-                frequency: Definitions.wavFrequency,
-                progress: (percent) {
-                  var data = ProgressModel(model, percent);
-                  _progressController.sink.add(data);
-                }))
-            .then((wav) => file.writeAsBytes(wav));
+        var wav = await ZxTape.create(bytes).then((tape) => tape.toWavBytes(
+            frequency: Definitions.wavFrequency,
+            progress: (percent) {
+              var data = ProgressModel(model, percent);
+              _progressController.sink.add(data);
+            }));
+       await compute(_saveBytes, SaveBytesModel(file, wav));
       }
       _preparationController.sink
           .add(PreparationModel(PreparationState.Ready, model));
