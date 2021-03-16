@@ -356,7 +356,7 @@ class _TapePlayerBloc {
   }
 
   Future play() async {
-    await _muteControlService.mute();
+    await _muteControlService.mute(true);
     await _player.play();
   }
 
@@ -366,7 +366,7 @@ class _TapePlayerBloc {
     await oldPlayer.dispose();
     await _getWavFilePath(_currentFileIndex)
         .then((wavFilePath) => _player.setFilePath(wavFilePath));
-    await _muteControlService.mute();
+    await _muteControlService.mute(false);
   }
 
   Future pause() async {
@@ -429,7 +429,7 @@ class _TapePlayerBloc {
   }
 
   void dispose() {
-    _muteControlService.unmute();
+    _muteControlService.mute(false);
     _cleanWavCache();
     _player?.dispose();
     _progressController?.close();
