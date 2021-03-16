@@ -429,8 +429,8 @@ class _TapePlayerBloc {
   }
 
   void dispose() {
-    _cleanWavCache();
     _muteControlService.unmute();
+    _cleanWavCache();
     _player?.dispose();
     _progressController?.close();
     _preparationController?.close();
