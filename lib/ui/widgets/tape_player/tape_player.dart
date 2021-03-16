@@ -352,16 +352,7 @@ class _TapePlayerBloc {
 
   set currentFileIndex(int index) {
     _currentFileIndex = index;
-    _reloadPlayer(_currentFileIndex);
-  }
-
-  Future _reloadPlayer(int index) async {
-    var oldPlayer = _player;
-    _player = AudioPlayer();
-    await _muteControlService.unmute();
-    await oldPlayer.dispose();
-    await _getWavFilePath(index)
-        .then((wavFilePath) => _player.setFilePath(wavFilePath));
+    stop();
   }
 
   Future play() async {
@@ -370,7 +361,12 @@ class _TapePlayerBloc {
   }
 
   Future stop() async {
-    await _reloadPlayer(_currentFileIndex);
+    var oldPlayer = _player;
+    _player = AudioPlayer();
+    await oldPlayer.dispose();
+    await _getWavFilePath(_currentFileIndex)
+        .then((wavFilePath) => _player.setFilePath(wavFilePath));
+    await _muteControlService.mute();
   }
 
   Future pause() async {
@@ -423,7 +419,18 @@ class _TapePlayerBloc {
     return '';
   }
 
+  void _cleanWavCache() {
+    getTemporaryDirectory().then((dir) {
+      var tapePath = Definitions.tapeDir.format([dir.path]);
+      return Directory(tapePath);
+    }).then((dir) async {
+      if (await dir.exists()) await dir.delete(recursive: true);
+    });
+  }
+
   void dispose() {
+    _cleanWavCache();
+    _muteControlService.unmute();
     _player?.dispose();
     _progressController?.close();
     _preparationController?.close();

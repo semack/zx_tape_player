@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:avatar_abc/AbcAvatar.dart';
@@ -9,7 +8,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
@@ -17,7 +15,6 @@ import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/hit_model.dart';
 import 'package:zx_tape_player/models/term_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
-import 'package:zx_tape_player/services/mute_control_service.dart';
 import 'package:zx_tape_player/services/responses/api_response.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/widgets/app_error.dart';
@@ -35,7 +32,7 @@ class SearchScreen extends StatefulWidget {
   }
 }
 
-class _SearchScreenState extends State<SearchScreen> with RouteAware {
+class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _textController = TextEditingController();
   SuggestionsBoxController _suggestionsBoxController =
       SuggestionsBoxController();
@@ -52,7 +49,6 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(this.context));
     if (_bloc == null) {
       _textController.text = ModalRoute.of(context).settings.arguments;
       _textController.selection = TextSelection.fromPosition(
@@ -62,21 +58,8 @@ class _SearchScreenState extends State<SearchScreen> with RouteAware {
   }
 
   @override
-  void didPopNext() {
-    getIt.get<MuteControlService>().unmute();
-
-    getTemporaryDirectory().then((dir) {
-      var tapePath = Definitions.tapeDir.format([dir.path]);
-      return Directory(tapePath);
-    }).then((dir) async {
-      if (await dir.exists()) await dir.delete(recursive: true);
-    });
-  }
-
-  @override
   void dispose() {
     _bloc?.dispose();
-    routeObserver.unsubscribe(this);
     _refreshController.dispose();
     _textController.dispose();
     super.dispose();

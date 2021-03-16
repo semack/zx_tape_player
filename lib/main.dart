@@ -15,7 +15,6 @@ import 'package:zx_tape_player/utils/definitions.dart';
 import 'ui/search_screen.dart';
 import 'ui/splash_screen.dart';
 
-final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final GetIt getIt = GetIt.instance;
 
 void main() async {
@@ -59,9 +58,6 @@ class ZxTapePlayer extends StatelessWidget {
           fontFamily: 'ZxSpectrum',
         ),
         home: SplashScreen(),
-        navigatorObservers: [
-          routeObserver
-        ],
         routes: {
           HomeScreen.routeName: (context) => HomeScreen(),
           SearchScreen.routeName: (context) => SearchScreen(),

@@ -7,4 +7,5 @@ class Definitions {
   static const tapeDir = '%s/tapes';
   static const wafFilePath = '%s/%s.wav';
   static const wavFrequency = 44100;
+  static const wavCacheLimitMb = 100;
 }
