@@ -1,4 +1,3 @@
-
 import 'package:zx_tape_player/models/software_model.dart';
 
 enum TapePlayerState { IndexChanged, Loading, Idle, Error }

@@ -13,14 +13,14 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/main.dart';
-import 'package:zx_tape_player/ui/widgets/tape_player/models/converter_computation_data.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
-import 'package:zx_tape_player/ui/widgets/tape_player/models/position_data.dart';
-import 'package:zx_tape_player/ui/widgets/tape_player/models/tape_player_data.dart';
-import 'package:zx_tape_player/ui/widgets/tape_player/models/progress_model.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/services/mute_control_service.dart';
+import 'package:zx_tape_player/ui/widgets/tape_player/models/converter_computation_data.dart';
+import 'package:zx_tape_player/ui/widgets/tape_player/models/position_data.dart';
+import 'package:zx_tape_player/ui/widgets/tape_player/models/progress_model.dart';
+import 'package:zx_tape_player/ui/widgets/tape_player/models/tape_player_data.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/seek_bar.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
@@ -381,22 +381,22 @@ class _TapePlayerBloc {
     if (files.length > 0) currentFileIndex = 0;
   }
 
-  static Future _getAndConvertImage(ConverterComputationData model) async {
+  static Future _getAndConvertImage(ConverterComputationData data) async {
     Uint8List bytes;
-    if (model.fileModel.location == FileLocation.remote)
-      bytes = await model.backendService.downloadTape(model.fileModel.url);
-    else if (model.fileModel.location == FileLocation.file)
-      bytes = await File(model.fileModel.url).readAsBytes();
+    if (data.fileModel.location == FileLocation.remote)
+      bytes = await data.backendService.downloadTape(data.fileModel.url);
+    else if (data.fileModel.location == FileLocation.file)
+      bytes = await File(data.fileModel.url).readAsBytes();
     else
       throw ArgumentError('Unrecognized file location');
     var tape = await ZxTape.create(bytes);
     var wav = await tape.toWavBytes(
         frequency: Definitions.wavFrequency,
         progress: (percent) {
-          var data = LoadingProgressData(model.fileModel, percent);
-          model.controller.sink.add(data);
+          var sink = LoadingProgressData(data.fileModel, percent);
+          data.controller.sink.add(sink);
         });
-    await model.file.writeAsBytes(wav);
+    await data.file.writeAsBytes(wav);
   }
 
   Future<bool> _prepareTapeForPlay({bool force = true}) async {
