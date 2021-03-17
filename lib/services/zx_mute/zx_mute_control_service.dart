@@ -8,7 +8,7 @@ class ZxMuteControlService implements MuteControlService {
   RingerMode _ringerMode;
 
   @override
-  Future mute(bool state) async {
+  Future mute({bool state = true}) async {
     if (!Platform.isAndroid) return;
     if (state)
       await _mute();

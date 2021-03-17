@@ -1,4 +1,4 @@
 abstract class MuteControlService
 {
-  Future mute(bool state);
+  Future mute({bool state = true});
 }
