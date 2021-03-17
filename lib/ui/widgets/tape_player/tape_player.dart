@@ -112,7 +112,7 @@ class _TapePlayerState extends State<TapePlayer> {
   Widget build(BuildContext context) {
     return Center(
         child: Container(
-            height: 292.0,
+            height: 268.0,
             padding: //EdgeInsets.fromLTRB(0, 16, 0, 0), //
                 EdgeInsets.symmetric(vertical: 16.0),
             width: MediaQuery.of(context).size.width,
@@ -410,7 +410,8 @@ class _TapePlayerBloc {
       var file = File(wavFileName);
       if (!await file.exists()) {
         if (!force) {
-          _player.setAsset('assets/sounds/empty.wav');
+          // await _player.setAudioSource(null, preload: false);
+          await _player.setAsset('assets/sounds/empty.wav');
           return false;
         }
         _tapePlayerController.sink
