@@ -40,8 +40,6 @@ class TapePlayer extends StatefulWidget {
 class _TapePlayerState extends State<TapePlayer> {
   _TapePlayerBloc _bloc;
 
-  // int _currentFileIndex = 0;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -146,33 +144,31 @@ class _TapePlayerState extends State<TapePlayer> {
               builder: (context, snapshot) {
                 final duration = snapshot.data ?? Duration.zero;
                 return StreamBuilder<PositionData>(
-                  stream: Rx.combineLatest2<Duration, Duration, PositionData>(
-                      _bloc.player.positionStream,
-                      _bloc.player.bufferedPositionStream,
-                      (position, bufferedPosition) =>
-                          PositionData(position, bufferedPosition)),
-                  builder: (context, snapshot) {
-                    final positionData = snapshot.data ??
-                        PositionData(Duration.zero, Duration.zero);
-                    var position = positionData.position ?? Duration.zero;
-                    if (position > duration) {
-                      position = duration;
-                    }
-                    var bufferedPosition =
-                        positionData.bufferedPosition ?? Duration.zero;
-                    if (bufferedPosition > duration) {
-                      bufferedPosition = duration;
-                    }
-                    return SeekBar(
-                      duration: duration,
-                      position: position,
-                      bufferedPosition: bufferedPosition,
-                      onChangeEnd: (newPosition) {
-                        _bloc.player.seek(newPosition);
-                      },
-                    );
-                  },
-                );
+                    stream: Rx.combineLatest2<Duration, Duration, PositionData>(
+                        _bloc.player.positionStream,
+                        _bloc.player.bufferedPositionStream,
+                        (position, bufferedPosition) =>
+                            PositionData(position, bufferedPosition)),
+                    builder: (context, snapshot) {
+                      final positionData = snapshot.data ??
+                          PositionData(Duration.zero, Duration.zero);
+                      var position = positionData.position ?? Duration.zero;
+                      if (position > duration) {
+                        position = duration;
+                      }
+                      var bufferedPosition =
+                          positionData.bufferedPosition ?? Duration.zero;
+                      if (bufferedPosition > duration) {
+                        bufferedPosition = duration;
+                      }
+                      return SeekBar(
+                          duration: duration,
+                          position: position,
+                          bufferedPosition: bufferedPosition,
+                          onChangeEnd: (newPosition) {
+                            _bloc.player.seek(newPosition);
+                          });
+                    });
               },
             ),
           ),
@@ -214,7 +210,6 @@ class _TapePlayerState extends State<TapePlayer> {
               final playerState = snapshot.data;
               final processingState = playerState?.processingState;
               final playing = playerState?.playing ?? false;
-              //print(playerState?.toString());
               return Center(
                   child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -305,6 +300,57 @@ class _TapePlayerState extends State<TapePlayer> {
   }
 }
 
+_showSliderDialog({
+  BuildContext context,
+  String title,
+  int divisions,
+  double min,
+  double max,
+  String valueSuffix = '',
+  Stream<double> stream,
+  ValueChanged<double> onChanged,
+}) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: Colour('#3B4E63'),
+      title: Text(title,
+          textAlign: TextAlign.center,
+          style: TextStyle(wordSpacing: 0.3, color: Colors.white)),
+      content: StreamBuilder<double>(
+        stream: stream,
+        builder: (context, snapshot) => Container(
+          height: 100.0,
+          child: Column(
+            children: [
+              Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
+                  style: TextStyle(
+                      wordSpacing: 0.5, fontSize: 24.0, color: Colors.white)),
+              SizedBox(
+                height: 16.0,
+              ),
+              SliderTheme(
+                  data: SliderThemeData(
+                      activeTickMarkColor: Colors.white,
+                      activeTrackColor: Colors.white,
+                      inactiveTickMarkColor: Colors.white,
+                      inactiveTrackColor: Colour('#546B7F'),
+                      thumbColor: Colors.white),
+                  child: Slider(
+                    divisions: divisions,
+                    min: min,
+                    max: max,
+                    value: snapshot.data ?? 1.0,
+                    onChanged: onChanged,
+                  )),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 class _TapePlayerBloc {
   final List<FileModel> files;
   int _currentFileIndex;
@@ -319,7 +365,7 @@ class _TapePlayerBloc {
   AudioPlayer get player => _player;
 
   StreamController _preparationController =
-      StreamController<PreparationModel>();
+      StreamController<PreparationModel>.broadcast();
 
   StreamSink<PreparationModel> get preparationSink =>
       _preparationController.sink;
@@ -371,7 +417,6 @@ class _TapePlayerBloc {
         await compute(_getAndConvertImage, convertModel);
         _preparationController.sink
             .add(PreparationModel(PreparationState.Ready, model));
-        dynamic v = {};
       }
       return wavFileName;
     } catch (e) {
@@ -426,55 +471,4 @@ class _TapePlayerBloc {
     _progressController?.close();
     _preparationController?.close();
   }
-}
-
-_showSliderDialog({
-  BuildContext context,
-  String title,
-  int divisions,
-  double min,
-  double max,
-  String valueSuffix = '',
-  Stream<double> stream,
-  ValueChanged<double> onChanged,
-}) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: Colour('#3B4E63'),
-      title: Text(title,
-          textAlign: TextAlign.center,
-          style: TextStyle(wordSpacing: 0.3, color: Colors.white)),
-      content: StreamBuilder<double>(
-        stream: stream,
-        builder: (context, snapshot) => Container(
-          height: 100.0,
-          child: Column(
-            children: [
-              Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
-                  style: TextStyle(
-                      wordSpacing: 0.5, fontSize: 24.0, color: Colors.white)),
-              SizedBox(
-                height: 16.0,
-              ),
-              SliderTheme(
-                  data: SliderThemeData(
-                      activeTickMarkColor: Colors.white,
-                      activeTrackColor: Colors.white,
-                      inactiveTickMarkColor: Colors.white,
-                      inactiveTrackColor: Colour('#546B7F'),
-                      thumbColor: Colors.white),
-                  child: Slider(
-                    divisions: divisions,
-                    min: min,
-                    max: max,
-                    value: snapshot.data ?? 1.0,
-                    onChanged: onChanged,
-                  )),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 }
