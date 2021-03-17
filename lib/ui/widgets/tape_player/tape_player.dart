@@ -365,7 +365,7 @@ class _TapePlayerBloc {
   AudioPlayer get player => _player;
 
   StreamController _preparationController =
-      StreamController<PreparationModel>.broadcast();
+      StreamController<PreparationModel>();
 
   StreamSink<PreparationModel> get preparationSink =>
       _preparationController.sink;
@@ -400,7 +400,7 @@ class _TapePlayerBloc {
     await model.file.writeAsBytes(wav);
   }
 
-  Future<String> _getWavFilePath(int index) async {
+  Future<String> _getWavFilePath(int index, bool forceLoad) async {
     var model = files[index];
     try {
       var tapePath =
@@ -410,6 +410,7 @@ class _TapePlayerBloc {
           Definitions.wafFilePath.format([dir.path, basename(model.url)]);
       var file = File(wavFileName);
       if (!await file.exists()) {
+        if (!forceLoad) return null;
         _preparationController.sink
             .add(PreparationModel(PreparationState.Converting, model));
         var convertModel = ConverterComputationModel(
@@ -425,7 +426,7 @@ class _TapePlayerBloc {
           message: e.toString()));
       await AppCenter.trackEventAsync('error', e);
     }
-    return '';
+    return null;
   }
 
   void _cleanWavCache() {
@@ -439,20 +440,26 @@ class _TapePlayerBloc {
 
   set currentFileIndex(int index) {
     _currentFileIndex = index;
-    stop();
+    _reInitPlayer(false);
+  }
+
+  Future _reInitPlayer(bool forceLoad) async {
+    await _player.stop();
+    var oldPlayer = _player;
+    _player = AudioPlayer();
+    await oldPlayer.dispose();
+    var wavFilePath = await _getWavFilePath(_currentFileIndex, forceLoad);
+    if (wavFilePath != null) await _player.setFilePath(wavFilePath);
   }
 
   Future play() async {
+    await _reInitPlayer(true);
     await _muteControlService.mute(true);
     await _player.play();
   }
 
   Future stop() async {
-    var oldPlayer = _player;
-    _player = AudioPlayer();
-    await oldPlayer.dispose();
-    await _getWavFilePath(_currentFileIndex)
-        .then((wavFilePath) => _player.setFilePath(wavFilePath));
+    await _reInitPlayer(false);
     await _muteControlService.mute(false);
   }
 
