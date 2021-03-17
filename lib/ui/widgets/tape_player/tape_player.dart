@@ -302,7 +302,7 @@ class _TapePlayerState extends State<TapePlayer> {
   }
 }
 
-enum PreparationState { Downloading, Converting, Ready, Error }
+enum PreparationState { Converting, Ready, Error }
 
 class ProgressModel {
   final double percent;
@@ -319,17 +319,31 @@ class PreparationModel {
   PreparationModel(this.state, this.model, {this.message});
 }
 
-
-class SaveBytesModel
-{
+class SaveBytesModel {
+  final FileModel fileModel;
   final File file;
-  final Uint8List bytes;
-  SaveBytesModel(this.file, this.bytes);
+  final BackendService backendService;
+  final StreamController<dynamic> controller;
+
+  SaveBytesModel(
+      this.fileModel, this.file, this.backendService, this.controller);
 }
 
-Future _saveBytes(SaveBytesModel model) async
-{
-  await model.file.writeAsBytes(model.bytes);
+Future _getAndConvertImage(SaveBytesModel model) async {
+  Uint8List bytes;
+  if (model.fileModel.location == FileLocation.remote)
+    bytes = await model.backendService.downloadTape(model.fileModel.url);
+  else if (model.fileModel.location == FileLocation.file)
+    bytes = await File(model.fileModel.url).readAsBytes();
+  else
+    throw ArgumentError('Unrecognized file location');
+  var wav = await ZxTape.create(bytes).then((tape) => tape.toWavBytes(
+      frequency: Definitions.wavFrequency,
+      progress: (percent) {
+        var data = ProgressModel(model.fileModel, percent);
+        model.controller.sink.add(data);
+      }));
+  await model.file.writeAsBytes(wav);
 }
 
 class _TapePlayerBloc {
@@ -402,26 +416,13 @@ class _TapePlayerBloc {
       var file = File(wavFileName);
       if (!await file.exists()) {
         _preparationController.sink
-            .add(PreparationModel(PreparationState.Downloading, model));
-        Uint8List bytes;
-        if (model.location == FileLocation.remote)
-          bytes = await _backendService.downloadTape(model.url);
-        else if (model.location == FileLocation.file)
-          bytes = await File(model.url).readAsBytes();
-        else
-          throw ArgumentError('Unrecognized file location');
-        _preparationController.sink
             .add(PreparationModel(PreparationState.Converting, model));
-        var wav = await ZxTape.create(bytes).then((tape) => tape.toWavBytes(
-            frequency: Definitions.wavFrequency,
-            progress: (percent) {
-              var data = ProgressModel(model, percent);
-              _progressController.sink.add(data);
-            }));
-       await compute(_saveBytes, SaveBytesModel(file, wav));
+        var convertModel =
+            SaveBytesModel(model, file, _backendService, _progressController);
+        await compute(_getAndConvertImage, convertModel);
+        _preparationController.sink
+            .add(PreparationModel(PreparationState.Ready, model));
       }
-      _preparationController.sink
-          .add(PreparationModel(PreparationState.Ready, model));
       return wavFileName;
     } catch (e) {
       _preparationController.sink.add(PreparationModel(
