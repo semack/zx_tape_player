@@ -13,8 +13,11 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/main.dart';
+import 'package:zx_tape_player/models/converter_computation_model.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/position_data.dart';
+import 'package:zx_tape_player/models/player_preparation_model.dart';
+import 'package:zx_tape_player/models/progress_model.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/services/mute_control_service.dart';
@@ -302,62 +305,18 @@ class _TapePlayerState extends State<TapePlayer> {
   }
 }
 
-enum PreparationState { Converting, Ready, Error }
-
-class ProgressModel {
-  final double percent;
-  final FileModel fileModel;
-
-  ProgressModel(this.fileModel, this.percent);
-}
-
-class PreparationModel {
-  final PreparationState state;
-  final String message;
-  final FileModel model;
-
-  PreparationModel(this.state, this.model, {this.message});
-}
-
-class SaveBytesModel {
-  final FileModel fileModel;
-  final File file;
-  final BackendService backendService;
-  final StreamController<dynamic> controller;
-
-  SaveBytesModel(
-      this.fileModel, this.file, this.backendService, this.controller);
-}
-
-Future _getAndConvertImage(SaveBytesModel model) async {
-  Uint8List bytes;
-  if (model.fileModel.location == FileLocation.remote)
-    bytes = await model.backendService.downloadTape(model.fileModel.url);
-  else if (model.fileModel.location == FileLocation.file)
-    bytes = await File(model.fileModel.url).readAsBytes();
-  else
-    throw ArgumentError('Unrecognized file location');
-  var wav = await ZxTape.create(bytes).then((tape) => tape.toWavBytes(
-      frequency: Definitions.wavFrequency,
-      progress: (percent) {
-        var data = ProgressModel(model.fileModel, percent);
-        model.controller.sink.add(data);
-      }));
-  await model.file.writeAsBytes(wav);
-}
-
 class _TapePlayerBloc {
   final List<FileModel> files;
   int _currentFileIndex;
+  AudioPlayer _player = AudioPlayer();
+  final _backendService = getIt<BackendService>();
+  final _muteControlService = getIt<MuteControlService>();
 
   int get currentFileIndex => _currentFileIndex;
 
   FileModel get currentModel => files[_currentFileIndex];
 
   AudioPlayer get player => _player;
-  AudioPlayer _player = AudioPlayer();
-  final _backendService = getIt<BackendService>();
-  final _muteControlService = getIt<MuteControlService>();
 
   StreamController _preparationController =
       StreamController<PreparationModel>();
@@ -376,6 +335,61 @@ class _TapePlayerBloc {
 
   _TapePlayerBloc(this.files) {
     if (files.length > 0) currentFileIndex = 0;
+  }
+
+  static Future _getAndConvertImage(ConverterComputationModel model) async {
+    Uint8List bytes;
+    if (model.fileModel.location == FileLocation.remote)
+      bytes = await model.backendService.downloadTape(model.fileModel.url);
+    else if (model.fileModel.location == FileLocation.file)
+      bytes = await File(model.fileModel.url).readAsBytes();
+    else
+      throw ArgumentError('Unrecognized file location');
+    var wav = await ZxTape.create(bytes).then((tape) => tape.toWavBytes(
+        frequency: Definitions.wavFrequency,
+        progress: (percent) {
+          var data = ProgressModel(model.fileModel, percent);
+          model.controller.sink.add(data);
+        }));
+    await model.file.writeAsBytes(wav);
+  }
+
+  Future<String> _getWavFilePath(int index) async {
+    var model = files[index];
+    try {
+      var tapePath =
+          Definitions.tapeDir.format([(await getTemporaryDirectory()).path]);
+      var dir = await new Directory(tapePath).create(recursive: true);
+      var wavFileName =
+          Definitions.wafFilePath.format([dir.path, basename(model.url)]);
+      var file = File(wavFileName);
+      if (!await file.exists()) {
+        _preparationController.sink
+            .add(PreparationModel(PreparationState.Converting, model));
+        var convertModel = ConverterComputationModel(
+            model, file, _backendService, _progressController);
+        await compute(_getAndConvertImage, convertModel);
+        _preparationController.sink
+            .add(PreparationModel(PreparationState.Ready, model));
+        dynamic v = {};
+      }
+      return wavFileName;
+    } catch (e) {
+      _preparationController.sink.add(PreparationModel(
+          PreparationState.Error, model,
+          message: e.toString()));
+      await AppCenter.trackEventAsync('error', e);
+    }
+    return '';
+  }
+
+  void _cleanWavCache() {
+    getTemporaryDirectory().then((dir) {
+      var tapePath = Definitions.tapeDir.format([dir.path]);
+      return Directory(tapePath);
+    }).then((dir) async {
+      if (await dir.exists()) await dir.delete(recursive: true);
+    });
   }
 
   set currentFileIndex(int index) {
@@ -403,43 +417,6 @@ class _TapePlayerBloc {
 
   Future replay() async {
     await _player.seek(Duration.zero, index: _player.effectiveIndices.first);
-  }
-
-  Future<String> _getWavFilePath(int index) async {
-    var model = files[index];
-    try {
-      var tapePath =
-          Definitions.tapeDir.format([(await getTemporaryDirectory()).path]);
-      var dir = await new Directory(tapePath).create(recursive: true);
-      var wavFileName =
-          Definitions.wafFilePath.format([dir.path, basename(model.url)]);
-      var file = File(wavFileName);
-      if (!await file.exists()) {
-        _preparationController.sink
-            .add(PreparationModel(PreparationState.Converting, model));
-        var convertModel =
-            SaveBytesModel(model, file, _backendService, _progressController);
-        await compute(_getAndConvertImage, convertModel);
-        _preparationController.sink
-            .add(PreparationModel(PreparationState.Ready, model));
-      }
-      return wavFileName;
-    } catch (e) {
-      _preparationController.sink.add(PreparationModel(
-          PreparationState.Error, model,
-          message: e.toString()));
-      await AppCenter.trackEventAsync('error', e);
-    }
-    return '';
-  }
-
-  void _cleanWavCache() {
-    getTemporaryDirectory().then((dir) {
-      var tapePath = Definitions.tapeDir.format([dir.path]);
-      return Directory(tapePath);
-    }).then((dir) async {
-      if (await dir.exists()) await dir.delete(recursive: true);
-    });
   }
 
   void dispose() {
