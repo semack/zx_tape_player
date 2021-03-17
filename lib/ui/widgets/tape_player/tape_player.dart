@@ -409,7 +409,10 @@ class _TapePlayerBloc {
           Definitions.wafFilePath.format([dir.path, basename(data.url)]);
       var file = File(wavFileName);
       if (!await file.exists()) {
-        if (!force) return false;
+        if (!force) {
+          _player.setAsset('assets/sounds/empty.wav');
+          return false;
+        }
         _tapePlayerController.sink
             .add(TapePlayerData(TapePlayerState.Loading, data));
         var convertModel = ConverterComputationData(
