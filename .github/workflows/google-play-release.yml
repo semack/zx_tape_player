@@ -66,7 +66,7 @@ jobs:
         - name: Setup Ruby and download bundle dependencies
           uses: ruby/setup-ruby@v1
           with:
-           ruby-version: 2.7.2 # Not needed with a .ruby-version file
+           ruby-version: 2.7.2
            bundler-cache: true 
 
         - name: Release to Google Play (beta)
