@@ -1,4 +1,4 @@
-name: Flutter release
+name: Google Play Release
 
 on:
   release:
