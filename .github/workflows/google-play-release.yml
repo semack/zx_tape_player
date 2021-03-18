@@ -8,7 +8,7 @@ jobs:
     release:
       name: Publish to Goople Play
 
-      runs-on: macos-latest
+      runs-on: ubuntu-latest
 
       steps:
         - name: Checkout
@@ -40,8 +40,8 @@ jobs:
         - name: Run build_runner
           run: flutter pub run build_runner build --delete-conflicting-outputs
 
-#        - name: Run analyzer
-#          run: flutter analyze
+        - name: Run analyzer
+          run: flutter analyze
 
 #        - name: Run tests
 #          run: flutter test
