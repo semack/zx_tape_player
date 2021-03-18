@@ -19,13 +19,21 @@ import 'ui/splash_screen.dart';
 final GetIt getIt = GetIt.instance;
 
 void main() async {
-  getIt.registerLazySingleton<BackendService>(() => ZxApiService());
-  getIt.registerLazySingleton<MuteControlService>(() => ZxMuteControlService());
   WidgetsFlutterBinding.ensureInitialized();
-  await AppCenterInitializer.initialize();
-  await EasyLocalization.ensureInitialized();
+
+  FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
+  FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
+  FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+  FlutterStatusbarcolor.setNavigationBarWhiteForeground(true);
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  getIt.registerLazySingleton<BackendService>(() => ZxApiService());
+  getIt.registerLazySingleton<MuteControlService>(() => ZxMuteControlService());
+
+  await AppCenterInitializer.initialize();
+  await EasyLocalization.ensureInitialized();
+
   runApp(EasyLocalization(
       supportedLocales: [
         Locale('en', 'US'),
@@ -47,10 +55,6 @@ void main() async {
 class ZxTapePlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
-    FlutterStatusbarcolor.setNavigationBarColor(Colour('#546B7F'));
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
-    FlutterStatusbarcolor.setNavigationBarWhiteForeground(true);
     return MaterialApp(
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,

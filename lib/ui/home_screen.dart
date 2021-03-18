@@ -2,6 +2,7 @@ import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
     super.initState();
   }
 
