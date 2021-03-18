@@ -58,16 +58,10 @@ jobs:
             echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
             echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
             echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
-            echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
-            
-        - name: Generate build number
-          id: buildnumber
-          uses: einaregilsson/build-number@v3 
-          with:
-            token: ${{secrets.GITHUB_TOKEN}}    
+            echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
             
         - name: Build Android App Bundle
-          run: flutter build appbundle --release --no-pub --build-number=$BUILD_NUMBER
+          run: flutter build appbundle --release --no-pub
 
         - name: Setup Ruby
           uses: actions/setup-ruby@v1.1.3
