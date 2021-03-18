@@ -1,4 +1,4 @@
-name: Google Play Release
+name: Google Play
 
 on:
   release:
