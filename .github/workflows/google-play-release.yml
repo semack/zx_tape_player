@@ -6,7 +6,7 @@ on:
 
 jobs:
     release:
-      name: Test, build and release
+      name: Publish to Goople Play
 
       runs-on: macos-latest
 
