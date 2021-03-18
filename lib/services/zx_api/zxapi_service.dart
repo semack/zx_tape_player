@@ -143,7 +143,7 @@ class ZxApiService implements BackendService {
   Future<SoftwareModel> recognizeTape(String filePath,
       {String localTitle}) async {
     SoftwareModel result;
-    var md5 = await _calculateMD5Sum(filePath);
+    var md5 = await _calculateHash(filePath);
     var fileCheckUrl = _baseUrl + _fileCheckUrl.format([md5]);
     var response =
     await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(fileCheckUrl));
@@ -181,12 +181,12 @@ class ZxApiService implements BackendService {
     return url;
   }
 
-  static Future<String> _calculateMD5Sum(String filePath) async {
+  static Future<String> _calculateHash(String filePath) async {
     var result;
     var file = File(filePath);
     if (await file.exists()) {
       var bytes = await file.readAsBytes();
-      var digest = md5.convert(bytes);
+      var digest = sha512.convert(bytes);
       result = digest.toString();
     }
     return result;

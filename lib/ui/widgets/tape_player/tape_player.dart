@@ -41,11 +41,6 @@ class _TapePlayerState extends State<TapePlayer> {
   _TapePlayerBloc _bloc;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
     _bloc = _TapePlayerBloc(widget.files);
     super.initState();
@@ -410,7 +405,6 @@ class _TapePlayerBloc {
       var file = File(wavFileName);
       if (!await file.exists()) {
         if (!force) {
-          // await _player.setAudioSource(null, preload: false);
           await _player.setAsset('assets/sounds/empty.wav');
           return false;
         }

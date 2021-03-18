@@ -45,11 +45,11 @@ class _SeekBarState extends State<SeekBar> {
       children: [
         SliderTheme(
           data: _sliderThemeData.copyWith(
-            thumbShape: HiddenThumbComponentShape(),
-            activeTrackColor: Colors.white30,
-            inactiveTrackColor: Colour('#546B7F'),
-            trackShape: CustomTrackShape(),
-          ),
+              thumbShape: HiddenThumbComponentShape(),
+              activeTrackColor: Colors.white30,
+              inactiveTrackColor: Colour('#546B7F'),
+              trackShape: CustomTrackShape(),
+              disabledInactiveTrackColor: Colour('#546B7F')),
           child: ExcludeSemantics(
             child: Slider(
               min: 0.0,
@@ -78,7 +78,8 @@ class _SeekBarState extends State<SeekBar> {
               inactiveTrackColor: Colors.transparent,
               thumbColor: Colour(Colors.white),
               trackShape: CustomTrackShape(),
-              disabledThumbColor: Colour('#546B7F')),
+              disabledThumbColor: Colour(Colors.white),
+              disabledInactiveTrackColor: Colors.transparent),
           child: Slider(
             min: 0.0,
             max: widget.duration.inMilliseconds.toDouble(),
