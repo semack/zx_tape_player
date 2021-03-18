@@ -41,7 +41,7 @@ class ZxApiService implements BackendService {
   final _helper = ApiBaseHelper(_baseUrl, _userAgent);
 
   Future<List<TermModel>> fetchTermsList(String query) async {
-    var result = new List<TermModel>();
+    var result = <TermModel>[];
     if (query.isEmpty) return result;
     if (query.length == 1) {
       var letter = await _tryGetLetter(query);

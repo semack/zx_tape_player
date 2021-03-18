@@ -216,9 +216,6 @@ class _SearchScreenState extends State<SearchScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 switch (snapshot.data) {
-                  case LoadStatus.loading:
-                  case LoadStatus.canLoading:
-                    break;
                   case LoadStatus.idle:
                     _refreshController.loadComplete();
                     break;
@@ -227,6 +224,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     break;
                   case LoadStatus.failed:
                     _refreshController.loadFailed();
+                    break;
+                  default:
                     break;
                 }
               }
@@ -249,10 +248,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                 style: TextStyle(
                                     fontSize: 11, color: Colour('#B1B8C1')))),
                       );
+                    default:
+                      return SizedBox(
+                        height: 0.0,
+                      );
                   }
-                  return SizedBox(
-                    height: 0.0,
-                  );
                 },
               );
             }),

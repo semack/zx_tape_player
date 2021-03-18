@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:path/path.dart';
 import 'package:zx_tape_player/models/enums/file_location.dart';
 
 class SoftwareModel {
@@ -31,7 +30,8 @@ class SoftwareModel {
       this.screenShotUrls,
       this.tapeFiles);
 
-  static Future<SoftwareModel> createFromFile(String filePath, String title) async {
+  static Future<SoftwareModel> createFromFile(
+      String filePath, String title) async {
     var file = File(filePath);
     if (await file.exists()) {
       return SoftwareModel(

@@ -29,15 +29,17 @@ class AppError extends StatelessWidget {
           SizedBox(
             height: 32.0,
           ),
-          FlatButton(
-            color: Colour('#68B8DF'),
-            textColor: Theme.of(context).primaryColor,
-            padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
-            onPressed: action,
-            child: Text(
-              buttonText,
-              style: TextStyle(fontSize: 14.0),
+          TextButton(
+            child: Text(buttonText, style: TextStyle(fontSize: 14.0)),
+            style: TextButton.styleFrom(
+              primary: Theme.of(context).primaryColor,
+              backgroundColor: Colour('#68B8DF'),
+              padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(2.0)),
+              ),
             ),
+            onPressed: action,
           ),
         ]));
   }

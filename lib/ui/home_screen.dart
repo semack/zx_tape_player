@@ -25,7 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
+    SystemChrome.setEnabledSystemUIOverlays(
+        [SystemUiOverlay.bottom, SystemUiOverlay.top]);
     super.initState();
   }
 
@@ -105,10 +106,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 16.0,
                           color: Theme.of(context).primaryColor)),
                   SizedBox(height: 24.0),
-                  FlatButton(
-                    color: Colour('#68B8DF'),
-                    textColor: Theme.of(context).primaryColor,
-                    padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
+                  TextButton(
+                    child: Text(
+                      tr('select_from_files'),
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor,
+                      backgroundColor: Colour('#68B8DF'),
+                      padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                      ),
+                    ),
                     onPressed: () async {
                       FilePicker.platform.clearTemporaryFiles();
                       final result = await FilePicker.platform.pickFiles(
@@ -145,10 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                       }
                     },
-                    child: Text(
-                      tr('select_from_files'),
-                      style: TextStyle(fontSize: 14.0),
-                    ),
                   ),
                 ]))));
   }
