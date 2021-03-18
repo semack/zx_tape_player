@@ -62,8 +62,9 @@ jobs:
             
         - name: Build Android App Bundle
           run: flutter build appbundle --release --no-pub
-
-        - uses: ruby/setup-ruby@v1
+          
+        - name: Setup Ruby and download bundle dependencies
+          uses: ruby/setup-ruby@v1
           with:
            ruby-version: 2.7.2 # Not needed with a .ruby-version file
            bundler-cache: true 
