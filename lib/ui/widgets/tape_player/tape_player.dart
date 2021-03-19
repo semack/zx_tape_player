@@ -13,7 +13,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/main.dart';
-import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/services/mute_control_service.dart';
@@ -138,11 +137,11 @@ class _TapePlayerState extends State<TapePlayer> {
                                       ),
                                       child: CarouselSlider(
                                         items: _bloc.files
-                                            .map((file) => Container(
+                                            .map((filePath) => Container(
                                                   padding: EdgeInsets.all(12.0),
                                                   child: Center(
                                                       child: Text(
-                                                    basename(file.url),
+                                                    basename(filePath),
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 12.0),
@@ -173,8 +172,8 @@ class _TapePlayerState extends State<TapePlayer> {
                                       ))),
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: _bloc.files.map((f) {
-                                    int index = _bloc.files.indexOf(f);
+                                  children: _bloc.files.map((filePath) {
+                                    int index = _bloc.files.indexOf(filePath);
                                     return Container(
                                       width: 8.0,
                                       height: 8.0,
@@ -243,7 +242,7 @@ class _TapePlayerState extends State<TapePlayer> {
       TapePlayerData tapePlayerData, PlayerState playerState) {
     if (tapePlayerData != null) {
       if (tapePlayerData.state == TapePlayerState.Error &&
-          _bloc.currentModel == tapePlayerData.model) {
+          _bloc.filePath == tapePlayerData.filePath) {
         final snackBar = SnackBar(
           backgroundColor: Colour('#D9512D'),
           content: Text(
@@ -350,7 +349,7 @@ class _TapePlayerState extends State<TapePlayer> {
 class _TapePlayerBloc {
   final SoftwareModel software;
 
-  List<FileModel> get files => software.tapeFiles;
+  List<String> get files => software.tapeFiles;
   int _currentFileIndex;
   AudioPlayer _player = AudioPlayer(handleInterruptions: false);
   final _backendService = getIt<BackendService>();
@@ -358,7 +357,7 @@ class _TapePlayerBloc {
 
   int get currentFileIndex => _currentFileIndex;
 
-  FileModel get currentModel => files[_currentFileIndex];
+  String get filePath => files[_currentFileIndex];
 
   AudioPlayer get player => _player;
 
@@ -379,11 +378,11 @@ class _TapePlayerBloc {
     var index = -1;
     if (files.length > 0) {
       index = 0;
-      if (!software.recognizedTapeFileName.isNullOrEmpty()) {
+      if (!software.currentFileName.isNullOrEmpty()) {
         index = files
-            .map((e) => basename(e.url))
+            .map((file) => basename(file))
             .toList()
-            .indexOf(software.recognizedTapeFileName);
+            .indexOf(software.currentFileName);
         if (index == -1) index = 0;
       }
     }
@@ -392,30 +391,28 @@ class _TapePlayerBloc {
 
   static Future _getAndConvertImage(ConverterComputationData data) async {
     Uint8List bytes;
-    if (data.fileModel.location == FileLocation.remote)
-      bytes = await data.backendService.downloadTape(data.fileModel.url);
-    else if (data.fileModel.location == FileLocation.file)
-      bytes = await File(data.fileModel.url).readAsBytes();
+    if (data.isRemote)
+      bytes = await data.backendService.downloadTape(data.filePath);
     else
-      throw ArgumentError('Unrecognized file location');
+      bytes = await File(data.filePath).readAsBytes();
     var tape = await ZxTape.create(bytes);
     var wav = await tape.toWavBytes(
         frequency: Definitions.wavFrequency,
         progress: (percent) {
-          var sink = LoadingProgressData(data.fileModel, percent);
+          var sink = LoadingProgressData(data.filePath, percent);
           data.controller.sink.add(sink);
         });
     await data.file.writeAsBytes(wav);
   }
 
   Future<bool> _prepareTapeForPlay({bool force = true}) async {
-    var data = files[_currentFileIndex];
+    var filePath = files[_currentFileIndex];
     try {
       var wavPath =
           Definitions.tapeDir.format([(await getTemporaryDirectory()).path]);
       var dir = await new Directory(wavPath).create(recursive: true);
       var wavFileName =
-          Definitions.wafFilePath.format([dir.path, basename(data.url)]);
+          Definitions.wafFilePath.format([dir.path, basename(filePath)]);
       var file = File(wavFileName);
       if (!await file.exists()) {
         if (!force) {
@@ -423,18 +420,19 @@ class _TapePlayerBloc {
           return false;
         }
         _tapePlayerController.sink
-            .add(TapePlayerData(TapePlayerState.Loading, data));
-        var convertModel = ConverterComputationData(
-            data, file, _backendService, _progressController);
+            .add(TapePlayerData(TapePlayerState.Loading, filePath));
+        var convertModel = ConverterComputationData(filePath, software.isRemote,
+            file, _backendService, _progressController);
         await compute(_getAndConvertImage, convertModel);
         _tapePlayerController.sink
-            .add(TapePlayerData(TapePlayerState.Idle, data));
+            .add(TapePlayerData(TapePlayerState.Idle, filePath));
       }
       await _player.setFilePath(wavFileName);
       return true;
     } catch (e) {
-      _tapePlayerController.sink.add(
-          TapePlayerData(TapePlayerState.Error, data, message: e.toString()));
+      _tapePlayerController.sink.add(TapePlayerData(
+          TapePlayerState.Error, filePath,
+          message: e.toString()));
       await AppCenter.trackEventAsync('error', e);
     }
     return false;

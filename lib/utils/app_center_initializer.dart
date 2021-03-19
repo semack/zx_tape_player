@@ -1,5 +1,3 @@
-
-
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 
 class AppCenterInitializer {
@@ -10,10 +8,11 @@ class AppCenterInitializer {
 
   static Future initialize() async {
     await AppCenter.startAsync(
-      appSecretAndroid: _secret_Android,
-      appSecretIOS: _secret_iOS,
-      enableDistribute: false,
-      disableAutomaticCheckForUpdate: false
-    ).then((value) => AppCenter.configureDistributeDebugAsync(enabled: false));
+            appSecretAndroid: _secret_Android,
+            appSecretIOS: _secret_iOS,
+            enableDistribute: false,
+            disableAutomaticCheckForUpdate: false)
+        .then(
+            (value) => AppCenter.configureDistributeDebugAsync(enabled: false));
   }
 }

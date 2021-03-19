@@ -1,8 +1,6 @@
-import 'package:zx_tape_player/models/enums/file_location.dart';
-
 class PlayerArgs {
   final String id;
-  final FileLocation location;
+  final bool isRemote;
 
-  PlayerArgs(this.id, this.location);
+  PlayerArgs(this.id, {this.isRemote = true});
 }

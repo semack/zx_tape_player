@@ -1,11 +1,9 @@
-import 'package:zx_tape_player/models/software_model.dart';
-
 enum TapePlayerState { IndexChanged, Loading, Idle, Error }
 
 class TapePlayerData {
   final TapePlayerState state;
   final String message;
-  final FileModel model;
+  final String filePath;
 
-  TapePlayerData(this.state, this.model, {this.message});
+  TapePlayerData(this.state, this.filePath, {this.message});
 }

@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:zx_tape_player/models/enums/file_location.dart';
-
 class SoftwareModel {
   final String id;
   final bool isRemote;
@@ -12,10 +10,10 @@ class SoftwareModel {
   final double score;
   final String price;
   final String remarks;
-  final Iterable<AuthorModel> authors;
-  final Iterable<ScreenShotModel> screenShotUrls;
-  final String recognizedTapeFileName;
-  final Iterable<FileModel> tapeFiles;
+  final List<AuthorModel> authors;
+  final List<ScreenShotModel> screenShotUrls;
+  final String currentFileName;
+  final List<String> tapeFiles;
 
   SoftwareModel(
       this.id,
@@ -29,27 +27,15 @@ class SoftwareModel {
       this.remarks,
       this.authors,
       this.screenShotUrls,
-      this.recognizedTapeFileName,
+      this.currentFileName,
       this.tapeFiles);
 
   static Future<SoftwareModel> createFromFile(
       String filePath, String title) async {
     var file = File(filePath);
     if (await file.exists()) {
-      return SoftwareModel(
-          null,
-          false,
-          title,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          <AuthorModel>[],
-          <ScreenShotModel>[],
-          null,
-          <FileModel>[FileModel(FileLocation.file, filePath)]);
+      return SoftwareModel(null, false, title, null, null, null, null, null,
+          null, <AuthorModel>[], <ScreenShotModel>[], null, [filePath]);
     } else
       throw FileSystemException('File not found.');
   }
@@ -60,13 +46,6 @@ class ScreenShotModel {
   final String url;
 
   ScreenShotModel(this.type, this.url);
-}
-
-class FileModel {
-  final FileLocation location;
-  final String url;
-
-  FileModel(this.location, this.url);
 }
 
 class AuthorModel {

@@ -7,7 +7,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
-import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/hit_model.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/models/term_model.dart';
@@ -124,15 +123,17 @@ class ZxApiService implements BackendService {
               e.source.authors
                   .where((a) =>
                       !(a.name.isNullOrEmpty() || a.type.isNullOrEmpty()))
-                  .map((a) => AuthorModel(a.name, a.type)).toList(),
-              e.source.screens.map(
-                  (s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url))).toList(),
+                  .map((a) => AuthorModel(a.name, a.type))
+                  .toList(),
+              e.source.screens
+                  .map((s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url)))
+                  .toList(),
               recognizedTapeFileName,
               e.source.tosec
                   .where((t) => Definitions.supportedTapeExtensions
                       .contains(extension(t.path).replaceAll('.', '')))
-                  .map((t) =>
-                      FileModel(FileLocation.remote, _fixToSecUrl(t.path))).toList()))
+                  .map((t) => _fixToSecUrl(t.path))
+                  .toList()))
           .first;
     }
     return result;

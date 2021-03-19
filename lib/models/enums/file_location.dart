@@ -1,1 +1,0 @@
-enum FileLocation { remote, file }

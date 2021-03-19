@@ -11,7 +11,6 @@ import 'package:marquee_widget/marquee_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
-import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/services/responses/api_response.dart';
@@ -322,15 +321,11 @@ class _PlayerScreenBloc {
     softwareSink.add(ApiResponse.loading(''));
     try {
       SoftwareModel model;
-      switch (args.location) {
-        case FileLocation.remote:
-          model = await _backendService.fetchSoftware(args.id);
-          break;
-        case FileLocation.file:
-          model = await _backendService.recognizeTape(args.id,
-              localTitle: tr('local_file'));
-          break;
-      }
+      if (args.isRemote)
+        model = await _backendService.fetchSoftware(args.id);
+      else
+        model = await _backendService.recognizeTape(args.id,
+            localTitle: tr('local_file'));
       softwareSink.add(ApiResponse.completed(model));
     } catch (e) {
       softwareSink.add(ApiResponse.error(e.toString()));

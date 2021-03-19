@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
-import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
@@ -134,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             file.extension.toLowerCase())) {
                           Navigator.pushNamed(context, PlayerScreen.routeName,
                               arguments:
-                                  PlayerArgs(file.path, FileLocation.file));
+                                  PlayerArgs(file.path, isRemote: false));
                         } else {
                           final snackBar = SnackBar(
                             backgroundColor: Colour('#D9512D'),

@@ -11,7 +11,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
-import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/hit_model.dart';
 import 'package:zx_tape_player/models/term_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
@@ -282,7 +281,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListTile(
                       onTap: () async => Navigator.pushNamed(
                           context, PlayerScreen.routeName,
-                          arguments: PlayerArgs(item.id, FileLocation.remote)),
+                          arguments: PlayerArgs(item.id, isRemote: true)),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
                       leading: new Container(
