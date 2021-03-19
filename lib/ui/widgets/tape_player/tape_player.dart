@@ -375,18 +375,7 @@ class _TapePlayerBloc {
   Stream<LoadingProgressData> get progressStream => _progressController.stream;
 
   _TapePlayerBloc(this.software) {
-    var index = -1;
-    if (files.length > 0) {
-      index = 0;
-      if (!software.currentFileName.isNullOrEmpty()) {
-        index = files
-            .map((file) => basename(file))
-            .toList()
-            .indexOf(software.currentFileName);
-        if (index == -1) index = 0;
-      }
-    }
-    currentFileIndex = index;
+    currentFileIndex = software.currentFileIndex;
   }
 
   static Future _getAndConvertImage(ConverterComputationData data) async {

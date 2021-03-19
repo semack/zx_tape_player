@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:path/path.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
+
 class SoftwareModel {
   final String id;
   final bool isRemote;
@@ -12,8 +15,23 @@ class SoftwareModel {
   final String remarks;
   final List<AuthorModel> authors;
   final List<ScreenShotModel> screenShotUrls;
-  final String currentFileName;
+  final String _currentFileName;
   final List<String> tapeFiles;
+
+  int get currentFileIndex {
+    var index = -1;
+    if (tapeFiles.length > 0) {
+      index = 0;
+      if (!_currentFileName.isNullOrEmpty()) {
+        index = tapeFiles
+            .map((file) => basename(file))
+            .toList()
+            .indexOf(_currentFileName);
+        if (index == -1) index = 0;
+      }
+    }
+    return index;
+  }
 
   SoftwareModel(
       this.id,
@@ -27,7 +45,7 @@ class SoftwareModel {
       this.remarks,
       this.authors,
       this.screenShotUrls,
-      this.currentFileName,
+      this._currentFileName,
       this.tapeFiles);
 
   static Future<SoftwareModel> createFromFile(
