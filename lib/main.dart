@@ -26,8 +26,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
-  FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
   FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+  FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
   FlutterStatusbarcolor.setNavigationBarWhiteForeground(true);
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
