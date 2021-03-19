@@ -318,7 +318,7 @@ packages:
       name: flutter_native_splash
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.4+1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -384,7 +384,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.0"
+    version: "0.13.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -405,7 +405,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   internet_connection_checker:
     dependency: "direct main"
     description:
@@ -440,7 +440,7 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.1"
   just_audio:
     dependency: "direct main"
     description:
@@ -636,7 +636,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -711,7 +711,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0+2"
+    version: "2.0.0+3"
   sqflite_common:
     dependency: transitive
     description:
@@ -816,7 +816,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   url_launcher_web:
     dependency: transitive
     description:
@@ -935,7 +935,7 @@ packages:
       name: zx_tape_to_wav
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.16"
+    version: "3.0.0+1"
 sdks:
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=2.0.0"
