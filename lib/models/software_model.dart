@@ -14,6 +14,7 @@ class SoftwareModel {
   final String remarks;
   final Iterable<AuthorModel> authors;
   final Iterable<ScreenShotModel> screenShotUrls;
+  final String recognizedTapeFileName;
   final Iterable<FileModel> tapeFiles;
 
   SoftwareModel(
@@ -28,6 +29,7 @@ class SoftwareModel {
       this.remarks,
       this.authors,
       this.screenShotUrls,
+      this.recognizedTapeFileName,
       this.tapeFiles);
 
   static Future<SoftwareModel> createFromFile(
@@ -46,6 +48,7 @@ class SoftwareModel {
           null,
           <AuthorModel>[],
           <ScreenShotModel>[],
+          null,
           <FileModel>[FileModel(FileLocation.file, filePath)]);
     } else
       throw FileSystemException('File not found.');

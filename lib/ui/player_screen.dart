@@ -115,7 +115,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         children: <Widget>[
           _buildInfoWidget(context, response),
           model.tapeFiles.length > 0
-              ? TapePlayer(files: model.tapeFiles.toList())
+              ? TapePlayer(software: model)
               : Container(
                   color: Colour('#3B4E63'),
                   height: 50.0,

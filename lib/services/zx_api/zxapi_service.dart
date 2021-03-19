@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/models/hit_model.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/models/term_model.dart';
-import 'package:zx_tape_player/models/enums/file_location.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
 import 'package:zx_tape_player/utils/api_base_helper.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
@@ -75,18 +76,14 @@ class ZxApiService implements BackendService {
         .map((e) => "&tosectype=%s".format([e]))
         .join();
     var jsonResponse = await _helper.get(url);
-    var data = ItemsDto
-        .fromJson(jsonResponse)
-        .hits
-        .hits;
+    var data = ItemsDto.fromJson(jsonResponse).hits.hits;
     if (data != null && data.length > 0)
       result = data
           .where((element) =>
-      element.source != null &&
-          element.source.title != null &&
-          element.source.title.isNotEmpty)
-          .map((e) =>
-          HitModel(
+              element.source != null &&
+              element.source.title != null &&
+              element.source.title.isNotEmpty)
+          .map((e) => HitModel(
               e.id,
               e.source.screens.length > 0
                   ? _fixScreenShotUrl(e.source?.screens[0].url)
@@ -100,16 +97,17 @@ class ZxApiService implements BackendService {
     return result;
   }
 
-  Future<SoftwareModel> fetchSoftware(String id) async {
+  Future<SoftwareModel> fetchSoftware(String id,
+      {String recognizedTapeFileName}) async {
     SoftwareModel result;
     var url = _baseUrl + _itemUrl.format([id]);
-    var response = await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(url));
+    var response =
+        await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(url));
     if (response.statusCode == 200) {
       var list = <ItemDto>[];
       list.add(ItemDto.fromJson(json.decode(response.body)));
       result = list
-          .map((e) =>
-          SoftwareModel(
+          .map((e) => SoftwareModel(
               e.id,
               true,
               e.source.title,
@@ -125,16 +123,16 @@ class ZxApiService implements BackendService {
               e.source.remarks,
               e.source.authors
                   .where((a) =>
-              !(a.name.isNullOrEmpty() || a.type.isNullOrEmpty()))
-                  .map((a) => AuthorModel(a.name, a.type)),
+                      !(a.name.isNullOrEmpty() || a.type.isNullOrEmpty()))
+                  .map((a) => AuthorModel(a.name, a.type)).toList(),
               e.source.screens.map(
-                      (s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url))),
+                  (s) => ScreenShotModel(s.type, _fixScreenShotUrl(s.url))).toList(),
+              recognizedTapeFileName,
               e.source.tosec
-                  .where((t) =>
-                  Definitions.supportedTapeExtensions
+                  .where((t) => Definitions.supportedTapeExtensions
                       .contains(extension(t.path).replaceAll('.', '')))
                   .map((t) =>
-                  FileModel(FileLocation.remote, _fixToSecUrl(t.path)))))
+                      FileModel(FileLocation.remote, _fixToSecUrl(t.path))).toList()))
           .first;
     }
     return result;
@@ -142,22 +140,28 @@ class ZxApiService implements BackendService {
 
   Future<SoftwareModel> recognizeTape(String filePath,
       {String localTitle}) async {
-    SoftwareModel result;
     var md5 = await _calculateHash(filePath);
     var fileCheckUrl = _baseUrl + _fileCheckUrl.format([md5]);
-    var response =
-    await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(fileCheckUrl));
+
+    var result = await SoftwareModel.createFromFile(filePath, localTitle);
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) return result;
+
+    var response = await UserAgentClient(_userAgent, http.Client())
+        .get(Uri.parse(fileCheckUrl));
     if (response.statusCode == 200) {
       var fileCheck = FileCheckDto.fromJson(json.decode(response.body));
-      result = await fetchSoftware(fileCheck.entryId);
-    } else {
-      result = await SoftwareModel.createFromFile(filePath, localTitle);
+      result = await fetchSoftware(fileCheck.entryId,
+          recognizedTapeFileName: fileCheck.file.filename);
     }
+
     return result;
   }
 
   Future<Uint8List> downloadTape(String url) async {
-    var response = await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(url));
+    var response =
+        await UserAgentClient(_userAgent, http.Client()).get(Uri.parse(url));
     if (response.statusCode == 200) return response.bodyBytes;
     return null;
   }

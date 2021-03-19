@@ -27,9 +27,9 @@ import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class TapePlayer extends StatefulWidget {
-  final List<FileModel> files;
+  final SoftwareModel software;
 
-  TapePlayer({Key key, @required this.files}) : super(key: key);
+  TapePlayer({Key key, @required this.software}) : super(key: key);
 
   @override
   _TapePlayerState createState() {
@@ -42,7 +42,7 @@ class _TapePlayerState extends State<TapePlayer> {
 
   @override
   void initState() {
-    _bloc = _TapePlayerBloc(widget.files);
+    _bloc = _TapePlayerBloc(widget.software);
     super.initState();
   }
 
@@ -137,7 +137,7 @@ class _TapePlayerState extends State<TapePlayer> {
                                             BorderRadius.circular(3.5),
                                       ),
                                       child: CarouselSlider(
-                                        items: widget.files
+                                        items: _bloc.files
                                             .map((file) => Container(
                                                   padding: EdgeInsets.all(12.0),
                                                   child: Center(
@@ -157,7 +157,7 @@ class _TapePlayerState extends State<TapePlayer> {
                                             scrollPhysics: _bloc
                                                             .player.position !=
                                                         Duration.zero ||
-                                                    widget.files.length == 1 ||
+                                                    _bloc.files.length == 1 ||
                                                     tapeLoading
                                                 ? const NeverScrollableScrollPhysics()
                                                 : const AlwaysScrollableScrollPhysics(),
@@ -165,6 +165,7 @@ class _TapePlayerState extends State<TapePlayer> {
                                             enlargeCenterPage: false,
                                             aspectRatio: 2.0,
                                             viewportFraction: 1.0,
+                                            initialPage: _bloc.currentFileIndex,
                                             onPageChanged:
                                                 (index, reason) async {
                                               _bloc.currentFileIndex = index;
@@ -172,8 +173,8 @@ class _TapePlayerState extends State<TapePlayer> {
                                       ))),
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: widget.files.map((f) {
-                                    int index = widget.files.indexOf(f);
+                                  children: _bloc.files.map((f) {
+                                    int index = _bloc.files.indexOf(f);
                                     return Container(
                                       width: 8.0,
                                       height: 8.0,
@@ -347,7 +348,9 @@ class _TapePlayerState extends State<TapePlayer> {
 }
 
 class _TapePlayerBloc {
-  final List<FileModel> files;
+  final SoftwareModel software;
+
+  List<FileModel> get files => software.tapeFiles;
   int _currentFileIndex;
   AudioPlayer _player = AudioPlayer(handleInterruptions: false);
   final _backendService = getIt<BackendService>();
@@ -372,8 +375,19 @@ class _TapePlayerBloc {
 
   Stream<LoadingProgressData> get progressStream => _progressController.stream;
 
-  _TapePlayerBloc(this.files) {
-    if (files.length > 0) currentFileIndex = 0;
+  _TapePlayerBloc(this.software) {
+    var index = -1;
+    if (files.length > 0) {
+      index = 0;
+      if (!software.recognizedTapeFileName.isNullOrEmpty()) {
+        index = files
+            .map((e) => basename(e.url))
+            .toList()
+            .indexOf(software.recognizedTapeFileName);
+        if (index == -1) index = 0;
+      }
+    }
+    currentFileIndex = index;
   }
 
   static Future _getAndConvertImage(ConverterComputationData data) async {
