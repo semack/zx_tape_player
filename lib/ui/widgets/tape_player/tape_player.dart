@@ -15,7 +15,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/software_model.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
-import 'package:zx_tape_player/services/mute_control_service.dart';
+import 'package:zx_tape_player/services/silence_control_service.dart';
+import 'package:zx_tape_player/services/volume_control_service.dart';
+import 'package:zx_tape_player/services/wake_lock_service.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/models/converter_computation_data.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/models/position_data.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/models/progress_model.dart';
@@ -353,7 +355,9 @@ class _TapePlayerBloc {
   int _currentFileIndex;
   AudioPlayer _player = AudioPlayer(handleInterruptions: false);
   final _backendService = getIt<BackendService>();
-  final _muteControlService = getIt<MuteControlService>();
+  final _wakeUpService = getIt<WakeLockControlService>();
+  final _muteControlService = getIt<SilenceControlService>();
+  final _volumeControlService = getIt<VolumeControlService>();
 
   int get currentFileIndex => _currentFileIndex;
 
@@ -445,9 +449,7 @@ class _TapePlayerBloc {
 
   Future play() async {
     if (_player.position == Duration.zero) {
-      if (await _prepareTapeForPlay()) {
-        await _muteControlService.mute();
-      }
+      if (await _prepareTapeForPlay()) await _takeControl();
     }
     await _player.play();
   }
@@ -455,7 +457,7 @@ class _TapePlayerBloc {
   Future stop() async {
     await _player.stop();
     await _player.seek(Duration.zero);
-    await _muteControlService.mute(state: false);
+    await _looseControl();
   }
 
   Future pause() async {
@@ -467,10 +469,21 @@ class _TapePlayerBloc {
   }
 
   void dispose() {
-    _muteControlService.mute(state: false);
-    _cleanWavCache();
-    _player?.dispose();
-    _progressController?.close();
-    _tapePlayerController?.close();
+    _looseControl()
+        .then((value) => _cleanWavCache())
+        .then((value) => _player?.dispose())
+        .then((value) => _progressController?.close())
+        .then((value) => _tapePlayerController?.close());
+  }
+
+  Future _takeControl() async {
+    await _volumeControlService.setOptimalVolume();
+    await _muteControlService.start();
+    await _wakeUpService.start();
+  }
+
+  Future _looseControl() async {
+    await _muteControlService.stop();
+    await _wakeUpService.stop();
   }
 }

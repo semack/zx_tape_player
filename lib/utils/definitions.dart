@@ -8,4 +8,6 @@ class Definitions {
   static const wafFilePath = '%s/%s.wav';
   static const wavFrequency = 44100;
   static const wavCacheLimitMb = 100;
+  static const optimalVolumeIOS = 01.00;
+  static const optimalVolumeAndroid = 0.80;
 }

@@ -1,5 +1,3 @@
-
-
 class LoadingProgressData {
   final double percent;
   final String filePath;

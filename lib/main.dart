@@ -5,9 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:get_it/get_it.dart';
 import 'package:zx_tape_player/services/backend_service.dart';
-import 'package:zx_tape_player/services/mute_control_service.dart';
+import 'package:zx_tape_player/services/silence_control_service.dart';
+import 'package:zx_tape_player/services/volume_control_service.dart';
+import 'package:zx_tape_player/services/wake_lock_service.dart';
 import 'package:zx_tape_player/services/zx_api/zxapi_service.dart';
-import 'package:zx_tape_player/services/zx_mute/zx_mute_control_service.dart';
+import 'package:zx_tape_player/services/zx_control/zx_silence_control_service.dart';
+import 'package:zx_tape_player/services/zx_control/zx_volume_control_service.dart';
+import 'package:zx_tape_player/services/zx_control/zx_wake_lock_control_service.dart';
 import 'package:zx_tape_player/ui/home_screen.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/app_center_initializer.dart';
@@ -29,7 +33,9 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   getIt.registerLazySingleton<BackendService>(() => ZxApiService());
-  getIt.registerLazySingleton<MuteControlService>(() => ZxMuteControlService());
+  getIt.registerLazySingleton<SilenceControlService>(() => ZxSilenceControlService());
+  getIt.registerLazySingleton<WakeLockControlService>(() => ZxWakeLockControlService());
+  getIt.registerLazySingleton<VolumeControlService>(() => ZxVolumeControlService());
 
   await AppCenterInitializer.initialize();
   await EasyLocalization.ensureInitialized();

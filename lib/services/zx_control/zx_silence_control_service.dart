@@ -2,22 +2,14 @@ import 'dart:io';
 
 import 'package:flutter_mute/flutter_mute.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zx_tape_player/services/mute_control_service.dart';
+import 'package:zx_tape_player/services/silence_control_service.dart';
 
-class ZxMuteControlService implements MuteControlService {
+class ZxSilenceControlService implements SilenceControlService {
   RingerMode _ringerMode;
 
   @override
-  Future mute({bool state = true}) async {
-    if (!Platform.isAndroid) return;
-    if (state)
-      await _mute();
-    else
-      await _unmute();
-  }
-
-  Future _mute() async {
-    if (_ringerMode != null) return;
+  Future start() async {
+    if (!Platform.isAndroid || _ringerMode != null) return;
     var isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
     if (isAccessGranted) {
       _ringerMode = await FlutterMute.getRingerMode();
@@ -32,7 +24,8 @@ class ZxMuteControlService implements MuteControlService {
     }
   }
 
-  Future _unmute() async {
+  @override
+  Future stop() async {
     if (_ringerMode == null) return;
     await FlutterMute.setRingerMode(_ringerMode);
     _ringerMode = null;
