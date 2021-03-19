@@ -10,8 +10,7 @@ class AppCenterInitializer {
     await AppCenter.startAsync(
             appSecretAndroid: _secret_Android,
             appSecretIOS: _secret_iOS,
-            enableDistribute: false,
-            disableAutomaticCheckForUpdate: false)
+            disableAutomaticCheckForUpdate: true)
         .then(
             (value) => AppCenter.configureDistributeDebugAsync(enabled: false));
   }
