@@ -10,9 +10,9 @@ class ZxVolumeControlService extends VolumeControlService {
   @override
   Future setOptimalVolume() async {
     if (_hasSet) return;
-    var volume = Definitions.optimalVolumeAndroid;
-    if (!Platform.isIOS) volume = Definitions.optimalVolumeIOS;
-    VolumeController.setVolume(volume);
+    var value = Definitions.optimalVolumeAndroid;
+    if (Platform.isIOS) value = Definitions.optimalVolumeIOS;
+    VolumeController.setVolume(value);
     _hasSet = true;
   }
 }

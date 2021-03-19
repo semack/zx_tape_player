@@ -9,5 +9,5 @@ class Definitions {
   static const wavFrequency = 44100;
   static const wavCacheLimitMb = 100;
   static const optimalVolumeIOS = 1.00;
-  static const optimalVolumeAndroid = 0.80;
+  static const optimalVolumeAndroid = 0.75;
 }
