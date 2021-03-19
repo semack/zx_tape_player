@@ -62,24 +62,13 @@ jobs:
             
         - name: Build Android App Bundle
           run: flutter build appbundle --release --no-pub
-
-        - name: Setup Ruby
-          uses: actions/setup-ruby@v1.1.3
+          
+        - name: Setup Ruby and download bundle dependencies
+          uses: ruby/setup-ruby@v1
           with:
-            ruby-version: '2.7.2'
+           ruby-version: 2.7.2
+           bundler-cache: true 
 
-        - name: Cache bundle dependencies
-          uses: actions/cache@v2
-          with:
-            path: vendor/bundle
-            key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-            restore-keys: ${{ runner.os }}-gems-
-
-        - name: Download bundle dependencies
-          run: |
-            gem install bundler:2.0.2
-            bundle config path vendor/bundle
-            bundle install
         - name: Release to Google Play (beta)
           env:
             SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
