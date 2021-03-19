@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:path/path.dart';
 import 'package:zx_tape_player/models/hit_model.dart';
 import 'package:zx_tape_player/models/software_model.dart';
@@ -146,8 +146,7 @@ class ZxApiService implements BackendService {
 
     var result = await SoftwareModel.createFromFile(filePath, localTitle);
 
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) return result;
+    if (!await InternetConnectionChecker().hasConnection) return result;
 
     var response = await UserAgentClient(_userAgent, http.Client())
         .get(Uri.parse(fileCheckUrl));

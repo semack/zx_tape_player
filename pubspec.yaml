@@ -48,7 +48,7 @@ dependencies:
   flutter_mute: ^0.0.1
   shared_preferences: ^2.0.0
   flutter_statusbarcolor_ns: ^0.3.0-nullsafety
-  connectivity: ^3.0.3
+  internet_connection_checker: ^0.0.1
 
 #dependency_overrides:
 #  http: ^0.12.2
