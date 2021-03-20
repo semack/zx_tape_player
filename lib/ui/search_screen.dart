@@ -172,7 +172,9 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Text(
               tr('no_items_found'),
               style: TextStyle(
-                  fontSize: 14, color: HexColor('#AFB6BB'), letterSpacing: -0.5),
+                  fontSize: 14,
+                  color: HexColor('#AFB6BB'),
+                  letterSpacing: -0.5),
               textAlign: TextAlign.center,
             ),
           );
@@ -320,25 +322,23 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       isThreeLine: true,
                       subtitle: Column(children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            FutureBuilder(builder: (context, snapshot) {
-                              var result = item.year ?? '';
-                              if (item.genre != null) {
-                                if (result.isNotEmpty) result += ' • ';
-                                result += item.genre;
-                              }
-                              return Text(
-                                result,
-                                style: TextStyle(
-                                    color: HexColor('#B1B8C1'),
-                                    letterSpacing: 0.3,
-                                    fontSize: 12.0),
-                              );
-                            }),
-                          ],
-                        ),
+                        Wrap(children: [
+                          FutureBuilder(builder: (context, snapshot) {
+                            var result = item.year ?? '';
+                            if (item.genre != null) {
+                              if (result.isNotEmpty) result += ' • ';
+                              result += item.genre;
+                            }
+                            return Text(
+                              result,
+                              style: TextStyle(
+                                  color: HexColor('#B1B8C1'),
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          })
+                        ]),
                         SizedBox(height: 5.0),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
