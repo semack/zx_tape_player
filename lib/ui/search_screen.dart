@@ -172,7 +172,9 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Text(
               tr('no_items_found'),
               style: TextStyle(
-                  fontSize: 14, color: HexColor('#AFB6BB'), letterSpacing: -0.5),
+                  fontSize: 14,
+                  color: HexColor('#AFB6BB'),
+                  letterSpacing: -0.5),
               textAlign: TextAlign.center,
             ),
           );
