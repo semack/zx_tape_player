@@ -33,9 +33,9 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _textController = TextEditingController();
   SuggestionsBoxController _suggestionsBoxController =
-      SuggestionsBoxController();
+  SuggestionsBoxController();
   RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController(initialRefresh: false);
 
   _SearchScreenBloc _bloc;
 
@@ -48,7 +48,10 @@ class _SearchScreenState extends State<SearchScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_bloc == null) {
-      _textController.text = ModalRoute.of(context).settings.arguments;
+      _textController.text = ModalRoute
+          .of(context)
+          .settings
+          .arguments;
       _textController.selection = TextSelection.fromPosition(
           TextPosition(offset: _textController.text.length));
       _bloc = _SearchScreenBloc();
@@ -73,7 +76,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: _buildSearchField(context)),
             Expanded(
                 child: Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
                     child: StreamBuilder<ApiResponse<List<HitModel>>>(
                         stream: _bloc.hitsListStream,
                         builder: (context, snapshot) {
@@ -121,13 +127,13 @@ class _SearchScreenState extends State<SearchScreen> {
             prefixIcon: _textController.text.isEmpty
                 ? null
                 : IconButton(
-                    icon: Icon(Icons.close, color: HexColor("#546B7F")),
-                    onPressed: () {
-                      setState(() {
-                        _textController.clear();
-                      });
-                      Navigator.pop(context);
-                    }),
+                icon: Icon(Icons.close, color: HexColor("#546B7F")),
+                onPressed: () {
+                  setState(() {
+                    _textController.clear();
+                  });
+                  Navigator.pop(context);
+                }),
             suffixIcon: IconButton(
                 icon: Icon(Icons.search, color: HexColor("#68AD56")),
                 onPressed: () async {
@@ -179,7 +185,8 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           );
         },
-        loadingBuilder: (BuildContext context) => LoadingProgress(
+        loadingBuilder: (BuildContext context) =>
+            LoadingProgress(
               loadingText: tr("loading"),
             ),
         itemBuilder: (context, suggestion) {
@@ -188,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> {
             text = tr('all_tapes_by_letter').format([text]);
           return ListTile(
               contentPadding:
-                  EdgeInsets.symmetric(horizontal: 0.00, vertical: 0.00),
+              EdgeInsets.symmetric(horizontal: 0.00, vertical: 0.00),
               trailing: Text('>', style: TextStyle(color: HexColor('#AFB6BB'))),
               title: Text(text,
                   style: TextStyle(
@@ -204,14 +211,14 @@ class _SearchScreenState extends State<SearchScreen> {
         });
   }
 
-  Widget _buildSearchList(
-      BuildContext context, ApiResponse<List<HitModel>> response) {
+  Widget _buildSearchList(BuildContext context,
+      ApiResponse<List<HitModel>> response) {
     return SmartRefresher(
         enablePullDown: false,
         enablePullUp: true,
         controller: _refreshController,
         onLoading: () async =>
-            await _bloc.fetchHitsList(_textController.text, isNew: false),
+        await _bloc.fetchHitsList(_textController.text, isNew: false),
         footer: StreamBuilder<LoadStatus>(
             stream: _bloc.hitsLoadStatusStream,
             builder: (context, snapshot) {
@@ -258,124 +265,127 @@ class _SearchScreenState extends State<SearchScreen> {
               );
             }),
         child: ListView.builder(
-            // itemExtent: 102.0,
-            //padding: EdgeInsets.symmetric(vertical: 8.0),
+          // itemExtent: 102.0,
+          //padding: EdgeInsets.symmetric(vertical: 8.0),
             itemBuilder: (BuildContext context, int index) {
-          if (index >= response.data.length) return null;
-          var item = response.data[index];
-          var textAvatar = AbcAvatar(
-            item.title,
-            isRectangle: true,
-            // circleConfiguration: CircleConfiguration(radius: 50),
-            rectangeConfiguration: RectangeConfiguration(
-                borderRadius: 4,
-                blurRadius: 0,
-                shadowColor: Colors.transparent),
-            titleConfiguration:
+              if (index >= response.data.length) return null;
+              var item = response.data[index];
+              var textAvatar = AbcAvatar(
+                item.title,
+                isRectangle: true,
+                // circleConfiguration: CircleConfiguration(radius: 50),
+                rectangeConfiguration: RectangeConfiguration(
+                    borderRadius: 4,
+                    blurRadius: 0,
+                    shadowColor: Colors.transparent),
+                titleConfiguration:
                 TitleConfiguration(fontWeight: FontWeight.bold, size: 30),
-          );
-          return Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: HexColor('#3B4E63'),
-                      borderRadius: BorderRadius.all(Radius.circular(4.0))),
-                  child: ListTile(
-                      onTap: () async => Navigator.pushNamed(
-                          context, PlayerScreen.routeName,
-                          arguments: PlayerArgs(item.id, isRemote: true)),
-                      contentPadding:
+              );
+              return Padding(
+                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: HexColor('#3B4E63'),
+                          borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                      child: ListTile(
+                          onTap: () async =>
+                              Navigator.pushNamed(
+                                  context, PlayerScreen.routeName,
+                                  arguments: PlayerArgs(
+                                      item.id, isRemote: true)),
+                          contentPadding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-                      leading: new Container(
-                          width: 60.0,
-                          height: 75.0,
-                          padding: EdgeInsets.zero,
-                          child: CachedNetworkImage(
-                              imageRenderMethodForWeb:
+                          leading: new Container(
+                              width: 60.0,
+                              height: 75.0,
+                              padding: EdgeInsets.zero,
+                              child: CachedNetworkImage(
+                                  imageRenderMethodForWeb:
                                   ImageRenderMethodForWeb.HttpGet,
-                              useOldImageOnUrlChange: true,
-                              imageUrl: item.iconUrl,
-                              imageBuilder: (context, provider) => Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(4.0)),
-                                      image: DecorationImage(
-                                        image: provider,
-                                        fit: BoxFit.fill,
+                                  useOldImageOnUrlChange: true,
+                                  imageUrl: item.iconUrl,
+                                  imageBuilder: (context, provider) =>
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(4.0)),
+                                          image: DecorationImage(
+                                            image: provider,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
                                       ),
+                                  placeholder: (context, url) => textAvatar,
+                                  errorWidget: (context, url, error) {
+                                    return textAvatar;
+                                  })),
+                          title: Text(
+                            item.title,
+                            style: TextStyle(
+                                color: Colors.white,
+                                letterSpacing: 0.3,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            maxLines: 1,
+                          ),
+                          isThreeLine: true,
+                          subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                FutureBuilder(builder: (context, snapshot) {
+                                  var result = item.year ?? '';
+                                  if (item.genre != null) {
+                                    if (result.isNotEmpty) result += ' • ';
+                                    result += item.genre;
+                                  }
+                                  return Text(
+                                    result,
+                                    style: TextStyle(
+                                        color: HexColor('#B1B8C1'),
+                                        letterSpacing: -0.5,
+                                        fontSize: 12.0),
+                                    overflow: TextOverflow.ellipsis,
+                                  );
+                                }),
+                                SizedBox(height: 5.0),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.thumb_up_rounded,
+                                      color: HexColor('#B1B8C1'),
+                                      size: 12.0,
                                     ),
-                                  ),
-                              placeholder: (context, url) => textAvatar,
-                              errorWidget: (context, url, error) {
-                                return textAvatar;
-                              })),
-                      title: Text(
-                        item.title,
-                        style: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 0.3,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        maxLines: 1,
-                      ),
-                      isThreeLine: true,
-                      subtitle: Column(children: [
-                        Wrap(children: [
-                          FutureBuilder(builder: (context, snapshot) {
-                            var result = item.year ?? '';
-                            if (item.genre != null) {
-                              if (result.isNotEmpty) result += ' • ';
-                              result += item.genre;
-                            }
-                            return Text(
-                              result,
-                              style: TextStyle(
-                                  color: HexColor('#B1B8C1'),
-                                  letterSpacing: 0.3,
-                                  fontSize: 12.0),
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          })
-                        ]),
-                        SizedBox(height: 5.0),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.thumb_up_rounded,
-                              color: HexColor('#B1B8C1'),
-                              size: 12.0,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              item.votes?.toString() ?? tr('na'),
-                              style: TextStyle(
-                                  color: HexColor('#B1B8C1'),
-                                  letterSpacing: 0.3,
-                                  fontSize: 12.0),
-                            ),
-                            SizedBox(width: 20),
-                            Icon(
-                              Icons.star_rounded,
-                              color: HexColor('#B1B8C1'),
-                              size: 14.0,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              item.score != null && item.score > 0
-                                  ? item.score.toString()
-                                  : tr('na'),
-                              style: TextStyle(
-                                  color: HexColor('#B1B8C1'),
-                                  letterSpacing: 0.3,
-                                  fontSize: 12.0),
-                            ),
-                          ],
-                        )
-                      ]))));
-        }));
+                                    SizedBox(width: 5),
+                                    Text(
+                                      item.votes?.toString() ?? tr('na'),
+                                      style: TextStyle(
+                                          color: HexColor('#B1B8C1'),
+                                          letterSpacing: -0.5,
+                                          fontSize: 12.0),
+                                    ),
+                                    SizedBox(width: 20),
+                                    Icon(
+                                      Icons.star_rounded,
+                                      color: HexColor('#B1B8C1'),
+                                      size: 14.0,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      item.score != null && item.score > 0
+                                          ? item.score.toString()
+                                          : tr('na'),
+                                      style: TextStyle(
+                                          color: HexColor('#B1B8C1'),
+                                          letterSpacing: -0.5,
+                                          fontSize: 12.0),
+                                    ),
+                                  ],
+                                )
+                              ]))));
+            }));
   }
 }
 
@@ -384,10 +394,10 @@ class _SearchScreenBloc {
   final _backendService = getIt<BackendService>();
   var _pageNum = 0;
   StreamController _hitsListController =
-      StreamController<ApiResponse<List<HitModel>>>();
+  StreamController<ApiResponse<List<HitModel>>>();
 
   StreamController _hitsLoadStatusController =
-      StreamController<LoadStatus>.broadcast();
+  StreamController<LoadStatus>.broadcast();
 
   StreamSink<ApiResponse<List<HitModel>>> get hitsListSink =>
       _hitsListController.sink;
