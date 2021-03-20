@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +65,7 @@ class _TapePlayerState extends State<TapePlayer> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colour('#3B4E63'),
+        backgroundColor: HexColor('#3B4E63'),
         title: Text(title,
             textAlign: TextAlign.center,
             style: TextStyle(wordSpacing: 0.3, color: Colors.white)),
@@ -87,7 +86,7 @@ class _TapePlayerState extends State<TapePlayer> {
                         activeTickMarkColor: Colors.white,
                         activeTrackColor: Colors.white,
                         inactiveTickMarkColor: Colors.white,
-                        inactiveTrackColor: Colour('#546B7F'),
+                        inactiveTrackColor: HexColor('#546B7F'),
                         thumbColor: Colors.white),
                     child: Slider(
                       divisions: divisions,
@@ -112,7 +111,7 @@ class _TapePlayerState extends State<TapePlayer> {
             padding: //EdgeInsets.fromLTRB(0, 16, 0, 0), //
                 EdgeInsets.symmetric(vertical: 16.0),
             width: MediaQuery.of(context).size.width,
-            color: Colour('#3B4E63'),
+            color: HexColor('#3B4E63'),
             child: StreamBuilder<PlayerState>(
                 stream: _bloc.player.playerStateStream,
                 builder: (context, snapshot) {
@@ -133,7 +132,7 @@ class _TapePlayerState extends State<TapePlayer> {
                                   height: 80.0,
                                   child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colour('#172434'),
+                                        color: HexColor('#172434'),
                                         borderRadius:
                                             BorderRadius.circular(3.5),
                                       ),
@@ -184,8 +183,8 @@ class _TapePlayerState extends State<TapePlayer> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: _bloc.currentFileIndex == index
-                                            ? Colour('#D8DCE0')
-                                            : Colour('#546B7F'),
+                                            ? HexColor('#D8DCE0')
+                                            : HexColor('#546B7F'),
                                       ),
                                     );
                                   }).toList()),
@@ -246,7 +245,7 @@ class _TapePlayerState extends State<TapePlayer> {
       if (tapePlayerData.state == TapePlayerState.Error &&
           _bloc.filePath == tapePlayerData.filePath) {
         final snackBar = SnackBar(
-          backgroundColor: Colour('#D9512D'),
+          backgroundColor: HexColor('#D9512D'),
           content: Text(
             tr('error_converting_tape_file'),
             style: TextStyle(color: Colors.white),
@@ -297,7 +296,7 @@ class _TapePlayerState extends State<TapePlayer> {
           width: 60.0,
           height: 60.0,
           decoration: BoxDecoration(
-            color: Colour('#28384C'),
+            color: HexColor('#28384C'),
             borderRadius: BorderRadius.all(
               Radius.circular(30),
             ),
@@ -338,7 +337,7 @@ class _TapePlayerState extends State<TapePlayer> {
         SizedBox(width: 24.0),
         IconButton(
           color: Colors.white,
-          disabledColor: Colour('#546B7F'),
+          disabledColor: HexColor('#546B7F'),
           icon: Icon(Icons.stop_rounded),
           iconSize: 40.0,
           onPressed: _bloc.player.position != Duration.zero ? _bloc.stop : null,

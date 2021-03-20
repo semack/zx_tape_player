@@ -1,5 +1,5 @@
-import 'package:colour/colour.dart';
 import 'package:flutter/material.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
 
 class AppError extends StatelessWidget {
   final String text;
@@ -33,7 +33,7 @@ class AppError extends StatelessWidget {
             child: Text(buttonText, style: TextStyle(fontSize: 14.0)),
             style: TextButton.styleFrom(
               primary: Theme.of(context).primaryColor,
-              backgroundColor: Colour('#68B8DF'),
+              backgroundColor: HexColor('#68B8DF'),
               padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(2.0)),

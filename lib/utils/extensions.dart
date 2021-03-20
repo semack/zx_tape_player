@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:sprintf/sprintf.dart';
 
 extension StringFormatExtension on String {
@@ -20,5 +22,42 @@ extension DurationToStringExtension on Duration {
     return RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
         .firstMatch("$this")
         ?.group(1);
+  }
+}
+
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+}
+
+extension EncodeStringExtension on String
+{
+  String safeEncode(){
+    String output = this;
+
+    var detectHash = this.contains('#');
+    var detectAnd = this.contains('&');
+    var detectSlash = this.contains('/');
+
+    if (detectHash == true) {
+      output = output.replaceAll('#', '%23');
+    }
+
+    if (detectAnd == true) {
+      output = output.replaceAll('#', '%26');
+    }
+
+    if (detectSlash == true) {
+      output = output.replaceAll('#', '%2F');
+    }
+
+    return output;
   }
 }

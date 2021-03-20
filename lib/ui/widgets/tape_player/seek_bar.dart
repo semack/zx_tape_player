@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:colour/colour.dart';
 import 'package:flutter/material.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 
@@ -47,9 +46,9 @@ class _SeekBarState extends State<SeekBar> {
           data: _sliderThemeData.copyWith(
               thumbShape: HiddenThumbComponentShape(),
               activeTrackColor: Colors.white30,
-              inactiveTrackColor: Colour('#546B7F'),
+              inactiveTrackColor: HexColor('#546B7F'),
               trackShape: CustomTrackShape(),
-              disabledInactiveTrackColor: Colour('#546B7F')),
+              disabledInactiveTrackColor: HexColor('#546B7F')),
           child: ExcludeSemantics(
             child: Slider(
               min: 0.0,
@@ -76,9 +75,9 @@ class _SeekBarState extends State<SeekBar> {
           data: _sliderThemeData.copyWith(
               activeTrackColor: Colors.white,
               inactiveTrackColor: Colors.transparent,
-              thumbColor: Colour(Colors.white),
+              thumbColor: Colors.white,
               trackShape: CustomTrackShape(),
-              disabledThumbColor: Colour(Colors.white),
+              disabledThumbColor: Colors.white,
               disabledInactiveTrackColor: Colors.transparent),
           child: Slider(
             min: 0.0,
@@ -106,7 +105,7 @@ class _SeekBarState extends State<SeekBar> {
           top: 0.0,
           child: FutureBuilder(builder: (context, snapshot) {
             return Text(_getTimeString(_position),
-                style: TextStyle(fontSize: 12.0, color: Colour('#B1B8C1')));
+                style: TextStyle(fontSize: 12.0, color: HexColor('#B1B8C1')));
           }),
         ),
         Positioned(
@@ -119,7 +118,7 @@ class _SeekBarState extends State<SeekBar> {
                 ]),
                 style: TextStyle(
                   fontSize: 12.0,
-                  color: Colour('#B1B8C1'),
+                  color: HexColor('#B1B8C1'),
                 ))),
       ],
     );

@@ -51,7 +51,7 @@ class ZxApiService implements BackendService {
         return result;
       }
     }
-    var jsonResponse = await _helper.get(_termsUrl.format([query]));
+    var jsonResponse = await _helper.get(_termsUrl.format([query.safeEncode()]));
     result = (jsonResponse as List)
         .map((e) => TermDto.fromJson(e))
         .where((element) => element.type == _contentType)
@@ -70,7 +70,8 @@ class ZxApiService implements BackendService {
       if (letter != null && letter.isNotEmpty) url += _letterUrl;
     }
     if (url.isEmpty) url += _itemsUrl;
-    url = url.format([query, size, offset]);
+
+    url = url.format([query.safeEncode(), size, offset]);
     url += Definitions.supportedTapeExtensions
         .map((e) => "&tosectype=%s".format([e]))
         .join();

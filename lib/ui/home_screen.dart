@@ -1,4 +1,3 @@
-import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       border: InputBorder.none,
                       hintText: tr('search_hint'),
                       filled: true,
-                      fillColor: Colour('#28384C'),
+                      fillColor: HexColor('#28384C'),
                       isDense: true,
                       prefixIconConstraints:
                           BoxConstraints(minWidth: 16, minHeight: 16),
@@ -79,8 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Image.asset(
                               'assets/images/home/search-icon.png')),
                       hintStyle: TextStyle(
-                        fontSize: 14.0,
-                        color: Colour('546B7F'),
+                        fontSize: 12.0,
+                        color: HexColor('546B7F'),
                         letterSpacing: -0.5,
                       ),
                       contentPadding: EdgeInsets.symmetric(vertical: 16.0),
@@ -112,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     style: TextButton.styleFrom(
                       primary: Theme.of(context).primaryColor,
-                      backgroundColor: Colour('#68B8DF'),
+                      backgroundColor: HexColor('#68B8DF'),
                       padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(2.0)),
@@ -136,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PlayerArgs(file.path, isRemote: false));
                         } else {
                           final snackBar = SnackBar(
-                            backgroundColor: Colour('#D9512D'),
+                            backgroundColor: HexColor('#D9512D'),
                             content: Text(
                               tr('invalid_file_format').format([
                                 Definitions.supportedTapeExtensions

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           child: Text(tr('zx_tape_player'),
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 22, color: Colour('##E7ECED')))),
+                                  fontSize: 22, color: HexColor('##E7ECED')))),
                     ],
                   ),
                 ),
@@ -84,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             style: TextStyle(
                                 fontSize: 12,
                                 height: 1.8,
-                                color: Colour('#AFB6BB')));
+                                color: HexColor('#AFB6BB')));
                       },
                       future: PackageInfo.fromPlatform(),
                     ),

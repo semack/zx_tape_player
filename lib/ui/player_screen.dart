@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +119,7 @@ class _PlayerScreenState extends State<PlayerScreen>
         ),
         titleSpacing: 0.0,
         toolbarHeight: 60.0,
-        backgroundColor: Colour('#28384C'),
+        backgroundColor: HexColor('#28384C'),
       ),
       body: Column(
         children: <Widget>[
@@ -128,14 +127,14 @@ class _PlayerScreenState extends State<PlayerScreen>
           model.tapeFiles.length > 0
               ? TapePlayer(software: model)
               : Container(
-                  color: Colour('#3B4E63'),
+                  color: HexColor('#3B4E63'),
                   height: 50.0,
                   child: Center(
                     child: Text(
                       tr('no_tapes'),
                       style: TextStyle(
                           fontSize: 14,
-                          color: Colour('#AFB6BB'),
+                          color: HexColor('#AFB6BB'),
                           letterSpacing: -0.5),
                     ),
                   ))
@@ -151,7 +150,7 @@ Widget _buildInfoWidget(
   return Expanded(
       child: Container(
           //color: Colors.black.withOpacity(0.7),
-          color: Colour('#172434'),
+          color: HexColor('#172434'),
           child: !model.isRemote
               ? Center(
                   child: Container(
@@ -176,7 +175,7 @@ Widget _buildInfoWidget(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                                color: Colour('#B1B8C1'),
+                                color: HexColor('#B1B8C1'),
                                 letterSpacing: 0.3,
                                 fontSize: 12.0),
                           );
@@ -187,7 +186,7 @@ Widget _buildInfoWidget(
                           children: [
                             Icon(
                               Icons.thumb_up_rounded,
-                              color: Colour('#B1B8C1'),
+                              color: HexColor('#B1B8C1'),
                               size: 12.0,
                             ),
                             SizedBox(width: 5.0),
@@ -201,7 +200,7 @@ Widget _buildInfoWidget(
                             SizedBox(width: 8),
                             Icon(
                               Icons.star_rounded,
-                              color: Colour('#B1B8C1'),
+                              color: HexColor('#B1B8C1'),
                               size: 14.0,
                             ),
                             SizedBox(width: 5.0),
@@ -217,7 +216,7 @@ Widget _buildInfoWidget(
                             SizedBox(width: 8),
                             Icon(
                               Icons.attach_money_rounded,
-                              color: Colour('#B1B8C1'),
+                              color: HexColor('#B1B8C1'),
                               size: 14.0,
                             ),
                             SizedBox(width: 2),
@@ -262,7 +261,7 @@ Widget _buildInfoWidget(
                                             '· ' + a.name + ' - ' + a.role)
                                         .join('\r\n'),
                                     style: TextStyle(
-                                        color: Colour('#B1B8C1'),
+                                        color: HexColor('#B1B8C1'),
                                         letterSpacing: 0.3,
                                         height: 1.6,
                                         fontSize: 12.0),
@@ -293,7 +292,7 @@ Widget _buildInfoWidget(
                                             Text(
                                               e.type,
                                               style: TextStyle(
-                                                  color: Colour('#B1B8C1'),
+                                                  color: HexColor('#B1B8C1'),
                                                   letterSpacing: 0.3,
                                                   fontSize: 12.0),
                                             )

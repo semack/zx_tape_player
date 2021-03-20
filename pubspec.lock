@@ -183,13 +183,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  colour:
-    dependency: "direct main"
-    description:
-      name: colour
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
   convert:
     dependency: transitive
     description:

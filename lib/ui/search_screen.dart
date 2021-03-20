@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:avatar_abc/AbcAvatar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -122,7 +121,7 @@ class _SearchScreenState extends State<SearchScreen> {
             prefixIcon: _textController.text.isEmpty
                 ? null
                 : IconButton(
-                    icon: Icon(Icons.close, color: Colour("#546B7F")),
+                    icon: Icon(Icons.close, color: HexColor("#546B7F")),
                     onPressed: () {
                       setState(() {
                         _textController.clear();
@@ -130,21 +129,22 @@ class _SearchScreenState extends State<SearchScreen> {
                       Navigator.pop(context);
                     }),
             suffixIcon: IconButton(
-                icon: Icon(Icons.search, color: Colour("#68AD56")),
+                icon: Icon(Icons.search, color: HexColor("#68AD56")),
                 onPressed: () async {
                   _suggestionsBoxController.close();
                   await _bloc.fetchHitsList(_textController.text);
                 }),
             hintText: tr('search_hint'),
             filled: true,
-            fillColor: Colour('#28384C'),
+            fillColor: HexColor('#28384C'),
             isDense: true,
             hintStyle: TextStyle(
-              fontSize: 14.0,
-              color: Colour('546B7F'),
+              fontSize: 12.0,
+              color: HexColor('546B7F'),
               letterSpacing: -0.5,
             ),
             errorStyle: TextStyle(
+              color: HexColor('EAD849'),
               fontSize: 14.0,
               letterSpacing: -0.5,
             ),
@@ -165,14 +165,14 @@ class _SearchScreenState extends State<SearchScreen> {
           elevation: 0,
           constraints: BoxConstraints(minWidth: 0, minHeight: 0),
           shadowColor: Colors.transparent,
-          color: Colour('#546B7F'),
+          color: HexColor('#546B7F'),
         ),
         noItemsFoundBuilder: (BuildContext context) {
           return Center(
             child: Text(
               tr('no_items_found'),
               style: TextStyle(
-                  fontSize: 14, color: Colour('#AFB6BB'), letterSpacing: -0.5),
+                  fontSize: 14, color: HexColor('#AFB6BB'), letterSpacing: -0.5),
               textAlign: TextAlign.center,
             ),
           );
@@ -187,7 +187,7 @@ class _SearchScreenState extends State<SearchScreen> {
           return ListTile(
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 0.00, vertical: 0.00),
-              trailing: Text('>', style: TextStyle(color: Colour('#AFB6BB'))),
+              trailing: Text('>', style: TextStyle(color: HexColor('#AFB6BB'))),
               title: Text(text,
                   style: TextStyle(
                     color: Colors.white,
@@ -237,7 +237,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           height: 55.0,
                           child: Center(
                             child: SpinKitThreeBounce(
-                                size: 16.0, color: Colour('#AFB6BB')),
+                                size: 16.0, color: HexColor('#AFB6BB')),
                           ));
                     case LoadStatus.failed:
                       return Container(
@@ -245,7 +245,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Center(
                             child: Text(tr('load_failed_retry'),
                                 style: TextStyle(
-                                    fontSize: 11, color: Colour('#B1B8C1')))),
+                                    fontSize: 11, color: HexColor('#B1B8C1')))),
                       );
                     default:
                       return SizedBox(
@@ -276,7 +276,7 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 6.0),
               child: Container(
                   decoration: BoxDecoration(
-                      color: Colour('#3B4E63'),
+                      color: HexColor('#3B4E63'),
                       borderRadius: BorderRadius.all(Radius.circular(4.0))),
                   child: ListTile(
                       onTap: () async => Navigator.pushNamed(
@@ -332,7 +332,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               return Text(
                                 result,
                                 style: TextStyle(
-                                    color: Colour('#B1B8C1'),
+                                    color: HexColor('#B1B8C1'),
                                     letterSpacing: 0.3,
                                     fontSize: 12.0),
                               );
@@ -345,21 +345,21 @@ class _SearchScreenState extends State<SearchScreen> {
                           children: [
                             Icon(
                               Icons.thumb_up_rounded,
-                              color: Colour('#B1B8C1'),
+                              color: HexColor('#B1B8C1'),
                               size: 12.0,
                             ),
                             SizedBox(width: 5),
                             Text(
                               item.votes?.toString() ?? tr('na'),
                               style: TextStyle(
-                                  color: Colour('#B1B8C1'),
+                                  color: HexColor('#B1B8C1'),
                                   letterSpacing: 0.3,
                                   fontSize: 12.0),
                             ),
                             SizedBox(width: 20),
                             Icon(
                               Icons.star_rounded,
-                              color: Colour('#B1B8C1'),
+                              color: HexColor('#B1B8C1'),
                               size: 14.0,
                             ),
                             SizedBox(width: 5),
@@ -368,7 +368,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ? item.score.toString()
                                   : tr('na'),
                               style: TextStyle(
-                                  color: Colour('#B1B8C1'),
+                                  color: HexColor('#B1B8C1'),
                                   letterSpacing: 0.3,
                                   fontSize: 12.0),
                             ),

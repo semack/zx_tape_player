@@ -1,4 +1,3 @@
-import 'package:colour/colour.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +15,7 @@ import 'package:zx_tape_player/ui/home_screen.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/utils/app_center_initializer.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
+import 'package:zx_tape_player/utils/extensions.dart';
 
 import 'ui/search_screen.dart';
 import 'ui/splash_screen.dart';
@@ -68,7 +68,7 @@ class ZxTapePlayer extends StatelessWidget {
         title: Definitions.appTitle,
         theme: ThemeData(
           primaryColor: Colors.white,
-          scaffoldBackgroundColor: Colour('#546B7F'),
+          scaffoldBackgroundColor: HexColor('#546B7F'),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           fontFamily: 'ZxSpectrum',
         ),
