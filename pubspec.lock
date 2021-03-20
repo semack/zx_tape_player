@@ -928,7 +928,7 @@ packages:
       name: zx_tape_to_wav
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0+1"
+    version: "3.0.1+5"
 sdks:
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=2.0.0"

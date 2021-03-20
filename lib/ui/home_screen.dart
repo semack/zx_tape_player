@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
+import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -120,19 +123,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () async {
                       FilePicker.platform.clearTemporaryFiles();
                       final result = await FilePicker.platform.pickFiles(
-                        type: FileType.any,
-                        allowCompression: false,
-                        allowMultiple: false,
-                        //allowedExtensions: Definitions.supportedTapeExtensions
-                      );
+                          type: FileType.any,
+                          allowCompression: false,
+                          allowMultiple: false);
                       if (result != null) {
-                        PlatformFile file = result.files.first;
-                        if (Definitions.supportedTapeExtensions.any((element) =>
-                            element.toLowerCase() ==
-                            file.extension.toLowerCase())) {
+                        PlatformFile selection = result.files.first;
+                        var file = File(selection.path);
+                        var tape = await ZxTape.create(await file.readAsBytes());
+                        if (tape.tapeType != TapeType.unknown) {
                           Navigator.pushNamed(context, PlayerScreen.routeName,
                               arguments:
-                                  PlayerArgs(file.path, isRemote: false));
+                                  PlayerArgs(selection.path, isRemote: false));
                         } else {
                           final snackBar = SnackBar(
                             backgroundColor: HexColor('#D9512D'),
