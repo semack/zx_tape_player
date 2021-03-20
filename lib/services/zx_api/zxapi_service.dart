@@ -28,9 +28,9 @@ class ZxApiService implements BackendService {
       "https://archive.org/download/zx-spectrum-tosec-set-v-2020-02-18-lady-eklipse/%s.zip%s";
   static const _termsUrl = '/suggest/%s';
   static const _itemsUrl = '/search?query=%s&mode=tiny' +
-      '&sort=rel_desc&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
+      '&sort=rel_desc&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _letterUrl = '/games/byletter/%s?mode=tiny' +
-      '&availability=Available&contenttype=SOFTWARE&size=%s&offset=%s';
+      '&contenttype=SOFTWARE&size=%s&offset=%s';
   static const _itemUrl = '/games/%s?mode=full';
   static const _fileCheckUrl = '/filecheck/%s';
   static const _externalUrl =
@@ -51,7 +51,8 @@ class ZxApiService implements BackendService {
         return result;
       }
     }
-    var jsonResponse = await _helper.get(_termsUrl.format([query.safeEncode()]));
+    var jsonResponse =
+        await _helper.get(_termsUrl.format([query.safeEncode()]));
     result = (jsonResponse as List)
         .map((e) => TermDto.fromJson(e))
         .where((element) => element.type == _contentType)
