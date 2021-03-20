@@ -40,24 +40,6 @@ class HexColor extends Color {
 extension EncodeStringExtension on String
 {
   String safeEncode(){
-    String output = this;
-
-    var detectHash = this.contains('#');
-    var detectAnd = this.contains('&');
-    var detectSlash = this.contains('/');
-
-    if (detectHash == true) {
-      output = output.replaceAll('#', '%23');
-    }
-
-    if (detectAnd == true) {
-      output = output.replaceAll('#', '%26');
-    }
-
-    if (detectSlash == true) {
-      output = output.replaceAll('#', '%2F');
-    }
-
-    return output;
+    return Uri.encodeQueryComponent(this.replaceAll('/', ' '));
   }
 }
