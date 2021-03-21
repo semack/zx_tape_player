@@ -116,11 +116,14 @@ class ZxApiService implements BackendService {
               e.source.genre,
               e.source.score?.votes,
               e.source.score?.score,
-              (e.source.originalPrice?.amount ??
-                  '' +
-                      (e.source.originalPrice?.currency ?? '')
-                          .replaceAll('/', '')
-                          .replaceAll('NA', '')),
+              e.source.originalPrice != null
+                  ? (e.source.originalPrice?.amount != null
+                          ? e.source.originalPrice.amount +
+                              e.source.originalPrice.currency
+                          : '')
+                      .replaceAll('/', '')
+                      .replaceAll('NA', '')
+                  : '',
               e.source.remarks,
               e.source.authors
                   .where((a) =>

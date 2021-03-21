@@ -205,11 +205,11 @@ Widget _buildInfoWidget(
                             ),
                             SizedBox(width: 8),
                             Icon(
-                              Icons.attach_money_rounded,
+                              Icons.account_balance_wallet_rounded,
                               color: HexColor('#B1B8C1'),
-                              size: 14.0,
+                              size: 12.0,
                             ),
-                            SizedBox(width: 2),
+                            SizedBox(width: 5.0),
                             Text(
                               model.price.isNullOrEmpty()
                                   ? tr('na')
