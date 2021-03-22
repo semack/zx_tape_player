@@ -4,8 +4,8 @@ import 'dart:typed_data';
 
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -130,18 +130,14 @@ class _TapePlayerState extends State<TapePlayer> {
                           children: [
                             Column(children: [
                               GestureDetector(
-                                onLongPress: _bloc.software.isRemote
-                                    ? () async {
-                                        HapticFeedback.vibrate();
-                                        if (await _bloc
-                                            .downloadSelectedTape()) {
-                                          BarHelper.showSnackBar(
-                                              message:
-                                                  tr('download_tape_success'),
-                                              context: context);
-                                        }
-                                      }
-                                    : null,
+                                onLongPress: () async {
+                                  HapticFeedback.vibrate();
+                                  if (await _bloc.downloadSelectedTape()) {
+                                    BarHelper.showSnackBar(
+                                        message: tr('download_tape_success'),
+                                        context: context);
+                                  }
+                                },
                                 child: Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 16.0),
@@ -488,18 +484,30 @@ class _TapePlayerBloc {
   Future<bool> downloadSelectedTape() async {
     if (!software.isRemote) return false;
 
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
+    if (Platform.isAndroid) {
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+        status = await Permission.storage.status;
+      }
+      if (!status.isGranted) return false;
     }
-
     var url = files[_currentFileIndex];
     var bytes = await _backendService.downloadTape(url);
-    var filePath = Definitions.downloadedTapeDir.format(
-        [(await DownloadsPathProvider.downloadsDirectory).path, basename(url)]);
 
-    var dir = Directory(dirname(filePath));
-    if (!dir.existsSync()) await dir.create(recursive: true);
+    String filePath;
+    if (Platform.isAndroid) {
+      var storagePath = await ExtStorage.getExternalStoragePublicDirectory(
+          ExtStorage.DIRECTORY_DOWNLOADS);
+      filePath =
+          '%s/%s/%s'.format([storagePath, Definitions.appTitle, basename(url)]);
+      var dir = Directory(dirname(filePath));
+      if (!dir.existsSync()) await dir.create(recursive: true);
+    } else {
+      var storagePath = (await getApplicationDocumentsDirectory()).path;
+      filePath = '%s/%s'.format([storagePath, basename(url)]);
+    }
+    if (filePath.isNullOrEmpty()) return false;
 
     await File(filePath)
         .writeAsBytes(bytes, mode: FileMode.writeOnly, flush: true);

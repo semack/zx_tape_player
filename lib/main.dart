@@ -25,12 +25,13 @@ final GetIt getIt = GetIt.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
   FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
   FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
   FlutterStatusbarcolor.setNavigationBarColor(Colors.black);
   FlutterStatusbarcolor.setNavigationBarWhiteForeground(true);
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   getIt.registerLazySingleton<BackendService>(() => ZxApiService());
   getIt.registerLazySingleton<SilenceControlService>(

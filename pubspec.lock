@@ -204,13 +204,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  downloads_path_provider_28:
-    dependency: "direct main"
-    description:
-      name: downloads_path_provider_28
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   easy_localization:
     dependency: "direct main"
     description:
@@ -225,6 +218,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.2"
+  ext_storage:
+    dependency: "direct main"
+    description:
+      name: ext_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   fake_async:
     dependency: transitive
     description:

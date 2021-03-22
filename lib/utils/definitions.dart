@@ -6,9 +6,6 @@ class Definitions {
   static const pageSize = 30;
   static const supportedTapeExtensions = <String>['tap', 'tzx'];
   static const tapeDir = '%s/tapes';
-  static const downloadedTapeDir = '%s/' + appTitle + '/%s';
-
-  // static const downloadedTapeDir = '%s/%s';
   static const wafFilePath = '%s/%s.wav';
   static const wavFrequency = 44100;
   static const wavCacheLimitMb = 100;
