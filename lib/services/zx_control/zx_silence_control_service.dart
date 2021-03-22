@@ -10,17 +10,20 @@ class ZxSilenceControlService implements SilenceControlService {
   @override
   Future start() async {
     if (!Platform.isAndroid || _ringerMode != null) return;
-    var isAccessGranted = await FlutterMute.isNotificationPolicyAccessGranted;
-    if (isAccessGranted) {
-      _ringerMode = await FlutterMute.getRingerMode();
-      await FlutterMute.setRingerMode(RingerMode.Silent);
-    } else {
+    var isGranted = await FlutterMute.isNotificationPolicyAccessGranted;
+    if (!isGranted) {
       var prefs = await SharedPreferences.getInstance();
       var initialized = prefs.getBool('dndAccessInitialized');
       if (initialized == null || !initialized) {
         await prefs.setBool('dndAccessInitialized', true);
         await FlutterMute.openNotificationPolicySettings();
-      }
+        isGranted = await FlutterMute.isNotificationPolicyAccessGranted;
+      } else
+        return;
+    }
+    if (isGranted) {
+      _ringerMode = await FlutterMute.getRingerMode();
+      await FlutterMute.setRingerMode(RingerMode.Silent);
     }
   }
 

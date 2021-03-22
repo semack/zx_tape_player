@@ -8,6 +8,7 @@ import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -129,13 +130,18 @@ class _TapePlayerState extends State<TapePlayer> {
                           children: [
                             Column(children: [
                               GestureDetector(
-                                onLongPress: () async {
-                                  if (await _bloc.downloadSelectedTape()) {
-                                    BarHelper.showSnackBar(
-                                        message: tr('download_tape_success'),
-                                        context: context);
-                                  }
-                                },
+                                onLongPress: _bloc.software.isRemote
+                                    ? () async {
+                                        HapticFeedback.vibrate();
+                                        if (await _bloc
+                                            .downloadSelectedTape()) {
+                                          BarHelper.showSnackBar(
+                                              message:
+                                                  tr('download_tape_success'),
+                                              context: context);
+                                        }
+                                      }
+                                    : null,
                                 child: Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 16.0),
@@ -495,7 +501,8 @@ class _TapePlayerBloc {
     var dir = Directory(dirname(filePath));
     if (!dir.existsSync()) await dir.create(recursive: true);
 
-    await File(filePath).writeAsBytes(bytes, flush: true);
+    await File(filePath)
+        .writeAsBytes(bytes, mode: FileMode.writeOnly, flush: true);
 
     return true;
   }
