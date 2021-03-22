@@ -116,8 +116,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   onSelected: (value) async {
                     if (value.title == tr('open_tape_web')) {
                       await _bloc.openExternalUrl(model.id);
-                    } else if (value.title == tr('share_tape')) {}
-                    await _bloc.shareExternalUrl(model);
+                    } else if (value.title == tr('share_tape')) {
+                      await _bloc.shareExternalUrl(model);
+                    }
                   },
                   itemBuilder: (BuildContext context) {
                     return choices.map((Choice choice) {
@@ -142,15 +143,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     }).toList();
                   },
                 ),
-          // model.isRemote
-          //     ? IconButton(
-          //         icon: Icon(
-          //           Icons.open_in_new_rounded,
-          //           color: Colors.white,
-          //           size: 16,
-          //         ),
-          //         onPressed: () async => _bloc.openExternalUrl(model.id))
-          //     : SizedBox.shrink()
         ],
         title: Marquee(
           child: Text(model.title,
