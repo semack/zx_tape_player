@@ -4,7 +4,7 @@ Just another tape player has written in [Flutter](https://flutter.dev/) for iOS 
 
 ## Public Beta 
 
-- **Android** users can download the Open Beta from [Google Play](https://play.google.com/store/apps/details?id=com.tekdeq.zxtapeplayer).
+- **Android** users can download the Open Beta from [Google Play](https://play.google.com/store/apps/details?id=com.tekdeq.zxtapeplayer);
 - **iOS**  version ***is not available*** for testing yet regarding the complication of making the AdHoc builds for new testers. The Beta can built singly using the code from the repository.
 
 <a href='https://play.google.com/store/apps/details?id=com.tekdeq.zxtapeplayer'><img width='200' alt='Get ZX Tape Player on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
