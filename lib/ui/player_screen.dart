@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:marquee_widget/marquee_widget.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
@@ -28,6 +29,14 @@ class PlayerScreen extends StatefulWidget {
   _PlayerScreenState createState() {
     return _PlayerScreenState();
   }
+}
+
+class Choice {
+  const Choice({this.title, this.icon, this.pressed});
+
+  final String title;
+  final IconData icon;
+  final Function pressed;
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
@@ -78,6 +87,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
         });
   }
 
+  List<Choice> choices = <Choice>[
+    Choice(title: tr('open_tape_web'), icon: Icons.open_in_new_rounded),
+    Choice(title: tr('share_tape'), icon: Icons.share_rounded),
+  ];
+
   Widget _buildScreen(
       BuildContext context, ApiResponse<SoftwareModel> response) {
     var model = response.data;
@@ -92,16 +106,51 @@ class _PlayerScreenState extends State<PlayerScreen> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actionsIconTheme:
+            IconThemeData(size: 30.0, color: Colors.white, opacity: 10.0),
         actions: [
-          model.isRemote
-              ? IconButton(
-                  icon: Icon(
-                    Icons.open_in_new_rounded,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                  onPressed: () async => _bloc.openExternalUrl(model.id))
-              : SizedBox.shrink()
+          (!model.isRemote)
+              ? SizedBox.shrink()
+              : PopupMenuButton<Choice>(
+                  color: HexColor('#3B4E63'),
+                  onSelected: (value) async {
+                    if (value.title == tr('open_tape_web')) {
+                      await _bloc.openExternalUrl(model.id);
+                    } else if (value.title == tr('share_tape')) {}
+                    await _bloc.shareExternalUrl(model);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return choices.map((Choice choice) {
+                      return PopupMenuItem<Choice>(
+                        value: choice,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              choice.icon,
+                              size: 16.0,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 16.0,
+                            ),
+                            Text(choice.title,
+                                style: TextStyle(
+                                    letterSpacing: -0.5, color: Colors.white)),
+                          ],
+                        ),
+                      );
+                    }).toList();
+                  },
+                ),
+          // model.isRemote
+          //     ? IconButton(
+          //         icon: Icon(
+          //           Icons.open_in_new_rounded,
+          //           color: Colors.white,
+          //           size: 16,
+          //         ),
+          //         onPressed: () async => _bloc.openExternalUrl(model.id))
+          //     : SizedBox.shrink()
         ],
         title: Marquee(
           child: Text(model.title,
@@ -312,6 +361,11 @@ class _PlayerScreenBloc {
   Future openExternalUrl(String id) async {
     var url = await _backendService.getExternalUrl(id);
     await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+  }
+
+  Future shareExternalUrl(SoftwareModel model) async {
+    var url = await _backendService.getExternalUrl(model.id);
+    await Share.share(url, subject: model.title);
   }
 
   Future refresh() async {

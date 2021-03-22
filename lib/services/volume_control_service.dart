@@ -1,4 +1,3 @@
-abstract class VolumeControlService
-{
+abstract class VolumeControlService {
   Future setOptimalVolume();
 }

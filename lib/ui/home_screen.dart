@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
 import 'package:zx_tape_player/ui/player_screen.dart';
 import 'package:zx_tape_player/ui/search_screen.dart';
+import 'package:zx_tape_player/utils/bar_helper.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
@@ -129,28 +130,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (result != null) {
                         PlatformFile selection = result.files.first;
                         var file = File(selection.path);
-                        var tape = await ZxTape.create(await file.readAsBytes());
+                        var tape =
+                            await ZxTape.create(await file.readAsBytes());
                         if (tape.tapeType != TapeType.unknown) {
                           Navigator.pushNamed(context, PlayerScreen.routeName,
                               arguments:
                                   PlayerArgs(selection.path, isRemote: false));
                         } else {
-                          final snackBar = SnackBar(
-                            backgroundColor: HexColor('#D9512D'),
-                            content: Text(
-                              tr('invalid_file_format').format([
-                                Definitions.supportedTapeExtensions
-                                    .map((e) => '.' + e.toUpperCase())
-                                    .join(', ')
-                              ]),
-                              style: TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                          Future.delayed(const Duration(), () {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          });
+                          var message = tr('invalid_file_format').format([
+                            Definitions.supportedTapeExtensions
+                                .map((e) => '.' + e.toUpperCase())
+                                .join(', ')
+                          ]);
+                          BarHelper.showSnackBar(
+                              message: message,
+                              barType: SnackBarType.error,
+                              context: context);
                         }
                       }
                     },

@@ -33,9 +33,12 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   getIt.registerLazySingleton<BackendService>(() => ZxApiService());
-  getIt.registerLazySingleton<SilenceControlService>(() => ZxSilenceControlService());
-  getIt.registerLazySingleton<WakeLockControlService>(() => ZxWakeLockControlService());
-  getIt.registerLazySingleton<VolumeControlService>(() => ZxVolumeControlService());
+  getIt.registerLazySingleton<SilenceControlService>(
+      () => ZxSilenceControlService());
+  getIt.registerLazySingleton<WakeLockControlService>(
+      () => ZxWakeLockControlService());
+  getIt.registerLazySingleton<VolumeControlService>(
+      () => ZxVolumeControlService());
 
   await AppCenterInitializer.initialize();
   await EasyLocalization.ensureInitialized();

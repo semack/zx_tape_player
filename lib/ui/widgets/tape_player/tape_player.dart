@@ -4,12 +4,14 @@ import 'dart:typed_data';
 
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/software_model.dart';
@@ -22,6 +24,7 @@ import 'package:zx_tape_player/ui/widgets/tape_player/models/position_data.dart'
 import 'package:zx_tape_player/ui/widgets/tape_player/models/progress_model.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/models/tape_player_data.dart';
 import 'package:zx_tape_player/ui/widgets/tape_player/seek_bar.dart';
+import 'package:zx_tape_player/utils/bar_helper.dart';
 import 'package:zx_tape_player/utils/definitions.dart';
 import 'package:zx_tape_player/utils/extensions.dart';
 import 'package:zx_tape_to_wav/zx_tape_to_wav.dart';
@@ -125,52 +128,64 @@ class _TapePlayerState extends State<TapePlayer> {
                         return Column(
                           children: [
                             Column(children: [
-                              Container(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 16.0),
-                                  width: double.infinity,
-                                  height: 80.0,
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        color: HexColor('#172434'),
-                                        borderRadius:
-                                            BorderRadius.circular(3.5),
-                                      ),
-                                      child: CarouselSlider(
-                                        items: _bloc.files
-                                            .map((filePath) => Container(
-                                                  padding: EdgeInsets.all(12.0),
-                                                  child: Center(
-                                                      child: Text(
-                                                    basename(filePath),
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12.0),
-                                                    textAlign: TextAlign.center,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 3,
-                                                  )),
-                                                ))
-                                            .toList(),
-                                        options: CarouselOptions(
-                                            scrollPhysics: _bloc
-                                                            .player.position !=
-                                                        Duration.zero ||
-                                                    _bloc.files.length == 1 ||
-                                                    tapeLoading
-                                                ? const NeverScrollableScrollPhysics()
-                                                : const AlwaysScrollableScrollPhysics(),
-                                            autoPlay: false,
-                                            enlargeCenterPage: false,
-                                            aspectRatio: 2.0,
-                                            viewportFraction: 1.0,
-                                            initialPage: _bloc.currentFileIndex,
-                                            onPageChanged:
-                                                (index, reason) async {
-                                              _bloc.currentFileIndex = index;
-                                            }),
-                                      ))),
+                              GestureDetector(
+                                onLongPress: () async {
+                                  if (await _bloc.downloadSelectedTape()) {
+                                    BarHelper.showSnackBar(
+                                        message: tr('download_tape_success'),
+                                        context: context);
+                                  }
+                                },
+                                child: Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.0),
+                                    width: double.infinity,
+                                    height: 80.0,
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          color: HexColor('#172434'),
+                                          borderRadius:
+                                              BorderRadius.circular(3.5),
+                                        ),
+                                        child: CarouselSlider(
+                                          items: _bloc.files
+                                              .map((filePath) => Container(
+                                                    padding:
+                                                        EdgeInsets.all(12.0),
+                                                    child: Center(
+                                                        child: Text(
+                                                      basename(filePath),
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12.0),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 3,
+                                                    )),
+                                                  ))
+                                              .toList(),
+                                          options: CarouselOptions(
+                                              scrollPhysics: _bloc.player
+                                                              .position !=
+                                                          Duration.zero ||
+                                                      _bloc.files.length == 1 ||
+                                                      tapeLoading
+                                                  ? const NeverScrollableScrollPhysics()
+                                                  : const AlwaysScrollableScrollPhysics(),
+                                              autoPlay: false,
+                                              enlargeCenterPage: false,
+                                              aspectRatio: 2.0,
+                                              viewportFraction: 1.0,
+                                              initialPage:
+                                                  _bloc.currentFileIndex,
+                                              onPageChanged:
+                                                  (index, reason) async {
+                                                _bloc.currentFileIndex = index;
+                                              }),
+                                        ))),
+                              ),
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: _bloc.files.map((filePath) {
@@ -244,21 +259,10 @@ class _TapePlayerState extends State<TapePlayer> {
     if (tapePlayerData != null) {
       if (tapePlayerData.state == TapePlayerState.Error &&
           _bloc.filePath == tapePlayerData.filePath) {
-        final snackBar = SnackBar(
-          backgroundColor: HexColor('#D9512D'),
-          content: Text(
-            tr('error_converting_tape_file'),
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-        );
-        Future.delayed(const Duration(), () {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        });
-      } else {
-        Future.delayed(const Duration(), () {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        });
+        BarHelper.showSnackBar(
+            message: tr('error_converting_tape_file'),
+            barType: SnackBarType.error,
+            context: context);
       }
     }
 
@@ -473,6 +477,27 @@ class _TapePlayerBloc {
         .then((value) => _player?.dispose())
         .then((value) => _progressController?.close())
         .then((value) => _tapePlayerController?.close());
+  }
+
+  Future<bool> downloadSelectedTape() async {
+    if (!software.isRemote) return false;
+
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+
+    var url = files[_currentFileIndex];
+    var bytes = await _backendService.downloadTape(url);
+    var filePath = Definitions.downloadedTapeDir.format(
+        [(await DownloadsPathProvider.downloadsDirectory).path, basename(url)]);
+
+    var dir = Directory(dirname(filePath));
+    if (!dir.existsSync()) await dir.create(recursive: true);
+
+    await File(filePath).writeAsBytes(bytes, flush: true);
+
+    return true;
   }
 
   Future _takeControl() async {

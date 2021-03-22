@@ -37,9 +37,8 @@ class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
 
-extension EncodeStringExtension on String
-{
-  String safeEncode(){
+extension EncodeStringExtension on String {
+  String safeEncode() {
     return Uri.encodeQueryComponent(this.replaceAll('/', ' '));
   }
 }

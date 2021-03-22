@@ -1,7 +1,7 @@
 {
-  "zx_tape_player":"ZX TAPE PLAYER",
+  "zx_tape_player": "ZX TAPE PLAYER",
   "app_title": "ZX Tape Player",
-  "copyright" : "© 2021 Copyright by\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nAll rights reserved.\n",
+  "copyright": "© 2021 Copyright by\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nAll rights reserved.\n",
   "version": "Version %s.%s",
   "find_tape": "Find the desired tape",
   "search_hint": "Type text to search for here",
@@ -22,5 +22,8 @@
   "retry": "Retry",
   "data_retrieving_error": "Data retrieving error!",
   "error_converting_tape_file": "Error converting tape to the sound file.",
-  "invalid_file_format": "Invalid file format. The app supports %s files only."
+  "invalid_file_format": "Invalid file format. The app supports %s files only.",
+  "open_tape_web": "Open in browser",
+  "share_tape": "Share",
+  "download_tape_success": "The tape has been downloaded successfully."
 }
