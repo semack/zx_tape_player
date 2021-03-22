@@ -22,5 +22,8 @@
   "retry": "Probeer opnieuw",
   "data_retrieving_error": "Fout bij het ophalen van gegevens!",
   "error_converting_tape_file": "Fout bij het converteren van tape naar het geluidsbestand",
-  "invalid_file_format": "Ongeldig bestandsformaat. De app ondersteunt alleen %s-bestanden."
+  "invalid_file_format": "Ongeldig bestandsformaat. De app ondersteunt alleen %s-bestanden.",
+  "open_tape_web": "Open in de browser",
+  "share_tape": "Delen",
+  "download_tape_success": "De tape is succesvol gedownload."
 }

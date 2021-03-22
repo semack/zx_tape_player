@@ -22,5 +22,8 @@
   "retry": "Opakovat",
   "data_retrieving_error": "Chyba načítání dat!",
   "error_converting_tape_file": "Chyba při převodu pásky na zvukový soubor.",
-  "invalid_file_format": "Neplatný formát souboru. Aplikace podporuje pouze soubory %s"
+  "invalid_file_format": "Neplatný formát souboru. Aplikace podporuje pouze soubory %s",
+  "open_tape_web": "Otevřít v prohlížeči",
+  "share_tape": "Podíl",
+  "download_tape_success": "Páska byla úspěšně stažena."
 }

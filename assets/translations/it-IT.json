@@ -22,5 +22,8 @@
   "retry": "Riprova",
   "data_retrieving_error": "Errore nel recupero dati!",
   "error_converting_tape_file": "Errore durante la conversione del nastro nel file audio.",
-  "invalid_file_format": "Formato file non valido. L'app supporta solo i file %s."
+  "invalid_file_format": "Formato file non valido. L'app supporta solo i file %s.",
+  "open_tape_web": "Apri nel browser",
+  "share_tape": "Condividere",
+  "download_tape_success": "Il nastro è stato scaricato con successo."
 }

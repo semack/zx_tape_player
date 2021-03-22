@@ -22,5 +22,8 @@
   "retry": "Retentar",
   "data_retrieving_error": "Erro na leitura!",
   "error_converting_tape_file": "Erro ao converter fita em arquivo de som.",
-  "invalid_file_format": "Formato de arquivo inválido. O aplicativo oferece suporte apenas a arquivos %s"
+  "invalid_file_format": "Formato de arquivo inválido. O aplicativo oferece suporte apenas a arquivos %s",
+  "open_tape_web": "Abra no navegador",
+  "share_tape": "Compartilhar",
+  "download_tape_success": "A fita foi baixada com sucesso."
 }
