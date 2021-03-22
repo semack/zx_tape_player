@@ -1,7 +1,5 @@
 # ZX Tape Player [![License GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-green.svg)](https://github.com/semack/zx_tape_player/blob/master/LICENSE.md) [![Google Play](https://github.com/semack/zx_tape_player/actions/workflows/google-play-release.yml/badge.svg)](https://github.com/semack/zx_tape_player/actions/workflows/google-play-release.yml)
 
-Just another tape player has written in [Flutter](https://flutter.dev/) for iOS and Android. The application is able to find tapes and theirs images using [ZxInfo.dk](https://zxapi.dk) [Public API](https://api.zxinfo.dk/v3/) and upload them to [ZX-Spectrum compatible computers](https://en.wikipedia.org/wiki/List_of_ZX_Spectrum_clones) by the audio output of the smartphone. Now it supports [.TAP](http://fileformats.archiveteam.org/wiki/TAP_(ZX_Spectrum)) and [.TZX](http://k1.spdns.de/Develop/Projects/zasm/Info/TZX%20format.html) tape images only.
-
 ZX Tape Player is a utility that converts your device into a virtual cassette player for the British home computer ZX Spectrum that was quite popular in many countries from 1982 and forward. This player lets you play back virtual tapes in the TZX or TAP format used by many emulators, and lets you play them back via the jack/headphone plug into your ZX Spectrum.
 
 You can select your local (on device) TAP or TZX files to play back, or you can use the build in search engine to find information about and playback your old favourite ZX Spectrum program as provided by the online Open Source API ZXInfo.
