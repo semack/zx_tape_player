@@ -28,6 +28,6 @@ You can reach me via my [email](mailto://semack@gmail.com).
 ## Thanks to
 - [Thomas Kolbeck Kjær Heckmann](mailto:zxinfo_dev@kolbeck.dk) for providing his [API](https://api.zxinfo.dk/v3/#/) to [https://zxinfo.dk](https://zxinfo.dk) database and involvement to the project;
 - Pavlo Hladkov for the UI/UX of the application;
-- Sergey Kireev for help in stabilizing the sound converter for custom loaders;
+- Sergey Kireev for help in stabilizing the sound converter with custom loaders;
 - To anyone who doesn't stay abroad the project.
 
