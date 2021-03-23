@@ -487,8 +487,7 @@ class _TapePlayerBloc {
     if (Platform.isAndroid) {
       var status = await Permission.storage.status;
       if (!status.isGranted) {
-        await Permission.storage.request();
-        status = await Permission.storage.status;
+        status = await Permission.storage.request();
       }
       if (!status.isGranted) return false;
     }
