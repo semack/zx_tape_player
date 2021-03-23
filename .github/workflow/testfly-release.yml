@@ -1,0 +1,78 @@
+name: Testfly
+
+on:
+  release:
+    types: [published]
+
+jobs:
+    release:
+      name: Publish to Testfly
+
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v1
+
+        - name: Setup Java
+          uses: actions/setup-java@v1
+          with:
+            java-version: '12.x'
+
+        - name: Setup Flutter
+          uses: subosito/flutter-action@v1.4.0
+          with:
+            channel: stable
+
+        - name: Flutter version
+          run: flutter --version
+
+        - name: Cache pub dependencies
+          uses: actions/cache@v2
+          with:
+            path: ${{ env.FLUTTER_HOME }}/.pub-cache
+            key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+            restore-keys: ${{ runner.os }}-pub-
+
+        - name: Download pub dependencies
+          run: flutter pub get
+
+        - name: Run build_runner
+          run: flutter pub run build_runner build --delete-conflicting-outputs
+
+        - name: Run analyzer
+          run: flutter analyze
+
+#        - name: Run tests
+#          run: flutter test
+            
+        - name: Build iOS App 
+          run: flutter build ios --no-codesign --release --no-pub
+          
+        - name: Setup Ruby and download bundle dependencies
+          uses: ruby/setup-ruby@v1
+          with:
+           ruby-version: 2.7.2
+           bundler-cache: true 
+
+        - name: Release Testfly (beta)
+          env:  
+            DELIVER_USERNAME: ${{ secrets.DELIVER_USERNAME }}
+            DELIVER_APP_IDENTIFIER: ${{ secrets.DELIVER_APP_IDENTIFIER }}
+            DELIVER_TEAM_ID: ${{ secrets.DELIVER_TEAM_ID }}
+            DELIVER_DEV_PORTAL_TEAM_ID: ${{ secrets.DELIVER_DEV_PORTAL_TEAM_ID }}
+            DELIVER_APP_ID: ${{ secrets.DELIVER_APP_ID }}
+            MATCH_APP_IDENTIFIER: ${{ secrets.DELIVER_APP_IDENTIFIER }}
+            MATCH_USERNAME: ${{ secrets.DELIVER_USERNAME }}
+            FASTLANE_TEAM_ID: ${{ secrets.DELIVER_DEV_PORTAL_TEAM_ID }}
+            FASTLANE_ITC_TEAM_ID: ${{ secrets.DELIVER_TEAM_ID }}
+            FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+            MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+            MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+            MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
+            APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+            APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
+            APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          run: |
+            bundle exec fastlane match appstore
+            bundle exec fastlane ios beta
