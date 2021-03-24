@@ -44,8 +44,12 @@ platform :ios do
     )
 
     pilot(
+        groups: [
+          'beta'
+          ],
+        distribute_external: true,
         skip_waiting_for_build_processing: true,
-        skip_submission: true
+        skip_submission: false
     )
 
   end
