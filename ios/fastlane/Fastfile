@@ -20,6 +20,10 @@ platform :ios do
   lane :beta do
 
     api_key = app_store_connect_api_key()
+    
+    setup_ci(
+      force: true
+    )
 
     sync_code_signing(
       api_key: api_key,
