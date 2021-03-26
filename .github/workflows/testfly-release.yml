@@ -53,7 +53,7 @@ jobs:
           run: flutter analyze
       
     ios-release:
-      if: (${{ setup.steps.fetch-latest-release.outputs.draft }})
+      if: (${{ needs.setup.fetch-latest-release.outputs.draft }})
       name: Publish to Testfly
       needs: setup
       runs-on: macos-latest
