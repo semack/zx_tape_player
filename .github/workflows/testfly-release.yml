@@ -2,14 +2,23 @@ name: Testfly
 
 on:
   release:
-    types: [published]
+    types: [prereleased, released]
 
 jobs:
-    release:
-      name: Publish to Testfly
-
+    checks:
+      name: Checks
       runs-on: macos-latest
-
+      steps:
+        - name: Fetch Release Information
+          id: fetch-latest-release
+          uses: thebritican/fetch-latest-release@v2.0.0
+          with:
+            github_token: ${{ github.token }}
+      
+    setup:
+      name: Setup enviroment
+      runs-on: macos-latest
+      needs: checks
       steps:
         - name: Checkout
           uses: actions/checkout@v1
@@ -42,18 +51,19 @@ jobs:
 
         - name: Run analyzer
           run: flutter analyze
+      
+    ios-release:
+      if: (${{ setup.steps.fetch-latest-release.outputs.draft }})
+      name: Publish to Testfly
+      needs: setup
+      runs-on: macos-latest
 
+      steps:
 #        - name: Run tests
 #          run: flutter test
             
         - name: Build iOS App 
           run: flutter build ios --no-codesign --release --no-pub
-
-        - name: Fetch Release Information
-          id: fetch-latest-release
-          uses: thebritican/fetch-latest-release@v2.0.0
-          with:
-            github_token: ${{ github.token }}
       
         - name: Release Testfly (beta)
           uses: maierj/fastlane-action@v2.0.1
