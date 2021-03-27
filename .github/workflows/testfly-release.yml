@@ -20,7 +20,7 @@ jobs:
             
         - name: "Check Beta"
           # if: (steps.fetch-latest-release.outputs.prerelease)
-          run: echo "Beta build detected ${{ steps.fetch-latest-release.outputs }} "
+          run: echo "Beta build detected ${{ steps.fetch-latest-release.outputs.prerelease }} "
           env:
             BUILD_TYPE: beta
             
