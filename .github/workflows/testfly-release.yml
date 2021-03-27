@@ -19,10 +19,16 @@ jobs:
             BUILD_TYPE: production
             
         - name: "Check Beta"
-          if: ${{ steps.fetch-latest-release.outputs.prerelease }}
+          if: ${{ steps.fetch-latest-release.outputs.prerelease && !steps.fetch-latest-release.outputs.draft }}
           run: echo "Beta build detected"
           env:
             BUILD_TYPE: beta
+            
+        - name: "Check Production"
+          if: ${{ !steps.fetch-latest-release.outputs.prerelease && !steps.fetch-latest-release.outputs.draft }}
+          run: echo "Production build detected"
+          env:
+            BUILD_TYPE: production
             
         - name: Checkout
           uses: actions/checkout@v1
