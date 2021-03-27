@@ -24,7 +24,7 @@ jobs:
             
         - name: "Check Production"
           if: steps.fetch-latest-release.outputs.prerelease != 'true' && steps.fetch-latest-release.outputs.draft != 'true'
-          run: echo "Beta build detected"
+          run: echo "Production build detected"
           env:
             BUILD_TYPE: production
             
