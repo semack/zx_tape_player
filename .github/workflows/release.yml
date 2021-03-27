@@ -68,6 +68,9 @@ jobs:
             echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
             echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
             echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
+            
+        - name: Update Release Notes
+             echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
       
         - name: Build Android App 
           run: flutter build appbundle --release --no-pub
