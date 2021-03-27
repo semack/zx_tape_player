@@ -15,21 +15,19 @@ jobs:
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ github.token }}
+          env:
+            BUILD_TYPE: production
             
         - name: "Check Beta"
-          if: steps.fetch-latest-release.outputs.prerelease == 'true'
+          if: (steps.fetch-latest-release.outputs.prerelease)
           run: echo "Beta build detected"
           env:
             BUILD_TYPE: beta
             
-        - name: "Check Production"
-          if: steps.fetch-latest-release.outputs.prerelease != 'true' && steps.fetch-latest-release.outputs.draft != 'true'
-          run: echo "Production build detected"
-          env:
-            BUILD_TYPE: production
-            
         - name: Checkout
           uses: actions/checkout@v1
+          with: 
+            ref: ${{ steps.latest.outputs.tag_name }}
 
         - name: Setup Java
           uses: actions/setup-java@v1
