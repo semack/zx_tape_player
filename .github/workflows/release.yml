@@ -11,7 +11,7 @@ jobs:
       env:
         LANE: production
 
-      steps:            
+      steps:     
         - name: "Check Lane"
           if: ${{ github.event.release.prerelease }}
           run: echo "Lane Beta has been detected"
@@ -23,6 +23,9 @@ jobs:
           with: 
             ref: ${{ steps.latest.outputs.tag_name }}
 
+        - name: PWD
+          run: pwd
+      
         - name: Setup Java
           uses: actions/setup-java@v1
           with:
