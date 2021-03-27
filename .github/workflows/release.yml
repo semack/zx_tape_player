@@ -52,7 +52,7 @@ jobs:
         - name: Run analyzer
           run: flutter analyze
           
-          
+        # ------------- Android ---------------  
           
         - name: Download Android keystore
           id: android_keystore
@@ -69,7 +69,7 @@ jobs:
             echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
             
         - name: Update Release Notes
-             echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
+          run: echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
       
         - name: Build Android App 
           run: flutter build appbundle --release --no-pub
@@ -87,10 +87,8 @@ jobs:
         - name: Interrupt 
           run: lfehfelkhflk
           
+        # --------------- iOS -----------------    
           
-          
-          
-
         - name: Build iOS App 
           run: flutter build ios --release --no-pub --no-codesign 
             
