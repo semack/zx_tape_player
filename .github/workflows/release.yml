@@ -11,7 +11,7 @@ jobs:
       env:
         LANE: production
 
-      steps:            
+      steps:     
         - name: "Check Lane"
           if: ${{ github.event.release.prerelease }}
           run: echo "Lane Beta has been detected"
@@ -23,6 +23,9 @@ jobs:
           with: 
             ref: ${{ steps.latest.outputs.tag_name }}
 
+        - name: PWD
+          run: pwd
+      
         - name: Setup Java
           uses: actions/setup-java@v1
           with:
@@ -52,8 +55,7 @@ jobs:
         - name: Run analyzer
           run: flutter analyze
           
-
-# ------------------ Android ---------------------
+        # ------------- Android ---------------  
           
         - name: Download Android keystore
           id: android_keystore
@@ -70,7 +72,7 @@ jobs:
             echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
             
         - name: Update Release Notes
-             echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
+          run: echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
       
         - name: Build Android App 
           run: flutter build appbundle --release --no-pub
@@ -84,9 +86,12 @@ jobs:
           env:
             SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
             SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-
-# --------------------- IOS ---------------------
-
+            
+        - name: Interrupt 
+          run: lfehfelkhflk
+          
+        # --------------- iOS -----------------    
+          
         - name: Build iOS App 
           run: flutter build ios --release --no-pub --no-codesign 
             
