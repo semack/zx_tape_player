@@ -396,6 +396,7 @@ class _TapePlayerBloc {
       bytes = await File(data.filePath).readAsBytes();
     var tape = await ZxTape.create(bytes);
     var wav = await tape.toWavBytes(
+        audioFilterType: AudioFilterType.bassBoost,
         frequency: Definitions.wavFrequency,
         progress: (percent) {
           var sink = LoadingProgressData(data.filePath, percent);
