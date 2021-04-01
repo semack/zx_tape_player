@@ -54,6 +54,32 @@ jobs:
 
         - name: Run analyzer
           run: flutter analyze
+
+        # --------------- iOS -----------------    
+          
+        - name: Build iOS App 
+          run: flutter build ios --release --no-pub --no-codesign 
+            
+        - name: Publish iOS 
+          uses: maierj/fastlane-action@v2.0.1
+          with:
+            lane: '$LANE'
+            subdirectory: 'ios'
+            bundle-install-path: 'vendor/bundle'
+          env:
+            DELIVER_USERNAME: ${{ secrets.DELIVER_USERNAME }}
+            DELIVER_APP_IDENTIFIER: ${{ secrets.DELIVER_APP_IDENTIFIER }}
+            DELIVER_TEAM_ID: ${{ secrets.DELIVER_TEAM_ID }}
+            DELIVER_DEV_PORTAL_TEAM_ID: ${{ secrets.DELIVER_DEV_PORTAL_TEAM_ID }}
+            DELIVER_APP_ID: ${{ secrets.DELIVER_APP_ID }}
+            FASTLANE_TEAM_ID: ${{ secrets.DELIVER_DEV_PORTAL_TEAM_ID }}
+            FASTLANE_ITC_TEAM_ID: ${{ secrets.DELIVER_TEAM_ID }}
+            FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+            MATCH_APP_IDENTIFIER: ${{ secrets.DELIVER_APP_IDENTIFIER }}
+            MATCH_USERNAME: ${{ secrets.DELIVER_USERNAME }}
+            MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+            MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+   
           
         # ------------- Android ---------------  
           
@@ -86,32 +112,4 @@ jobs:
           env:
             SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
             SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-            
-        - name: Interrupt 
-          run: lfehfelkhflk
-          
-        # --------------- iOS -----------------    
-          
-        - name: Build iOS App 
-          run: flutter build ios --release --no-pub --no-codesign 
-            
-        - name: Publish iOS 
-          uses: maierj/fastlane-action@v2.0.1
-          with:
-            lane: '$LANE'
-            subdirectory: 'ios'
-            bundle-install-path: 'vendor/bundle'
-          env:
-            DELIVER_USERNAME: ${{ secrets.DELIVER_USERNAME }}
-            DELIVER_APP_IDENTIFIER: ${{ secrets.DELIVER_APP_IDENTIFIER }}
-            DELIVER_TEAM_ID: ${{ secrets.DELIVER_TEAM_ID }}
-            DELIVER_DEV_PORTAL_TEAM_ID: ${{ secrets.DELIVER_DEV_PORTAL_TEAM_ID }}
-            DELIVER_APP_ID: ${{ secrets.DELIVER_APP_ID }}
-            FASTLANE_TEAM_ID: ${{ secrets.DELIVER_DEV_PORTAL_TEAM_ID }}
-            FASTLANE_ITC_TEAM_ID: ${{ secrets.DELIVER_TEAM_ID }}
-            FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
-            MATCH_APP_IDENTIFIER: ${{ secrets.DELIVER_APP_IDENTIFIER }}
-            MATCH_USERNAME: ${{ secrets.DELIVER_USERNAME }}
-            MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-            MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
-          
+               
