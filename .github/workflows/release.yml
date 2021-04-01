@@ -12,15 +12,11 @@ jobs:
       steps:     
         - name: "Check Beta"
           if: github.event.release.prerelease == true
-          run: echo "Lane Beta has been detected"
-          env:
-            LANE: beta
+          run: echo "::set-output name=LANE::beta"
             
         - name: "Check Production"
           if: github.event.release.prerelease != true
-          run: echo "Lane Production has been detected"
-          env:
-            LANE: production
+          run: echo "::set-output name=LANE::production"
             
         - name: Checkout
           uses: actions/checkout@v1
