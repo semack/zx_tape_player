@@ -8,23 +8,24 @@ jobs:
     deploy:
       name: Build Release
       runs-on: macos-latest
-      env:
-        LANE: production
 
       steps:     
-        - name: "Check Lane"
+        - name: "Check Beta"
           if: ${{ github.event.release.prerelease }}
           run: echo "Lane Beta has been detected"
           env:
             LANE: beta
             
+        - name: "Check Production"
+          if: ${{ github.event.release.prerelease }}
+          run: echo "Lane Production has been detected"
+          env:
+            LANE: production
+            
         - name: Checkout
           uses: actions/checkout@v1
           with: 
             ref: ${{ steps.latest.outputs.tag_name }}
-
-        - name: PWD
-          run: pwd
       
         - name: Setup Java
           uses: actions/setup-java@v1
