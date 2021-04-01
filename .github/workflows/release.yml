@@ -11,13 +11,13 @@ jobs:
 
       steps:     
         - name: "Check Beta"
-          if: ${{ github.event.release.prerelease }}
+          if: github.event.release.prerelease == true
           run: echo "Lane Beta has been detected"
           env:
             LANE: beta
             
         - name: "Check Production"
-          if: ${{ github.event.release.prerelease }}
+          if: github.event.release.prerelease != true
           run: echo "Lane Production has been detected"
           env:
             LANE: production
