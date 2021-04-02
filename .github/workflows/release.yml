@@ -52,11 +52,14 @@ jobs:
         - name: Run analyzer
           run: flutter analyze
 
-        # --------------- iOS -----------------    
+        # --------------- iOS -----------------           
           
         - name: Build iOS App 
           run: flutter build ios --release --no-pub --no-codesign 
-            
+          
+        - name: Update iOS Changelog
+          run: echo "PILOT_CHANGELOG=${{ github.event.release.body }}" >> $GITHUB_ENV       
+          
         - name: Publish iOS 
           uses: maierj/fastlane-action@v2.0.1
           with:
@@ -99,7 +102,7 @@ jobs:
             echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
             echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
             
-        - name: Update Release Notes
+        - name: Update Android Changelog
           run: echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
       
         - name: Build Android App 
