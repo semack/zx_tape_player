@@ -1,4 +1,4 @@
-name: Release
+name: Apple Store Release
 
 on:
   release:
@@ -51,8 +51,7 @@ jobs:
 
         - name: Run analyzer
           run: flutter analyze
-
-        # --------------- iOS -----------------           
+     
           
         - name: Build iOS App 
           run: flutter build ios --release --no-pub --no-codesign 
@@ -83,35 +82,4 @@ jobs:
             APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
             PILOT_CHANGELOG: ${{ github.event.release.body }}
           
-        # ------------- Android ---------------  
-          
-        - name: Download Android keystore
-          id: android_keystore
-          uses: timheuer/base64-to-file@v1.0.3
-          with:
-            fileName: key.jks
-            encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-
-        - name: Create key.properties
-          run: |
-            echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
-            echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
-            echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
-            echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
-            
-        - name: Build Android App 
-          run: flutter build appbundle --release --no-pub
-          
-        - name: Update Android Changelog
-          run: echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
-      
-        - name: Publish Android
-          uses: maierj/fastlane-action@v2.0.1
-          with:
-            lane: '$LANE'
-            subdirectory: 'android'
-            bundle-install-path: 'vendor/bundle'
-          env:
-            SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
-            SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
                
