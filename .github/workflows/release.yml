@@ -17,9 +17,6 @@ jobs:
         - name: "Check Production"
           if: github.event.release.prerelease != true
           run: echo "LANE=production" >> $GITHUB_ENV
-          
-        - name: Update iOS Changelog
-          run: echo "PILOT_CHANGELOG='${{ github.event.release.body }}'" >> $GITHUB_ENV       
             
         - name: Checkout
           uses: actions/checkout@v1
@@ -84,6 +81,7 @@ jobs:
             APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
             APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
             APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
+            PILOT_CHANGELOG: ${{ github.event.release.body }}
    
           
         # ------------- Android ---------------  
