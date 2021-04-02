@@ -23,6 +23,7 @@ You can reach me via my [email](mailto://semack@gmail.com).
 - [Thomas Kolbeck Kjær Heckmann](mailto:zxinfo_dev@kolbeck.dk) for providing his [API](https://api.zxinfo.dk/v3/#/) to [https://zxinfo.dk](https://zxinfo.dk) database and involvement to the project;
 - Pavlo Hladkov for the UI/UX of the application;
 - Sergey Kireev for help in stabilizing the sound converter with custom loaders;
+- Mikie for his Tapir audio post-processing implementation;
 - To everyone who doesn't stay abroad the project.
 
 ## Screenshots
