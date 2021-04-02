@@ -16,12 +16,6 @@ PLEASE NOTE: This is NOT an emulator and can not run the programs on TAP/TZX fil
 ## Contribute
 Contributions are welcome! Just open an Issue or submit a PR. 
 
-## Screenshots
-<img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/6_en-US.jpeg?raw=true" width="33%"></img>
-
-## License
-Please see [LICENSE.md](https://github.com/semack/zx_tape_player/blob/master/LICENSE.md) for details.
-
 ## Contact
 You can reach me via my [email](mailto://semack@gmail.com).
 
@@ -30,4 +24,7 @@ You can reach me via my [email](mailto://semack@gmail.com).
 - Pavlo Hladkov for the UI/UX of the application;
 - Sergey Kireev for help in stabilizing the sound converter with custom loaders;
 - To everyone who doesn't stay abroad the project.
+
+## Screenshots
+<img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.jpeg?raw=true" width="33%"></img> <img src="https://github.com/semack/zx_tape_player/blob/master/android/fastlane/metadata/android/en-US/images/phoneScreenshots/6_en-US.jpeg?raw=true" width="33%"></img>
 
