@@ -1,19 +1,28 @@
-name: Google Play
+name: Google Play Release
 
 on:
   release:
-    types: [published]
+    types: [prereleased, released]
 
 jobs:
-    release:
-      name: Publish to Goople Play
-
+    deploy:
+      name: Build Release
       runs-on: ubuntu-latest
 
-      steps:
+      steps:     
+        - name: "Check Beta"
+          if: github.event.release.prerelease == true
+          run: echo "LANE=beta" >> $GITHUB_ENV
+            
+        - name: "Check Production"
+          if: github.event.release.prerelease != true
+          run: echo "LANE=production" >> $GITHUB_ENV
+            
         - name: Checkout
           uses: actions/checkout@v1
-
+          with: 
+            ref: ${{ steps.latest.outputs.tag_name }}
+      
         - name: Setup Java
           uses: actions/setup-java@v1
           with:
@@ -42,10 +51,7 @@ jobs:
 
         - name: Run analyzer
           run: flutter analyze
-
-#        - name: Run tests
-#          run: flutter test
-
+          
         - name: Download Android keystore
           id: android_keystore
           uses: timheuer/base64-to-file@v1.0.3
@@ -60,20 +66,19 @@ jobs:
             echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
             echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
             
-        - name: Build Android App Bundle
+        - name: Build Android App 
           run: flutter build appbundle --release --no-pub
           
-        - name: Setup Ruby and download bundle dependencies
-          uses: ruby/setup-ruby@v1
+        - name: Update Android Changelog
+          run: echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
+      
+        - name: Publish Android
+          uses: maierj/fastlane-action@v2.0.1
           with:
-           ruby-version: 2.7.2
-           bundler-cache: true 
-
-        - name: Release to Google Play (beta)
+            lane: '$LANE'
+            subdirectory: 'android'
+            bundle-install-path: 'vendor/bundle'
           env:
             SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
             SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-          run: |
-            bundle exec fastlane supply \
-            --aab build/app/outputs/bundle/release/app-release.aab \
-            --track beta
+               
