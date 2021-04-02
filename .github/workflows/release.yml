@@ -100,12 +100,12 @@ jobs:
             echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
             echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties 
             
-        - name: Update Android Changelog
-          run: echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
-      
         - name: Build Android App 
           run: flutter build appbundle --release --no-pub
           
+        - name: Update Android Changelog
+          run: echo "${{ github.event.release.body }}" > android/fastlane/metadata/android/en-US/changelogs/default.txt 
+      
         - name: Publish Android
           uses: maierj/fastlane-action@v2.0.1
           with:
