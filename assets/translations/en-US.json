@@ -25,5 +25,6 @@
   "invalid_file_format": "Invalid file format. The app supports %s files only.",
   "open_tape_web": "Open in browser",
   "share_tape": "Share",
+  "review_the_app": "Review the app",
   "download_tape_success": "The tape has been downloaded successfully."
 }

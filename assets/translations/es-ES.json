@@ -25,5 +25,6 @@
   "invalid_file_format": "Formato de archivo inválido. La aplicación solo admite archivos %s",
   "open_tape_web": "Abierta en el navegador",
   "share_tape": "Cuota",
+  "review_the_app": "Dar opinion",
   "download_tape_success": "La cinta se descargó correctamente."
 }

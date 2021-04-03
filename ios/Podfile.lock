@@ -61,6 +61,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - in_app_review (0.2.0):
+    - Flutter
   - just_audio (0.0.1):
     - Flutter
   - package_info (0.0.1):
@@ -96,6 +98,7 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_mute (from `.symlinks/plugins/flutter_mute/ios`)
   - flutter_statusbarcolor_ns (from `.symlinks/plugins/flutter_statusbarcolor_ns/ios`)
+  - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -133,6 +136,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_mute/ios"
   flutter_statusbarcolor_ns:
     :path: ".symlinks/plugins/flutter_statusbarcolor_ns/ios"
+  in_app_review:
+    :path: ".symlinks/plugins/in_app_review/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   package_info:
@@ -167,6 +172,7 @@ SPEC CHECKSUMS:
   flutter_mute: 97ee77efe66098c5b5c4fcc740e78dd944c8f5e0
   flutter_statusbarcolor_ns: 68a360889d88d7915ae524e422aeab62e4063804
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -91,6 +92,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   List<Choice> choices = <Choice>[
     Choice(title: tr('open_tape_web'), icon: Icons.open_in_new_rounded),
     Choice(title: tr('share_tape'), icon: Icons.share_rounded),
+    Choice(title: tr('review_the_app'), icon: Icons.rate_review_rounded),
   ];
 
   Widget _buildScreen(
@@ -119,6 +121,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       await _bloc.openExternalUrl(model.id);
                     } else if (value.title == tr('share_tape')) {
                       await _bloc.shareExternalUrl(model);
+                    } else if (value.title == tr('review_the_app')) {
+                      await _bloc.leaveReview();
                     }
                   },
                   itemBuilder: (BuildContext context) {
@@ -363,6 +367,13 @@ class _PlayerScreenBloc {
   Future shareExternalUrl(SoftwareModel model) async {
     var url = await _backendService.getExternalUrl(model.id);
     await Share.share(url, subject: model.title);
+  }
+
+  Future leaveReview() async {
+    final InAppReview inAppReview = InAppReview.instance;
+    if (await inAppReview.isAvailable()) {
+      inAppReview.requestReview();
+    }
   }
 
   Future refresh() async {
