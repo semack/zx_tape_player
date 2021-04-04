@@ -1,8 +1,8 @@
 # ZX Tape Player [![License GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-green.svg)](https://github.com/semack/zx_tape_player/blob/master/LICENSE.md) [![Google Play Release](https://github.com/semack/zx_tape_player/actions/workflows/google-play-release.yml/badge.svg)](https://github.com/semack/zx_tape_player/actions/workflows/google-play-release.yml)
 
-ZX Tape Player is a utility that converts your device into a virtual cassette player for the British home computer ZX Spectrum that was quite popular in many countries from 1982 and forward. This player lets you play back virtual tapes in the TZX or TAP format used by many emulators, and lets you play them back via the jack/headphone plug into your ZX Spectrum.
+ZX Tape Player is a utility that converts your device into a virtual cassette player for the British home computer ZX Spectrum that was quite popular in many countries from 1982 and forward. This player lets you playback virtual tapes in the TZX or TAP format used by many emulators and lets you play them back via the jack/headphone plug into your ZX Spectrum.
 
-You can select your local (on device) TAP or TZX files to play back, or you can use the build in search engine to find information about and playback your old favourite ZX Spectrum program as provided by the online Open Source API ZXInfo.
+The app lets you select TAP or TZX files on your local device to playback, and tries to identify your file and show additional information such as publisher and screenshots - provided by the online Open Source API ZXInfo that contains information for more than 32000 software titles from 1982 and up to date.
 
 PLEASE NOTE: This is NOT an emulator and can not run the programs on TAP/TZX files. In order to run the program, you need a real physical ZX Spectrum connected to your device using the mini-jack lead that came with the machine.
 
