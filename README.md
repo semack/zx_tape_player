@@ -9,7 +9,7 @@ PLEASE NOTE: This is NOT an emulator and can not run the programs on TAP/TZX fil
 ## Public Beta 
 
 - **Android** users can download the Open Beta from [Google Play](https://play.google.com/store/apps/details?id=com.tekdeq.zxtapeplayer);
-- **iOS** users can install Open Beta using [TestFly](https://testflight.apple.com/join/SaoGn65t). The Beta can built singly using the code from the repository.
+- **iOS** users can install Open Beta using [TestFlight](https://testflight.apple.com/join/SaoGn65t). The Beta can built singly using the code from the repository.
 
 <a target='_blank' href='https://play.google.com/store/apps/details?id=com.tekdeq.zxtapeplayer'><img width='200' alt='Get ZX Tape Player on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a><a target='_blank' href="https://testflight.apple.com/join/SaoGn65t" title="ZX Tape Player on TestFly"><img width='200' src="https://beatscratch.io/assets/testflight-badge.png" alt="TestFly"></a>
 
