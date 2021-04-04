@@ -1,4 +1,4 @@
-name: Apple Store Release
+name: TestFlight Release
 
 on:
   release:
