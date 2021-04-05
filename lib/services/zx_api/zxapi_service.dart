@@ -22,8 +22,7 @@ import 'models/term_dto.dart';
 
 class ZxApiService implements BackendService {
   static const _baseUrl = 'https://api.zxinfo.dk/v3';
-  static const _contentBaseUrl2 = 'https://zxinfo.dk/media';
-  static const _contentBaseUrl = 'https://spectrumcomputing.co.uk';
+  static const _contentBaseUrl = 'https://zxinfo.dk/media';
   static const _tapeBaseUrl =
       "https://archive.org/download/zx-spectrum-tosec-set-v-2020-02-18-lady-eklipse/%s.zip%s";
   static const _termsUrl = '/suggest/%s';
@@ -180,7 +179,6 @@ class ZxApiService implements BackendService {
   }
 
   static String _fixScreenShotUrl(String url) {
-    if (url.startsWith('/zxscreens')) return _contentBaseUrl2 + url;
     return _contentBaseUrl + url;
   }
 
