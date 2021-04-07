@@ -170,7 +170,7 @@ class _SearchScreenState extends State<SearchScreen> {
         noItemsFoundBuilder: (BuildContext context) {
           return Center(
             child: Text(
-              tr('no_items_found'),
+              tr('no_suggestions_found'),
               style: TextStyle(
                   fontSize: 14,
                   color: HexColor('#AFB6BB'),
