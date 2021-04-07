@@ -89,15 +89,21 @@ class _PlayerScreenState extends State<PlayerScreen> {
         });
   }
 
-  List<Choice> choices = <Choice>[
-    Choice(title: tr('open_tape_web'), icon: Icons.open_in_new_rounded),
-    Choice(title: tr('share_tape'), icon: Icons.share_rounded),
-    Choice(title: tr('review_the_app'), icon: Icons.rate_review_rounded),
-  ];
-
   Widget _buildScreen(
       BuildContext context, ApiResponse<SoftwareModel> response) {
     var model = response.data;
+
+    List<Choice> choices = <Choice>[
+      Choice(title: tr('open_tape_web'), icon: Icons.open_in_new_rounded),
+      Choice(title: tr('share_tape'), icon: Icons.share_rounded)
+    ];
+
+    Future.sync(() => InAppReview.instance.isAvailable().then((value) {
+          if (value)
+            choices.add(Choice(
+                title: tr('review_the_app'), icon: Icons.rate_review_rounded));
+        }));
+
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -122,7 +128,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     } else if (value.title == tr('share_tape')) {
                       await _bloc.shareExternalUrl(model);
                     } else if (value.title == tr('review_the_app')) {
-                      await _bloc.leaveReview();
+                      await InAppReview.instance.requestReview();
                     }
                   },
                   itemBuilder: (BuildContext context) {
@@ -367,13 +373,6 @@ class _PlayerScreenBloc {
   Future shareExternalUrl(SoftwareModel model) async {
     var url = await _backendService.getExternalUrl(model.id);
     await Share.share(url, subject: model.title);
-  }
-
-  Future leaveReview() async {
-    final InAppReview inAppReview = InAppReview.instance;
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
-    }
   }
 
   Future refresh() async {
