@@ -130,18 +130,14 @@ class _TapePlayerState extends State<TapePlayer> {
                           children: [
                             Column(children: [
                               GestureDetector(
-                                onLongPress: Platform.isIOS
-                                    ? null
-                                    : () async {
-                                        HapticFeedback.vibrate();
-                                        if (await _bloc
-                                            .downloadSelectedTape()) {
-                                          BarHelper.showSnackBar(
-                                              message:
-                                                  tr('download_tape_success'),
-                                              context: context);
-                                        }
-                                      },
+                                onLongPress: () async {
+                                  HapticFeedback.vibrate();
+                                  if (await _bloc.downloadSelectedTape()) {
+                                    BarHelper.showSnackBar(
+                                        message: tr('download_tape_success'),
+                                        context: context);
+                                  }
+                                },
                                 child: Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 16.0),
