@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:share/share.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zx_tape_player/main.dart';
 import 'package:zx_tape_player/models/args/player_args.dart';
@@ -98,12 +99,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
       Choice(title: tr('share_tape'), icon: Icons.share_rounded)
     ];
 
-    Future.sync(() => InAppReview.instance.isAvailable().then((value) {
-          if (value)
-            choices.add(Choice(
-                title: tr('review_the_app'), icon: Icons.rate_review_rounded));
-        }));
-
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -127,8 +122,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       await _bloc.openExternalUrl(model.id);
                     } else if (value.title == tr('share_tape')) {
                       await _bloc.shareExternalUrl(model);
-                    } else if (value.title == tr('review_the_app')) {
-                      await InAppReview.instance.requestReview();
                     }
                   },
                   itemBuilder: (BuildContext context) {
@@ -395,7 +388,29 @@ class _PlayerScreenBloc {
     }
   }
 
-  dispose() {
+  Future _requestReview() async {
+    const key = 'lastReviewDate';
+    var prefs = await SharedPreferences.getInstance();
+    var millisecondsSinceEpoch = prefs.getInt(key);
+    var reviewNeeded = false;
+    if (millisecondsSinceEpoch == null)
+      reviewNeeded = true;
+    else {
+      var lastReviewDate =
+      DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+      if (DateTime.now().difference(lastReviewDate).inDays > 60)
+        reviewNeeded = true;
+    }
+    if (reviewNeeded) {
+      final _inAppReview = InAppReview.instance;
+      var isAvailable = await _inAppReview.isAvailable();
+      if (isAvailable) await _inAppReview.requestReview();
+      prefs.setInt(key, DateTime.now().millisecondsSinceEpoch);
+    }
+  }
+
+  void dispose() {
+    _requestReview();
     _softwareController?.close();
   }
 }
