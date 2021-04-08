@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
@@ -249,26 +248,22 @@ Widget _buildInfoWidget(
                                   fontSize: 12.0),
                             ),
                             SizedBox(width: 20),
-                            Platform.isIOS
-                                ? SizedBox.shrink()
-                                : Icon(
-                                    Icons.account_balance_wallet_rounded,
-                                    color: HexColor('#B1B8C1'),
-                                    size: 12.0,
-                                  ),
+                            Icon(
+                              Icons.account_balance_wallet_rounded,
+                              color: HexColor('#B1B8C1'),
+                              size: 12.0,
+                            ),
                             SizedBox(width: 8),
-                            Platform.isIOS
-                                ? SizedBox.shrink()
-                                : Text(
-                                    model.price.isNullOrEmpty()
-                                        ? tr('na')
-                                        : model.price,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 0.3,
-                                        fontSize: 12.0),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                            Text(
+                              model.price.isNullOrEmpty()
+                                  ? tr('na')
+                                  : model.price,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  letterSpacing: 0.3,
+                                  fontSize: 12.0),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                         ),
                         model.remarks.isNullOrEmpty()
@@ -397,7 +392,7 @@ class _PlayerScreenBloc {
       reviewNeeded = true;
     else {
       var lastReviewDate =
-      DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+          DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
       if (DateTime.now().difference(lastReviewDate).inDays > 60)
         reviewNeeded = true;
     }
