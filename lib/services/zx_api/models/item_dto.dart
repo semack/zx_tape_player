@@ -1030,7 +1030,7 @@ class Releases {
       List<Publishers> publishers,
       List<String> releaseTitles,
       int yearOfRelease,
-      String releasePrice,
+        String releasePrice,
       dynamic budgetPrice,
       dynamic microdrivePrice,
       dynamic diskPrice,
@@ -1066,7 +1066,8 @@ class Releases {
         ? json["releaseTitles"].cast<String>()
         : [];
     _yearOfRelease = json["yearOfRelease"];
-    _releasePrice = json["releasePrice"];
+    if (json["releasePrice"] != null)
+    _releasePrice = json["releasePrice"].toString();
     _budgetPrice = json["budgetPrice"];
     _microdrivePrice = json["microdrivePrice"];
     _diskPrice = json["diskPrice"];
