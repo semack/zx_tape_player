@@ -117,9 +117,8 @@ class ZxApiService implements BackendService {
               e.source.score?.score,
               e.source.originalPrice != null
                   ? (e.source.originalPrice?.amount != null
-                          ? ( e.source.originalPrice.prefix != null && e.source.originalPrice.prefix == 1 
-                             ? e.source.originalPrice.currency + e.source.originalPrice.amount
-                              : e.source.originalPrice.amount + e.source.originalPrice.currency )
+                          ? e.source.originalPrice.amount +
+                              e.source.originalPrice.currency
                           : '')
                       .replaceAll('/', '')
                       .replaceAll('NA', '')
