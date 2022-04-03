@@ -55,7 +55,9 @@ void main() async {
         Locale('pt', 'PT'),
         Locale('ru', 'RU'),
         Locale('sk', 'SK'),
-        Locale('uk', 'UA')
+        Locale('uk', 'UA'),
+        Locale('pl', 'PL'),
+        Locale('sv', 'SE')
       ],
       path: 'assets/translations',
       fallbackLocale: Locale('en', 'US'),
