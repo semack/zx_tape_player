@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:ui';
-
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:share_plus/share_plus.dart';
@@ -100,7 +96,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_outlined,
