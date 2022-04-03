@@ -291,8 +291,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           height: 75.0,
                           padding: EdgeInsets.zero,
                           child: CachedNetworkImage(
-                              imageRenderMethodForWeb:
-                                  ImageRenderMethodForWeb.HttpGet,
+                             // imageRenderMethodForWeb: ImageRenderMethodForWeb.
                               useOldImageOnUrlChange: true,
                               imageUrl: item.iconUrl,
                               imageBuilder: (context, provider) => Container(

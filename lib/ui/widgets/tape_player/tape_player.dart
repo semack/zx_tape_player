@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -486,20 +485,19 @@ class _TapePlayerBloc {
   Future<bool> downloadSelectedTape() async {
     if (!software.isRemote) return false;
 
-    if (Platform.isAndroid) {
       var status = await Permission.storage.status;
       if (!status.isGranted) {
         status = await Permission.storage.request();
+        if (!status.isGranted)
+          return false;
       }
-      if (!status.isGranted) return false;
-    }
+
     var url = files[_currentFileIndex];
     var bytes = await _backendService.downloadTape(url);
 
     String filePath;
     if (Platform.isAndroid) {
-      var storagePath = await ExtStorage.getExternalStoragePublicDirectory(
-          ExtStorage.DIRECTORY_DOWNLOADS);
+      var storagePath = (await getExternalStorageDirectory()).path;
       filePath =
           '%s/%s/%s'.format([storagePath, Definitions.appTitle, basename(url)]);
       var dir = Directory(dirname(filePath));

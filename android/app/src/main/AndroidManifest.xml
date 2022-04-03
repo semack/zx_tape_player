@@ -10,11 +10,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+
     <application
-            android:name="io.flutter.app.FlutterApplication"
+            android:name="${applicationName}"
             android:label="ZX Tape Player"
             android:requestLegacyExternalStorage="true"
             android:icon="@mipmap/ic_launcher">
+        <meta-data
+                android:name="flutterEmbedding"
+                android:value="2" />
         <activity
                 android:name=".MainActivity"
                 android:launchMode="singleTop"

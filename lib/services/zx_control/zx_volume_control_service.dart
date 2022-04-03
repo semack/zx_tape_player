@@ -2,7 +2,7 @@ import 'package:volume_controller/volume_controller.dart';
 import 'package:zx_tape_player/services/volume_control_service.dart';
 
 class ZxVolumeControlService extends VolumeControlService {
-  var _hasSet = true;
+  var _hasSet = false;
 
   @override
   Future setOptimalVolume() async {
