@@ -1,7 +1,7 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "app_title": "ZX Tape Player",
-  "copyright" : "© 2021 Авторские права:\nАндрей Сёмак, Thomas Heckmann,\nПавел Гладков, Сергей Киреев.\nВсе права защищены.\n",
+  "copyright" : "© 2021-%s Авторские права:\nАндрей Сёмак, Thomas Heckmann,\nПавел Гладков, Сергей Киреев.\nВсе права защищены.\n",
   "version": "Версия %s.%s",
   "find_tape": "Найдите нужную ленту",
   "search_hint": "Введите текст поиска",

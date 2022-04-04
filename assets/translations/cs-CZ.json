@@ -1,7 +1,7 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "app_title": "ZX Tape Player",
-  "copyright" : "© 2021 Andriy S'omak,\nThomas Heckmann, Pavlo Hladkov,\nSergey Kireev.\nVšechna práva vyhrazena.\n",
+  "copyright" : "© 2021-%s Andriy S'omak,\nThomas Heckmann, Pavlo Hladkov,\nSergey Kireev.\nVšechna práva vyhrazena.\n",
   "version": "Verze %s.%s",
   "find_tape": "Vyhledat pásek",
   "search_hint": "Vložte hledaný text",

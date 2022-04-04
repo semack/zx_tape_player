@@ -71,7 +71,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     FutureBuilder<PackageInfo>(
                       builder: (BuildContext context,
                           AsyncSnapshot<PackageInfo> snapshot) {
-                        var copyrightText = tr('copyright');
+                        var copyrightText = tr('copyright')
+                            .format([DateTime.now().year]);
                         if (snapshot.hasData) {
                           copyrightText += tr('version').format([
                             snapshot.data.version,

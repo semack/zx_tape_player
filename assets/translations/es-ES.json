@@ -1,7 +1,7 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "app_title": "ZX Tape Player",
-  "copyright" : "© 2021 Copyright by\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nTodos los derechos reservados.\n",
+  "copyright" : "© 2021-%s Copyright by\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nTodos los derechos reservados.\n",
   "version": "Versión %s.%s",
   "find_tape": "Busca un cassette",
   "search_hint": "Ingresa tu búsqueda aquí",

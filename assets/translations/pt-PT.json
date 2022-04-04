@@ -1,7 +1,7 @@
 {
   "zx_tape_player":"ZX TAPE PLAYER",
   "app_title": "ZX gravador de cassetes",
-  "copyright" : "© 2021 Copyright por\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nTodos os direitos reservados.\n",
+  "copyright" : "© 2021-%s Copyright por\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nTodos os direitos reservados.\n",
   "version": "Versão %s.%s",
   "find_tape": "Pesquisar cassete pretendida",
   "search_hint": "Escreva aqui o texto a pesquisar",

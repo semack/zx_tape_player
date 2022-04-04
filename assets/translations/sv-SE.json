@@ -1,7 +1,7 @@
 {
   "zx_tape_player": "ZX BANDSPELARE",
   "app_title": "ZX Bandspelare",
-  "copyright": "© 2021 Copyright by\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nAlla rättigheter reserverade.\n",
+  "copyright": "© 2021-%s Copyright by\nAndriy S'omak, Thomas Heckmann,\nPavlo Hladkov, Sergey Kireev.\nAlla rättigheter reserverade.\n",
   "version": "Version %s.%s",
   "find_tape": "Sök önskad kassett",
   "search_hint": "Ange en söktext här",
