@@ -35,7 +35,7 @@ dependencies:
   app_center_bundle_sdk: ^0.0.2
   avatar_abc: ^1.0.6
   cached_network_image: ^3.0.0-nullsafety
-  pull_to_refresh: ^2.0.0
+  pull_to_refresh_flutter3: ^2.0.1
   carousel_slider: ^4.0.0
   just_audio: ^0.9.20
   flutter_spinkit: ^5.0.0
