@@ -349,8 +349,9 @@ class _PlayerScreenBloc {
   }
 
   Future openExternalUrl(String id) async {
-    var url = await _backendService.getExternalUrl(id);
-    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+    var urlString = await _backendService.getExternalUrl(id);
+    var url = Uri.parse(urlString);
+    await canLaunchUrl(url) ? await launchUrl(url) : throw 'Could not launch $urlString';
   }
 
   Future shareExternalUrl(SoftwareModel model) async {
