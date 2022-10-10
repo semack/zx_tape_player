@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:app_center_bundle_sdk/app_center_bundle_sdk.dart';
 import 'package:carousel_slider/carousel_slider.dart';

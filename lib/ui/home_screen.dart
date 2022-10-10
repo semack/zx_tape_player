@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 14.0),
                     ),
                     style: TextButton.styleFrom(
-                      primary: Theme.of(context).primaryColor,
+                      foregroundColor:  Theme.of(context).primaryColor,
                       backgroundColor: HexColor('#68B8DF'),
                       padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
                       shape: const RoundedRectangleBorder(
