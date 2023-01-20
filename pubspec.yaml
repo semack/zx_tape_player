@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.0.13+15
+version: 1.0.14+16
 
 environment:
   sdk: ">=2.7.0 <4.0.0"
@@ -27,7 +27,7 @@ dependencies:
   path_provider: ^2.0.1
   path: ^1.8.0
   flutter_typeahead: ^4.0.0
-  package_info_plus: ^1.4.0
+  package_info_plus: ^3.0.2
   sprintf: ^7.0.0
   http: ^0.13.0
   easy_localization: ^3.0.0
@@ -47,11 +47,11 @@ dependencies:
   zx_tape_to_wav: ^3.1.0+12
   flutter_mute: ^0.0.1
   shared_preferences: ^2.0.0
-  flutter_statusbarcolor_ns: ^0.4.0-nullsafety
+  flutter_statusbarcolor_ns: ^0.5.0
   internet_connection_checker: ^1.0.0+1
   wakelock: ^0.6.1+2
   volume_controller: ^2.0.0
-  share_plus: ^4.0.3
+  share_plus: ^6.3.0
   permission_handler: ^10.0.0
   in_app_review: ^2.0.1
 
