@@ -20,7 +20,7 @@ class _CassetteState extends State<Cassette>
   bool get _animated => widget.animated;
 
   int get _durationSec => widget.durationSec;
-  final double _rotationRatio = 0.63;
+  final double _rotationRatio = -0.63;
 
   @override
   void initState() {
